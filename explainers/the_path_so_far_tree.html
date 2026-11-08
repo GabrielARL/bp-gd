@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BP–GD research tree</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f4f6f8;
+    --paper: #ffffff;
+    --ink: #17202a;
+    --muted: #5f6b78;
+    --line: #9aa7b4;
+    --blue: #1769aa;
+    --blue-wash: #eaf4fd;
+    --green: #167a55;
+    --green-wash: #e8f7f1;
+    --amber: #a85a00;
+    --amber-wash: #fff3df;
+    --red: #b23434;
+    --red-wash: #fff0f0;
+    --grey: #66717c;
+    --grey-wash: #eef1f4;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11161c;
+      --paper: #182029;
+      --ink: #edf2f7;
+      --muted: #aab5c0;
+      --line: #536170;
+      --blue: #75bfff;
+      --blue-wash: #162f43;
+      --green: #72dbb2;
+      --green-wash: #15382e;
+      --amber: #ffc06a;
+      --amber-wash: #3b2b14;
+      --red: #ff9696;
+      --red-wash: #3d2022;
+      --grey: #bec7d0;
+      --grey-wash: #2a333c;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.45 var(--sans);
+  }
+  main { width: min(1180px, calc(100% - 32px)); margin: 34px auto 56px; }
+  header { max-width: 900px; margin-bottom: 22px; }
+  .eyebrow {
+    color: var(--blue);
+    font: 700 12px/1.2 var(--mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  h1 { margin: 7px 0 8px; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; }
+  header p { margin: 0; max-width: 78ch; color: var(--muted); }
+  .answer {
+    margin-top: 14px;
+    padding: 12px 15px;
+    border-left: 4px solid var(--blue);
+    background: var(--blue-wash);
+    color: var(--ink);
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font: 700 11px/1.2 var(--mono);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .closed { color: var(--red); }
+  .partial { color: var(--amber); }
+  .established { color: var(--green); }
+  .active { color: var(--blue); }
+  .parked { color: var(--grey); }
+
+  .tree-shell {
+    overflow-x: auto;
+    padding: 24px 18px 30px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+  }
+  .tree, .tree ul { margin: 0; padding: 0; list-style: none; }
+  .tree { min-width: 760px; }
+  .tree ul { position: relative; margin-left: 34px; padding-left: 34px; }
+  .tree ul::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 24px;
+    left: 0;
+    border-left: 2px solid var(--line);
+  }
+  .tree li { position: relative; padding: 12px 0 0; }
+  .tree li::before {
+    content: "";
+    position: absolute;
+    top: 35px;
+    left: -34px;
+    width: 34px;
+    border-top: 2px solid var(--line);
+  }
+  .tree > li { padding-top: 0; }
+  .tree > li::before { display: none; }
+
+  .node {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 14px;
+    width: min(890px, 100%);
+    padding: 13px 15px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
+  }
+  .node.root { border: 2px solid var(--blue); background: var(--blue-wash); }
+  .node.keep { border-left: 5px solid var(--green); }
+  .node.leaf-closed { border-left: 5px solid var(--red); background: var(--red-wash); }
+  .node.leaf-partial { border-left: 5px solid var(--amber); background: var(--amber-wash); }
+  .node.leaf-established { border-left: 5px solid var(--green); background: var(--green-wash); }
+  .node.leaf-active { border: 2px solid var(--blue); background: var(--blue-wash); }
+  .node.leaf-parked { border-left: 5px solid var(--grey); background: var(--grey-wash); }
+  .node .tag { align-self: start; margin-top: 2px; }
+  .node h2, .node h3 { margin: 0; font-size: 17px; line-height: 1.3; }
+  .node.root h2 { font-size: 20px; }
+  .node p { grid-column: 2; margin: 4px 0 0; color: var(--muted); }
+  .node strong { color: var(--ink); }
+
+  details.sources {
+    grid-column: 2;
+    margin-top: 7px;
+    border-top: 1px dashed var(--line);
+    padding-top: 8px;
+  }
+  details.sources summary {
+    cursor: pointer;
+    color: var(--blue);
+    font: 700 12px/1.3 var(--mono);
+  }
+  .source-list { display: grid; gap: 7px; margin-top: 8px; }
+  .source-list a,
+  .source-list .source-ref {
+    display: block;
+    color: var(--blue);
+    overflow-wrap: anywhere;
+    font: 12px/1.4 var(--mono);
+  }
+  .source-list a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+  .source-list .source-ref { color: var(--muted); }
+  .source-list .source-ref code {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink);
+  }
+  .source-kind { color: var(--muted); font-weight: 700; }
+
+  footer {
+    margin: 16px 4px 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  code { font-family: var(--mono); }
+  @media (max-width: 720px) {
+    main { width: min(100% - 20px, 1180px); margin-top: 20px; }
+    .tree-shell { padding-inline: 10px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">BP versus projected GD · concise research history</div>
+    <h1>How we got here</h1>
+    <p><strong>7 November 2026 operational update.</strong> The corrected v11 range-audit retry was approved, materialized, and consumed exactly once. It completed all filesystem and Git-ref inventories without opening scientific input, then failed on one mutable-ledger self-reference and a recorded coordinator field of 6,140,592 KiB against the 2,097,152-KiB cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not scanner-allocation evidence. The registered failure stands. All source, support, inventory, snapshot, and dormant-Stage-C gates passed with zero scan failures. No manifest, decoder run, or recovery evidence exists.</p>
+    <p><strong>Source-only remediation update.</strong> Remediation-002 was approved and completed on 7 November 2026. Its true-fork worker, exact <code>wait4()</code> accounting, fail-closed publisher, 79/79 synthetic tests, and 13/13 source checks passed. A no-result rehearsal reproduced the four inventories embedded in the failed v11 artifact while formal activation, live-provider traversal, and formal-result publication stayed false. Worker self and <code>wait4()</code> both measured 210,828 KiB against the unchanged 2,097,152-KiB cap; elapsed time was 6,923 ms against 1,800,000 ms. This is not a formal scan or scientific result. Activation-002 and closure-002 cannot be reused.</p>
+    <p><strong>Active terminal target.</strong> At each of the untouched 6-dB and 1.5-dB levels, the frozen candidate and native exact sum-product BP process the same registered 200 cases, holding fixed the parity-check matrix, transmitted word, noise realization, and vector of channel LLRs. If <code>C_s</code> and <code>B_s</code> are their respective transmitted-word recovery counts, the requirement is <code>C_s &gt;= B_s - 30</code> within 30 candidate updates. Candidate recovery above BP is allowed, and development and solver selection remain outside those confirmation cases.</p>
+    <p><strong>Solver-selection boundary.</strong> The registered noisy hard-bit and ten-start projected-gradient mechanisms are already closed at 1.5 dB. Because <em>J</em><sub>C</sub>(<em>z</em>) = <em>J</em>(<em>Cz</em>) is constant on ker <em>C</em>, any barrier must be certified in the quotient represented by the mean coordinates <em>u</em> = <em>Cz</em>, together with a check that finite projected trials cannot jump across it to an accepted lower endpoint.</p>
+    <p>Read downward. Closed branches are red; partial answers are amber; the only active candidate is blue. Archived paths remain visible for provenance, but only the selected performance-verified GD implementation is copied into this repository.</p>
+    <div class="answer"><strong>Current position:</strong> traversal was insufficient → offset use in the parity calculation and correct check assignment helped at 6 dB → the update operator exposed the central boundary → scalar-objective and local-matrix branches were pruned → the nonduplicate two-hop state-dependent matrix remains active for the unopened two-SNR direction screen. Its projected-gradient mechanics are tested only on synthetic literals, where projection exposes a separate action incompatibility that the direction screen cannot resolve.</div>
+  </header>
+
+  <div class="legend" aria-label="status legend">
+    <span class="tag closed">closed branch</span>
+    <span class="tag partial">partial answer</span>
+    <span class="tag established">established boundary</span>
+    <span class="tag active">active · unvalidated</span>
+    <span class="tag parked">parked</span>
+  </div>
+
+  <section class="tree-shell" aria-label="BP and projected GD research tree">
+    <ul class="tree">
+      <li>
+        <div class="node root">
+          <span class="tag active">objective</span>
+          <h2>Why does exact sum-product BP outperform native projected GD, and can a gradient-based decoder approach BP?</h2>
+          <p>Identify the mechanism, then test its effect on recovery on locked AWGN cases.</p>
+        </div>
+        <ul>
+          <li>
+            <div class="node leaf-parked">
+              <span class="tag parked">parked</span>
+              <h3>ADMM</h3>
+              <p>Outside the current BP–GD question; not rejected.</p>
+              <details class="sources">
+                <summary>Source at this leaf</summary>
+                <div class="source-list">
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">Scope:</span> AGENTS.md <code>/home/gabiel/Documents/GitHub/sp_gd_admm-claude-controls-20261031/AGENTS.md</code></span>
+                </div>
+              </details>
+            </div>
+          </li>
+
+          <li>
+            <div class="node leaf-established">
+              <span class="tag established">observed · not causal</span>
+              <h3>The native performance gap is real</h3>
+              <p>Projected GD versus exact BP recovered <strong>112 versus 200</strong> words at 6 dB and <strong>0 versus 199</strong> at 1.5 dB; this located the gap but did not identify its cause.</p>
+              <details class="sources">
+                <summary>Code and retained results at this leaf</summary>
+                <div class="source-list">
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> native_composition.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_native_composition_001/native_composition.jl</code></span>
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">6-dB result:</span> 05_six_db_forward_transfer/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_native_composition_001/results/2026-11-01_v2/05_six_db_forward_transfer/science.json</code></span>
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">1.5-dB result:</span> 07_second_snr_confirmation/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_native_composition_001/results/2026-11-01_v2/07_second_snr_confirmation/science.json</code></span>
+                </div>
+              </details>
+            </div>
+          </li>
+
+          <li>
+            <div class="node leaf-closed">
+              <span class="tag closed">insufficient</span>
+              <h3>Same Tanner-graph walk or the same <em>O(E)</em> edge count explains the gap</h3>
+              <p>Both use the graph, but they represent, address, retain, calculate, and apply different quantities.</p>
+              <details class="sources">
+                <summary>Source at this leaf</summary>
+                <div class="source-list">
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">Mechanism source:</span> bp_gd_state_boundary_animation.html <code>/home/gabiel/Documents/GitHub/sp_gd_admm-claude-controls-20261031/bp_gd_state_boundary_animation.html</code></span>
+                  <span class="source-ref" title="Archived provenance path"><span class="source-kind">Mechanism source:</span> rq1_mechanism_animation.html <code>/home/gabiel/Documents/GitHub/sp_gd_admm-claude-controls-20261031/rq1_mechanism_animation.html</code></span>
+                </div>
+              </details>
+            </div>
+          </li>
+
+          <li>
+            <div class="node keep">
+              <span class="tag established">keep</span>
+              <h3>Separate representation, addressing, calculation, and update</h3>
+              <p>The controlled route tests one narrower mechanism at a time.</p>
+            </div>
+            <ul>
+              <li>
+                <div class="node leaf-partial">
+                  <span class="tag partial">partial</span>
+                  <h3>Retain check-specific information and use it in the parity calculation</h3>
+                  <p><strong>172/200 versus 113/200</strong> at 6 dB: a causal contribution, but not BP equivalence or a low-SNR solution.</p>
+                  <details class="sources">
+                    <summary>Code and retained result at this leaf</summary>
+                    <div class="source-list">
+                      <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> rq2_gd_state_use_001.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_gd_state_use_001/rq2_gd_state_use_001.jl</code></span>
+                      <span class="source-ref" title="Archived provenance path"><span class="source-kind">Result:</span> heldout_v2/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_gd_state_use_001/results/2026-10-31_heldout_v2/science.json</code></span>
+                    </div>
+                  </details>
+                </div>
+              </li>
+
+              <li>
+                <div class="node leaf-established">
+                  <span class="tag established">boundary</span>
+                  <h3>Hold the recurrence fixed; change state freedom, direction, and step</h3>
+                  <p>At 1.5 dB, only <strong>free state + recurrence-minus-state + unit application</strong> recovered words: <strong>196/200</strong>; every tested true-gradient arm recovered <strong>0/200</strong>. This is the central boundary, not a gradient decoder.</p>
+                  <details class="sources">
+                    <summary>Code and retained results at this leaf</summary>
+                    <div class="source-list">
+                      <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> campaign_runner.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_common_coordinate_state_update_001/campaign_runner.jl</code></span>
+                      <span class="source-ref" title="Archived provenance path"><span class="source-kind">6-dB result:</span> 04_six_db_transfer/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_common_coordinate_state_update_001/results/2026-11-04_v2/04_six_db_transfer/science.json</code></span>
+                      <span class="source-ref" title="Archived provenance path"><span class="source-kind">1.5-dB result:</span> 05_one_point_five_db_transfer/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_common_coordinate_state_update_001/results/2026-11-04_v2/05_one_point_five_db_transfer/science.json</code></span>
+                    </div>
+                  </details>
+                </div>
+              </li>
+
+              <li>
+                <div class="node keep">
+                  <span class="tag active">new question</span>
+                  <h3>Can a genuine gradient-based construction reproduce enough of that successful direction to approach BP?</h3>
+                  <p>Each closed child is ruled out only within its registered family.</p>
+                </div>
+                <ul>
+                  <li>
+                    <div class="node leaf-partial">
+                      <span class="tag partial">regime-dependent</span>
+                      <h3>More updates with the compound-box projected-gradient construction</h3>
+                      <p>The selected assigned/frozen compound-box construction reached <strong>200/200</strong> on one fresh 6-dB transfer after 90 updates. That exact construction has no completed 1.5-dB transfer; a related native compound projected-GD budget diagnostic stayed at <strong>0/200</strong> there.</p>
+                      <p><strong>Production-size synthetic resource check:</strong> the candidate and exact-zero arms each pass three one-thread update-cap and immediate-stall repetitions on a deterministic regular degree-(3,6) graph with 10,200 variables, 5,100 checks, and 30,600 edge slots. Update-cap traces occupy 69,861,148 bytes; decoder time is 5.7778–6.4499 seconds, complete-trace checking is 5.5252–5.7620 seconds, and measured child-process peak RSS is 894,263,296–899,579,904 bytes. Immediate-stall traces occupy 11,763,554 bytes. The receipt is scalar-only and opens no registered frame, comparison receiver, truth, or scorer. This is engineering feasibility, not the approval-gated Stage-B wall benchmark, a sealed RSS cap, a stable trace format, or decoder-performance evidence.</p>
+                      <details class="sources">
+                        <summary>Local implementation, evidence, and related low-SNR provenance</summary>
+                        <div class="source-list">
+                          <a href="../implementation/compound_box_gd/"><span class="source-kind">Selected implementation:</span> compound_box_gd/</a>
+                          <a href="../implementation/compound_box_gd/evidence/aggregate.csv"><span class="source-kind">6-dB retained counts:</span> aggregate.csv</a>
+                          <a href="../implementation/compound_box_gd/evidence/COMPLETED.toml"><span class="source-kind">6-dB completion gate:</span> COMPLETED.toml</a>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Related 1.5-dB diagnostic:</span> result_interpretation.md <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_common_coordinate_budget_90_001/result_interpretation.md</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-established">
+                      <span class="tag established">established · 6 dB</span>
+                      <h3>Retained offsets help through the parity calculation, and their check assignment carries the effect</h3>
+                      <p><code>RQ2-GD-OFFSET-SPLIT-001</code> completed validly on held-out frames 30001–30200: using the offsets in the parity calculation with native projection bounds recovered <strong>163/200</strong> transmitted words versus <strong>107/200</strong> without that use. Offset-induced bounds alone gave <strong>106/200</strong>, and adding them to parity use left the count at <strong>163/200</strong>. The gain is therefore associated with the parity calculation on this registered sample, not the changed projection interval.</p>
+                      <p><code>RQ2-GD-PARITY-ASSIGNMENT-REFRESH-001</code> then transferred the assignment effect on fresh frames 40001–40200. The as-constructed assignment recovered <strong>174/200</strong> with the first adopted offsets frozen and <strong>165/200</strong> with later replacement; a fixed within-bit derangement recovered <strong>61/200</strong> and <strong>70/200</strong>. Replacement did not improve the correctly assigned arm, but its preregistered equivalence-within-0.05 gate also failed, so freezing and replacement cannot be called equivalent. These are constructed projected-gradient results at 6 dB, not BP-message, BP-equivalence, or low-SNR claims.</p>
+                      <details class="sources">
+                        <summary>Archived complete-valid evidence</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Offset-use split:</span> heldout v3 science <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq1-gd-state-use-20261030/experiments/rq2_gd_offset_split_001/results/2026-10-31_heldout_v3/science.json</code> · SHA-256 <code>a42793a4e94485e3f91873c1bb1cdce943879447a982555275ccf13483445125</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Assignment × replacement transfer:</span> v4 transfer science <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-parity-offset-2x2-20261031/experiments/rq2_gd_parity_assignment_refresh_001/results/2026-11-01_v4_transfer/science.json</code> · SHA-256 <code>2556c01f170d0e3f42bdcca831df47278270ec13628e84a1541a7976668c5595</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-closed">
+                      <span class="tag closed">pruned</span>
+                      <h3>Rejected: most failed GD trajectories had already settled at an incorrect stationary point</h3>
+                      <p><strong>1599/1600</strong> tested arm–case trajectories met the registered budget-limited-progress-candidate condition at update 30; one was classified as a nonstationary stall or cycle.</p>
+                      <details class="sources">
+                        <summary>Code and retained summaries at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> rq2_gd_trajectory_diagnosis_001.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_gd_trajectory_diagnosis_001/rq2_gd_trajectory_diagnosis_001.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">6-dB summary:</span> 02_six_db/summary.csv <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_gd_trajectory_diagnosis_001/results/2026-11-04_v2/02_six_db/summary.csv</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">1.5-dB summary:</span> 03_one_point_five_db/summary.csv <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_gd_trajectory_diagnosis_001/results/2026-11-04_v2/03_one_point_five_db/summary.csv</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-closed">
+                      <span class="tag closed">pruned</span>
+                      <h3>Use <em>H</em>, Bethe free energy, or the native compound objective <em>J</em><sub>C</sub></h3>
+                      <p><em>H</em> and Bethe failed monotonicity; <em>J</em><sub>C</sub> survived that gate but its negative fixed-matrix gradient was misaligned by a median <strong>83.4°</strong>.</p>
+                      <details class="sources">
+                        <summary>Code and retained results at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Path-test code:</span> rq2_bp_objective_path_001.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_bp_objective_path_001/rq2_bp_objective_path_001.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Direction-test code:</span> rq2_bp_objective_direction_001.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_bp_objective_direction_001/rq2_bp_objective_direction_001.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Decision:</span> objective_direction/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_bp_objective_direction_001/results/2026-11-04_v1/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-established">
+                      <span class="tag established">feasible pointwise</span>
+                      <h3>A positive-definite matrix can align the partial derivatives with the successful direction at sampled states</h3>
+                      <p>Feasible at almost every sampled active state, but this supplied neither one reusable matrix nor a decoder result.</p>
+                      <details class="sources">
+                        <summary>Card and retained result at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Definition:</span> experiment_card.md <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_active_metric_feasibility_001/experiment_card.md</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Result:</span> active_metric_feasibility/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_active_metric_feasibility_001/results/2026-11-04_v1/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-closed">
+                      <span class="tag closed">pruned</span>
+                      <h3>Represent the exact recurrence as one smooth scalar objective in the current coordinates and a fixed matrix</h3>
+                      <p>Nonintegrability witnesses on <strong>400/400</strong> instances ruled out this exact representation—not all gradient-based constructions.</p>
+                      <details class="sources">
+                        <summary>Code and retained result at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> rq2_bp_map_integrability_001.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_bp_map_integrability_001/rq2_bp_map_integrability_001.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Result:</span> 2026-11-04_v2/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_bp_map_integrability_001/results/2026-11-04_v2/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-closed">
+                      <span class="tag closed">pruned</span>
+                      <h3>Use a fixed one-hop graph-local positive-definite matrix</h3>
+                      <p>The fit selected identity behaviour and did not improve the held-frame direction.</p>
+                      <details class="sources">
+                        <summary>Code and retained result at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Code:</span> graph_local_metric_inference.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_local_metric_001/graph_local_metric_inference.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Result:</span> graph_local_metric/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_local_metric_001/results/2026-11-04_v1/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-closed">
+                      <span class="tag closed">pruned</span>
+                      <h3>Fit a 25-parameter graph-factorized scalar energy</h3>
+                      <p>The fresh direction screen passed at 6 dB but failed the registered angle and relative-error gates at 1.5 dB; no decoder ran.</p>
+                      <details class="sources">
+                        <summary>Code and retained result at this leaf</summary>
+                        <div class="source-list">
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Energy code:</span> graph_factorized_energy.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_factorized_energy_001/graph_factorized_energy.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Screen code:</span> run_stage_b_direction_screen.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_factorized_energy_001/followup/stage_b/run_stage_b_direction_screen.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Result:</span> stage_b/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_factorized_energy_001/followup/stage_b/results/2026-11-05_v1/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="node leaf-active">
+                      <span class="tag active">active · unvalidated</span>
+                      <h3>Apply a bounded state-dependent, recipient-excluded two-hop symmetric positive-definite matrix to the partial derivatives of <em>J</em><sub>C</sub></h3>
+                      <p>The predecessor placed the same two-hop graph support inside a scalar-energy correction; this leaf instead places it in the matrix applied to the partial derivatives of unchanged <em>J</em><sub>C</sub>. The production path takes the Tanner graph, accepted current state, vector of channel LLRs, and caller-supplied coefficients; calculates the graph-only fixed positive diagonal once, then recalculates unchanged <em>J</em><sub>C</sub>, its partial derivatives, and the state-dependent recipient-excluded two-hop symmetric positive-definite matrix direction at every attempted update; then applies the registered componentwise projection, 13-point Armijo search, 30-attempt/stall rule, centered incident-edge readout, and strict-negative decision. The first parity-valid syndrome is telemetry only. Its exported state-advancing entry points construct the direction internally, expose no arbitrary-direction step, and have no BP, teacher, truth, frame, SNR, population, scorer, loader, writer, or launcher interface. The full local suite passes <strong>5,636 synthetic assertions</strong>: 1,202 existing checks, 692 portable-fixture checks, 262 pure population-seam checks, 84 durable full-chain checks, and 3,396 dormant Stage-C decoder-source checks. A separate pure checker recalculates every retained objective, partial-derivative vector, current-state direction, raw and projected trial, Armijo decision, accepted state, readout, syndrome, and cross-record link. The Stage-C suite also checks an accepted second trial, bit-exact replay of update-cap and stalled paths, 35 altered traces that fail closed, explicit coefficient-admissibility rechecks that close the raw-constructor bypass, and a parity-valid transition at update 16 that continues through update 30, the exact 13-trial stall, complete-path bit identity for the exact-zero control, and valid-codeword sign covariance. The full population-chain synthetic improvement remains 0.6852959854888271°: the target-specific gate passes, but the unchanged 15° paired-improvement gate fails while every other generic gate passes. That fabricated comparison validates interfaces, not population diversity or agreement with BP. An exhaustive fingerprint audit found no previously run duplicate: the closest two-hop branch changed the scalar energy and failed before its decoder stage, while the closest state-dependent matrix used one-hop support and selected identity scaling. Separately, the operational preparation passes a 26-file inventory, five Python tests, and 240 Julia assertions pinned at 12 coefficient-seal-loader, 34 provider, 165 operational-runtime, and 29 retained-callback assertions; the preserved v10 range-audit producer validator passed 10/10 source-only checks and its core suite passed 61/61 synthetic tests, enforcing four ordered canonical JSONL evidence streams, closed 175-field result and 23-field v2 activation keysets, complete inventories, and internal cross-consistency without claiming that the producer alone establishes live truth for a coherent rewrite, and binds the approved exact 13-member support-source registration at identity <code>c2ef2d0f77d1fc441e532c78dbf7d4917c4ef8defb948f0315b1c659a71d4403</code> with registration-record raw SHA-256 <code>fb8bab4d00b08e88b34713c9eb77414d9cc0ef874e59b8d9712832a9db459c4e</code>; the 21-member execution-envelope validator passes and its pinned Python 3.11 suite passes 76/76 tests. The approved first range audit produced an internally consistent failure record at SHA-256 <code>46d38209d89a6bd0a51f1008fa68cbde26033ecf8954f3b2750c5e5e980c510f</code>: 31 lexical/parser collision records in six groups and recorded RSS of 6,437,576 KiB against the 2,097,152-KiB cap. All source, support, inventory, and snapshot gates passed with zero scan failures; no fresh input or scientific runner opened. Review found no competing reservation or scientific frame consumption, but the registered audit remains failed. The approved source-only remediation <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-REMEDIATION-001</code> is implemented: the prospective v11 preparation passes 11/11 source/provenance checks and 70/70 synthetic tests, closes the result to 183 fields, binds exact provenance for the 27 reviewed historical/test non-registration records, and uses bounded streaming parsing for <code>.json</code> files. Large structural <code>.txt</code> and suffixless documents remain isolated in helpers and component-gated rather than claimed as streaming. The source records coordinator and waited-child lifetime peaks separately from per-helper peaks; each helper peak is stabilized after parsing and response serialization, while the post-wait child observation is conservative through process exit. This does not claim simultaneous process-tree RSS or alter the preserved v10 failure. The exact downstream range bundle remains three files. Builder and independent auditor rerun the live worktree, ref, descriptor-retained filesystem, and Git-blob inventories, recompute hashes, object IDs, and fingerprints, compare all four regenerated canonical payloads byte for byte, and repeat repository-identity and post-Git-metadata checks. Three provider assertions independently pin a bit-exact golden vector for the retained <em>J</em><sub>C</sub> arithmetic, and the provider calculates the partial derivatives and fixed diagonal locally before rejecting any bitwise disagreement with the offline evaluator. A temporary end-to-end run independently validated all 245 source checks at source identity <code>401aafec73839021d3f3c9dd3708f0f88b5ca614ea045b9bc736e84f3358abb9</code>, with <code>fresh_inputs_opened=false</code> and <code>scientific_runner_started=false</code>. No persistent final source-validation bundle was published before the audit; the approved external audit now exists only as a failed record. <strong>No threshold changed and no registered frame was opened. The state advance, projection, line search, and readout have run only on synthetic literals; no Stage-B population screen, registered decoder anchor, recovery test, or coded-bit BER calculation ran.</strong> The registered fresh Stage-B and Stage-C cases remain closed. The support-source closure and first range-audit activation are approved; that activation was consumed by the failed scan and does not authorize a retry. The source-only remediation <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-REMEDIATION-001</code> is approved and complete. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-002</code> is approved and materialized at registration identity <code>7a796e142cd263e36c994854ea377841c6cddb262a1534690902d7c4b0681d66</code>, with registration-record raw SHA-256 <code>d3e8acb2b91aeb79788fb55d1134a4e653ee091cf2ec67a580fe4d69545d77c2</code>; all its live permissions are false. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-ACTIVATION-002</code> was materialized and consumed by the interrupted v11 scan after its pre-scan gates passed and it reached filesystem root 5 of 17. No range result was published and no scientific input opened. The path-correction retry was approved, materialized, and consumed exactly once. Its terminal result (SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>) failed on one documentary self-collision and a recorded coordinator field above the RSS cap. Fresh-child reproduction proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands; no scientific input opened and no manifest was created. Source-only <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-REMEDIATION-002</code> is approved and complete on 7 November 2026; it produced no formal scan or scientific result. Activation-002 and closure-002 are consumed and cannot be reused. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-COEFFICIENT-SEAL-002</code> is approved and complete-valid: authorization SHA-256 <code>06944b797b96c93ec136c41949d708eb1613caba0387871b256003155950803b</code>, manifest SHA-256 <code>a71ebef92cd1a998be9fda33ba2fadbda0680aa9da140b9941166a75c2db38c5</code>, and sealed-member SHA-256 <code>173a68f41e53d4e7b16a40d27271245ae9c83b0b5f4858c7f15d439f25fb3078</code>; it opened no frame and produced no scientific result. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-WALL-CONTRACT-AMENDMENT-001</code> is approved at exact SHA-256 <code>c76ba22c29bea8d0e25e31cf74057b1649347e44fc56d9f890368e9dcc372a63</code>. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RETAINED-WALL-BENCHMARK-001</code> and <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-EXECUTION-001</code> are prospectively approved but remain inoperative until their exact prerequisites pass and their one-use authorization artifacts can be materialized. The goal is active; no retained-wall run, fresh input, or Stage-B science has begun. Run the registered screen only after all gates pass; prune this family if it fails.</p>
+                      <p><strong>RSS attribution:</strong> the failed v10 audit's <code>scan_max_rss_kib</code> field adds the coordinator's lifetime peak RSS to the largest lifetime peak RSS reported for any waited child. The two peaks need not be simultaneous, so 6,437,576 KiB is not a measured simultaneous process-tree peak; neither component nor per-helper RSS was retained. The registered cap comparison remains failed. The prospective v11 source uses bounded streaming parsing for <code>.json</code> files and records coordinator and waited-child lifetime peaks separately from per-helper peaks; each helper peak is stabilized after parsing and response serialization, while the post-wait child observation is conservative through process exit. It does not remeasure the v10 run, claim simultaneous process-tree RSS, or authorize a retry.</p>
+                      <p><strong>Fresh-worker remediation complete:</strong> ordinary Python subprocess creation is not a valid reset on this host because its <code>vfork</code> path can repeat the launcher's process-image peak. Approved source-only remediation-002 now places traversal behind a true <code>fork()</code> before any corpus read or sizable allocation, followed by pinned <code>execve()</code>. After complete result serialization, the final <code>wait4()</code>-checked process-tree peak must equal <code>max(worker self, worker waited child)</code>. Version-3 document helpers use the same self-versus-waited-child maximum. The launcher's inherited peak is diagnostic only. The generator at SHA-256 <code>a3e40cc9d31f5853894a5cfff218bf70ab8f20fbccceb0f6565614ff477fa9e0</code> passes 79/79 synthetic tests and 13/13 source checks. The canonical no-result rehearsal receipt at SHA-256 <code>e2f33286897e7d56c07401274f2c19b865670e8c59c27dd235faa017dc0f494c</code> records worker self = <code>wait4()</code> = 210,828 KiB, zero waited-child and helper peaks, and 6,923 ms elapsed against unchanged caps of 2,097,152 KiB and 1,800,000 ms; the inherited parent peak of 6,140,592 KiB remained diagnostic only. All four embedded inventories were reproduced. Formal activation, live-provider traversal, and formal-result publication remained false. The prospective publisher performs every check and <code>fsync</code> before the exclusive-link commit and claims no post-link crash-durability acknowledgement. The failed v11 result remains failed and byte-unchanged at SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>, with no manifest. Activation-002 and closure-002 are consumed and cannot be reused. A later formal scan first requires separate review, approval, and materialization of a new source rebind and exact support-source closure, then a new one-use version-12 activation; no new approval ID has been introduced. This source-only completion authorizes no formal scan or scientific input.</p>
+                      <p>A new independent dense test directly enumerates graph incidence and reimplements the full matrix and projected Armijo path without the production path pattern or sparse action. It reproduces both complete candidate trajectories within <code>3e-13</code>. A nondegenerate fixture proves that the recipient-excluded operation creates within-bit edge differences that affect the next matrix direction. The retained late-stall fixture also shows why raw positive-definite descent is insufficient: projection removes its descent-producing boundary components, every projected trial is ascent, and the registered fixed-diagonal projected-gradient mapping still reaches a feasible lower objective. The candidate stall is therefore <strong>not box-stationary</strong>; the exact-zero control's stall has a zero mapping. This projection/action compatibility diagnosis changes no decoder rule and is not performance evidence. Even if the untouched Stage-B direction screen passes, it would validate only raw-direction agreement on untouched states; it would not resolve this incompatibility or validate the unchanged projected update for a decoder anchor. A prospective nonduplicate linear-cost successor would test the projected two-hop displacement, use the registered fixed-diagonal projected-gradient trial only when that displacement is not strict descent, and declare stationarity only when the fixed-diagonal projected mapping is zero. It has not been implemented, registered, or run; any later experiment must record fallback use and reject a construction that merely degenerates into the already tested fixed-diagonal decoder. Under the frozen branch policy, it becomes eligible only after a Stage-C failure, unless a prospective amendment is approved before any Stage-C case opens.</p>
+                      <details class="sources">
+                        <summary>Local source/test extraction and archived provenance at this leaf</summary>
+                        <div class="source-list">
+                          <a href="../implementation/two_hop_metric_action/"><span class="source-kind">Local source/test extraction:</span> two_hop_metric_action/ — dormant decoder source, not a fresh scientific result</a>
+                          <a href="../implementation/two_hop_metric_action/stage_c_decoder_source.jl"><span class="source-kind">Dormant Stage-C source:</span> current-state projected Armijo update with no case or truth interface</a>
+                          <a href="../implementation/two_hop_metric_action/stage_c_trace_integrity.jl"><span class="source-kind">Pure Stage-C trace checker:</span> recalculation and cross-record validation without state advance</a>
+                          <a href="../implementation/two_hop_metric_action/benchmark_complete_trace_resources.jl"><span class="source-kind">Synthetic resource harness:</span> four production-size source-only cells with isolated child-process telemetry</a>
+                          <a href="../implementation/two_hop_metric_action/complete_trace_resource_measurement_2026-11-06_v1.toml"><span class="source-kind">Canonical scalar receipt:</span> trace size, wall, allocation, serialization-proxy, and peak-RSS telemetry</a>
+                          <a href="../implementation/two_hop_metric_action/compound_objective_jc.jl"><span class="source-kind">Production objective source:</span> unchanged J<sub>C</sub> and its partial derivatives</a>
+                          <a href="../implementation/two_hop_metric_action/jc_metric_direction.jl"><span class="source-kind">Production direction source:</span> objective-to-two-hop-matrix composition without a comparison direction</a>
+                          <a href="../implementation/two_hop_metric_action/test/local_jc_metric_direction.jl"><span class="source-kind">Production path tests:</span> 104 synthetic assertions</a>
+                          <a href="../implementation/two_hop_metric_action/test/authoritative_jc_fixture.toml"><span class="source-kind">Portable fixture:</span> frozen 40-case version-2 input corpus and bit-exact outputs</a>
+                          <a href="../implementation/two_hop_metric_action/test/local_authoritative_jc_fixture.jl"><span class="source-kind">Portable fixture tests:</span> 692 synthetic assertions</a>
+                          <a href="../implementation/two_hop_metric_action/stage_b_direction_kernel.jl"><span class="source-kind">Local per-origin kernel:</span> source-identical diagnostic — caller-supplied reference only</a>
+                          <a href="../implementation/two_hop_metric_action/test/local_stage_b_direction_kernel.jl"><span class="source-kind">Local kernel tests:</span> synthetic diagnostics and reference-direction isolation</a>
+                          <a href="../implementation/two_hop_metric_action/origin_row_adapter.jl"><span class="source-kind">Pure population adapter:</span> unique pairing and common-threshold preparation from already-materialized diagnostics</a>
+                          <a href="../implementation/two_hop_metric_action/retained_direction_population_summary.jl"><span class="source-kind">Retained generic summary:</span> offline direction statistics only</a>
+                          <a href="../implementation/two_hop_metric_action/target_specific_gates.jl"><span class="source-kind">Target-specific reducer:</span> condition and lower-endpoint gates</a>
+                          <a href="../implementation/two_hop_metric_action/test/local_population_summary.jl"><span class="source-kind">Pure population-seam tests:</span> part of 262 synthetic assertions</a>
+                          <a href="../implementation/two_hop_metric_action/test/local_full_synthetic_population_chain.jl"><span class="source-kind">Full synthetic-chain tests:</span> 84 assertions, including the fail-closed 0.6852959854888271° population decision</a>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Cross-checked historical evaluator:</span> graph_local_metric_inference.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_local_metric_001/graph_local_metric_inference.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Metric code:</span> two_hop_positive_metric.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001/two_hop_positive_metric.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Screen kernel:</span> stage_b_direction_kernel.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001/followup/stage_b/stage_b_direction_kernel.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Prepared runner:</span> run_stage_b_direction_screen.jl <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001/followup/stage_b_operational_source_preparation/run_stage_b_direction_screen.jl</code></span>
+                          <span class="source-ref" title="Archived provenance path"><span class="source-kind">Retained fit:</span> 2026-11-06_v5/science.json <code>/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001_runtime/results/2026-11-06_v5/science.json</code></span>
+                        </div>
+                      </details>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <footer>Only terminal leaves contain code or retained-result links. Infrastructure attempt history is intentionally omitted because it does not create a scientific result. Counts from different registered case sets are not added together.</footer>
+</main>
+</body>
+</html>

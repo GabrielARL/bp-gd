@@ -1,0 +1,784 @@
+% !TeX program = xelatex
+% "Map, then state": what separates exact sum-product from projected gradient
+% descent, in a concise evidence deck. Every count is read from sealed result
+% files in the sp_gd_admm worktrees (read-only) up to 7 November 2026; the
+% evidence line on each slide names the experiment and the frame range.
+% Build from this folder:  latexmk -xelatex map_then_state.tex
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\usefonttheme{professionalfonts}
+\usefonttheme{serif}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Termes Math}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing}
+\graphicspath{{map_then_state_assets/figures/}}
+
+\definecolor{nusblue}{HTML}{003D7C}
+\definecolor{nusorange}{HTML}{EF7C00}
+
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{structure}{fg=nusblue}
+\setbeamercolor{frametitle}{fg=nusblue,bg=white}
+\setbeamerfont{frametitle}{size=\LARGE,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.8cm,text margin right=0.8cm}
+
+% PowerPoint-style round bullets in NUS Blue at every level.
+\newcommand{\nusdot}{\tikz[baseline=-0.62ex]\fill[nusblue] (0,0) circle (0.42ex);}
+\setbeamertemplate{itemize item}{\nusdot}
+\setbeamertemplate{itemize subitem}{\nusdot}
+\setbeamertemplate{itemize subsubitem}{\nusdot}
+\setlength{\leftmargini}{1.4em}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% Logo upper right on a plain white area; thin blue and orange rule below the title.
+\setbeamertemplate{headline}{}
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north east,inner sep=0pt] at ([xshift=-0.35cm,yshift=-0.12cm]current page.north east)
+      {\includegraphics[width=2.75cm]{nus_logo_full-horizontal.jpg}};
+    \fill[nusblue] ([xshift=0.8cm,yshift=-1.62cm]current page.north west)
+      rectangle ([xshift=-0.8cm,yshift=-1.62cm-0.9pt]current page.north east);
+    \fill[nusorange] ([xshift=0.8cm,yshift=-1.62cm-0.9pt]current page.north west)
+      rectangle ([xshift=4.8cm,yshift=-1.62cm-2.1pt]current page.north west);
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{%
+  \vskip0.16cm
+  \begin{minipage}[t][0.95cm][t]{11.4cm}\raggedright
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle
+  \end{minipage}\par
+  \vskip0.38cm}
+\setbeamertemplate{footline}{%
+  \hbox to\paperwidth{\hskip0.8cm\fontsize{8}{9}\selectfont\color{black}%
+    Map, then state\hfill\insertframenumber\,/\,\inserttotalframenumber\hskip0.8cm}%
+  \vskip0.30cm}
+
+% Drawing canvas: origin 0.8 cm from the left edge, 1.95 cm below the top;
+% x runs to 14.4 cm and y down to -6.3 cm, above the footer.
+\newenvironment{canvas}
+  {\begin{tikzpicture}[remember picture,overlay]
+   \begin{scope}[shift={([xshift=0.8cm,yshift=-1.95cm]current page.north west)}]}
+  {\end{scope}\end{tikzpicture}}
+
+\tikzset{
+  invisible/.style={opacity=0,text opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+  card/.style={rounded corners=3pt,draw=nusblue,line width=0.7pt,fill=white,
+    align=left,inner sep=5pt,text=black,font=\footnotesize,anchor=north west},
+  head/.style={font=\small\bfseries,text=nusblue,anchor=north west,inner sep=1pt},
+  bit/.style={circle,draw=nusblue,line width=0.9pt,fill=white,minimum size=0.62cm,
+    inner sep=0pt,font=\small},
+  chk/.style={rectangle,draw=black,line width=0.8pt,fill=white,minimum size=0.5cm,
+    inner sep=0pt,font=\small},
+  edge/.style={draw=black,line width=0.7pt},
+  val/.style={rectangle,rounded corners=2pt,draw=nusblue,line width=0.6pt,fill=white,
+    inner sep=2.5pt,font=\scriptsize},
+  flow/.style={-{Stealth[length=2.2mm,width=1.6mm]},draw=nusblue,line width=0.85pt},
+  jump/.style={-{Stealth[length=2.4mm,width=1.8mm]},draw=nusorange,line width=1.1pt},
+  axis/.style={draw=black,line width=0.6pt},
+  note/.style={font=\footnotesize,align=left,inner sep=0pt,anchor=north west},
+  msg/.style={font=\small\itshape,inner sep=0pt,anchor=north west,align=left},
+  evid/.style={font=\fontsize{7}{8.4}\selectfont,anchor=south west,inner sep=0pt,
+    text width=13.6cm,align=left},
+}
+
+% Vertical bar: x, baseline y, value (words of 200), fill, label under the bar.
+\newcommand{\bs}{0.0125}
+\newcommand{\vbar}[5]{%
+  \fill[#4] ({#1-0.27},{#2}) rectangle ({#1+0.27},{#2+#3*\bs});
+  \node[above,font=\footnotesize,inner sep=1.5pt] at ({#1},{#2+#3*\bs}) {#3};
+  \node[below,font=\scriptsize,align=center,inner sep=2.5pt] at ({#1},{#2}) {#5};}
+% Panel: x0, baseline y, width, title.
+\newcommand{\panel}[4]{%
+  \draw[axis] ({#1},{#2}) -- ({#1+#3},{#2});
+  \draw[axis] ({#1},{#2}) -- ({#1},{#2+200*\bs});
+  \foreach \tk in {0,100,200}{%
+    \draw[axis] ({#1-0.08},{#2+\tk*\bs}) -- ({#1},{#2+\tk*\bs});
+    \node[left,font=\scriptsize,inner sep=2pt] at ({#1-0.08},{#2+\tk*\bs}) {\tk};}
+  \node[anchor=south west,font=\small\bfseries,inner sep=0pt] at ({#1},{#2+200*\bs+0.5}) {#4};}
+% Horizontal ladder bar: x0, y, value, fill (200 words = 2.6 cm).
+\newcommand{\hbarr}[4]{%
+  \fill[#4] ({#1},{#2-0.15}) rectangle ({#1+#3*0.013},{#2+0.15});
+  \node[right,font=\scriptsize,inner sep=2pt] at ({#1+#3*0.013},{#2}) {#3};}
+
+% The eight-arm grid: rows are the direction, columns the step rule, and the
+% two bars in each cell are the constrained and the free state.
+% \factorial{cgb}{fgb}{cgu}{fgu}{cmb}{fmb}{cmu}{fmu}
+\newcommand{\factorial}[8]{%
+  \renewcommand{\bs}{0.0075}%
+  \fill[nusblue] (9.6,-0.1) rectangle (9.95,-0.35);
+  \node[anchor=west,font=\footnotesize,inner sep=2pt] at (9.95,-0.225) {constrained: one scalar per bit};
+  \fill[nusorange] (9.6,-0.5) rectangle (9.95,-0.75);
+  \node[anchor=west,font=\scriptsize,inner sep=2pt,text width=4.3cm] at (9.95,-0.625) {free: one scalar per directed variable-to-check edge};
+  \node[font=\small\bfseries,anchor=north] at (6.1,-1.1) {backtracking step};
+  \node[font=\small\bfseries,anchor=north] at (11.1,-1.1) {unit step};
+  \node[font=\small\bfseries,anchor=east,align=right] at (3.6,-2.6) {gradient\\direction};
+  \node[font=\small\bfseries,anchor=east,align=right] at (3.6,-4.75) {map\\direction};
+  \panel{4.4}{-3.35}{3.4}{}
+  \vbar{5.4}{-3.35}{#1}{nusblue}{}
+  \vbar{6.8}{-3.35}{#2}{nusorange}{}
+  \panel{9.4}{-3.35}{3.4}{}
+  \vbar{10.4}{-3.35}{#3}{nusblue}{}
+  \vbar{11.8}{-3.35}{#4}{nusorange}{}
+  \panel{4.4}{-5.5}{3.4}{}
+  \vbar{5.4}{-5.5}{#5}{nusblue}{}
+  \vbar{6.8}{-5.5}{#6}{nusorange}{}
+  \panel{9.4}{-5.5}{3.4}{}
+  \vbar{10.4}{-5.5}{#7}{nusblue}{}
+  \vbar{11.8}{-5.5}{#8}{nusorange}{}}
+
+\begin{document}
+
+% ---------------------------------------------------------------- 1 title
+{\setbeamertemplate{background}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[nusblue] (current page.north west) rectangle ([xshift=12.6cm,yshift=-0.10cm]current page.north west);
+    \fill[nusorange] ([xshift=12.6cm]current page.north west) rectangle ([yshift=-0.10cm]current page.north east);
+    \node[anchor=north east,inner sep=0pt] at ([xshift=-0.45cm,yshift=-0.40cm]current page.north east)
+      {\includegraphics[width=3.6cm]{nus_logo_full-horizontal.jpg}};
+    \fill[nusorange] ([xshift=1.0cm,yshift=-3.35cm]current page.north west)
+      rectangle ([xshift=1.12cm,yshift=-5.65cm]current page.north west);
+    \node[anchor=north west,inner sep=0pt,text width=11.5cm,align=left]
+      at ([xshift=1.45cm,yshift=-3.35cm]current page.north west)
+      {{\fontsize{32}{36}\selectfont\bfseries\color{nusblue} Map, then state}\\[0.38cm]
+       {\Large What separates exact sum-product from projected gradient descent}\\[0.55cm]
+       {\normalsize BP--GD mechanism study\enspace$\cdot$\enspace evidence checked through 6 November 2026}};
+  \end{tikzpicture}
+\end{frame}
+}
+
+% ---------------------------------------------------------------- 2 two decoders
+\begin{frame}[t]{Two decoders}
+\begin{canvas}
+  \renewcommand{\bs}{0.0125}
+  \node[card,text width=5.9cm] at (0,-0.1) {%
+    \textbf{Held fixed}\\[3pt]
+    regular $(10200,\,5100)$ graph, degree 3 / 6\\[2pt]
+    paired by frame ID: stored transmitted word,\\
+    noise realization and channel LLR vector\\[2pt]
+    endpoint: transmitted word recovered};
+  \node[card,text width=5.9cm] at (0,-3.0) {%
+    \textbf{Exact sum-product (BP)}\\ stop at first zero syndrome, cap 80\\[4pt]
+    \textbf{Projected gradient descent (GD)}\\ 30 updates on the compound objective};
+  \panel{6.9}{-4.4}{3.0}{6 dB}
+  \vbar{7.7}{-4.4}{200}{nusblue}{BP}
+  \vbar{9.1}{-4.4}{112}{nusorange}{GD}
+  \panel{11.2}{-4.4}{3.0}{1.5 dB}
+  \vbar{12.0}{-4.4}{199}{nusblue}{BP}
+  \vbar{13.4}{-4.4}{0}{nusorange}{GD}
+  \node[msg,font=\scriptsize\itshape,text width=7.2cm] at (6.9,-5.05) {Paired by frame ID: BP recovers 88 more words at 6 dB and 199 more at 1.5 dB.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-NATIVE-COMPOSITION-001 v2 ledger, rungs 1 and 11; 6 dB frames 60025--60224, 1.5 dB frames 60225--60424. Unless a different denominator is printed beside a value, counts are transmitted words recovered out of 200 fresh frames.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 3 the question
+\begin{frame}[t]{}
+\begin{canvas}
+  \node[anchor=north west,text width=13.6cm,align=left,font=\fontsize{26}{31}\selectfont\bfseries,text=nusblue]
+    at (0,-0.2) {Is it what BP stores, or how BP updates?};
+  \node[card,font=\scriptsize,text width=3.9cm,visible on=<2->] at (0,-2.9) {\textbf{State}\\[3pt] one scalar per bit,\\ or one scalar per directed variable-to-check edge};
+  \node[card,text width=3.9cm,visible on=<3->] at (4.75,-2.9) {\textbf{Direction}\\[3pt] downhill on an objective,\\ or the map applied};
+  \node[card,text width=3.9cm,visible on=<4->] at (9.5,-2.9) {\textbf{Step}\\[3pt] filtered by a decrease test,\\ or taken whole};
+  \node[msg,text width=13.4cm,visible on=<4->] at (0,-5.0) {A constructed bridge crosses state, direction and step. Its endpoint gates reproduce the retained transformed recurrence; the other cells are interventions, not native BP or native GD.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 4 what is stored
+\begin{frame}[t]{What is stored}
+\begin{canvas}
+  \node[head] at (0,-0.05) {Projected GD};
+  \node[chk] (A) at (1.0,-1.0) {$A$};
+  \node[chk] (B) at (2.9,-1.0) {$B$};
+  \node[chk] (C) at (4.8,-1.0) {$C$};
+  \node[bit] (x) at (2.9,-3.4) {$x_2$};
+  \draw[edge] (x) -- (A); \draw[edge] (x) -- (B); \draw[edge] (x) -- (C);
+  \node[val] at (1.55,-2.3) {$x_2$};
+  \node[val] at (3.35,-2.2) {$x_2$};
+  \node[val] at (4.25,-2.3) {$x_2$};
+  \node[note,text width=5.9cm] at (0,-4.05) {One scalar per bit persists. Every check reads the same $x_2$, so the bit cannot say different things to $A$, $B$ and $C$.};
+
+  \node[head,visible on=<2->] at (7.6,-0.05) {Exact sum-product};
+  \node[chk,visible on=<2->] (A2) at (8.6,-1.0) {$A$};
+  \node[chk,visible on=<2->] (B2) at (10.5,-1.0) {$B$};
+  \node[chk,visible on=<2->] (C2) at (12.4,-1.0) {$C$};
+  \node[bit,visible on=<2->] (b) at (10.5,-3.4) {$2$};
+  \draw[edge,visible on=<2->] (b) -- (A2); \draw[edge,visible on=<2->] (b) -- (B2); \draw[edge,visible on=<2->] (b) -- (C2);
+  \node[val,visible on=<2->] at (9.1,-1.7) {$U_{A\to2}$};
+  \node[val,visible on=<2->] at (10.5,-1.7) {$U_{B\to2}$};
+  \node[val,visible on=<2->] at (11.9,-1.7) {$U_{C\to2}$};
+  \draw[jump,visible on=<3->] (10.3,-3.15) -- (9.6,-2.25);
+  \node[val,draw=nusorange,visible on=<3->] at (9.25,-3.0) {$Q_{2\to A}$};
+  \node[note,text width=6.8cm,visible on=<2>] at (7.6,-4.05) {Native BP retains directed variable-to-check and check-to-variable messages. The factorial bridge represents its variable-to-check quantity by the stored coordinate $z_{2\to c}=\tanh(Q_{2\to c}/2)$.};
+  \node[note,text width=6.8cm,visible on=<3->] at (7.6,-4.05) {The persistent coordinate is $z_{2\to c}=\tanh(Q_{2\to c}/2)$. Inside $F$, $Q_{2\to A}=L_2+U_{B\to2}+U_{C\to2}$ leaves out $U_{A\to2}$, so each recipient can receive a different value.};
+  \node[evid] at (0,-6.3) {Notation: $L$ channel LLR, $U$ check-to-variable message calculated inside $F$, $Q$ variable-to-check message, $z=\tanh(Q/2)$ the factorial's stored edge coordinate, and $x$ GD's scalar state in $[-1,1]$.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 5 how it is updated
+\begin{frame}[t]{How it is updated}
+\begin{canvas}
+  \node[head] at (0,-0.05) {Projected GD};
+  \node[anchor=north west,inner sep=0pt] at (0,-0.5)
+    {$\mathbf{x}^{+}=\Pi\!\left[\mathbf{x}-\alpha\,\mathbf{D}^{-1}\nabla J(\mathbf{x})\right]$};
+  \node[card,text width=5.3cm] (g1) at (0,-1.3) {evaluate $J$ and calculate its partial derivatives};
+  \node[card,text width=5.3cm] (g2) at (0,-2.1) {try $\alpha=0.2\cdot2^{-b}$, $b=0,1,\dots,16$};
+  \node[card,text width=5.3cm] (g3) at (0,-2.9) {project the trial into the box $[-1,1]$};
+  \node[card,text width=5.3cm] (g4) at (0,-3.7) {accept the first strict decrease of $J$};
+  \draw[flow] (g1.south) -- (g2.north); \draw[flow] (g2.south) -- (g3.north); \draw[flow] (g3.south) -- (g4.north);
+  \node[note,font=\scriptsize,text width=5.9cm] at (0,-4.45) {$\Pi$: box projection; $\mathbf{D}$: diagonal preconditioner. No decrease: keep the state.};
+
+  \node[head,visible on=<2->] at (7.6,-0.05) {Exact sum-product};
+  \node[anchor=north west,inner sep=0pt,visible on=<2->] at (7.6,-0.5) {$\mathbf{z}^{+}=F(\mathbf{z})$};
+  \node[card,text width=5.3cm,visible on=<2->] (s1) at (7.6,-1.3) {evaluate the map $F$ at the stored values};
+  \node[card,text width=5.3cm,visible on=<2->] (s2) at (7.6,-2.1) {assign the result};
+  \draw[flow,visible on=<2->] (s1.south) -- (s2.north);
+  \node[note,text width=6.6cm,visible on=<2->] at (7.6,-2.95) {$F$ is the sum-product map: the check operation, then the recipient-excluded variable calculation of the previous slide.\\[4pt] There is no step length and no $H$-decrease test. On the later sealed 1.5 dB path replay, the unit-map arm increased $H$ on 1,327 of 6,000 updates.};
+  \node[evid] at (0,-6.3) {Held fixed: registered graph and each frame ID's stored channel LLR vector. GD uses the registered strict-decrease backtracking rule. $F$ is the exact sum-product map in RQ2-COMMON-COORDINATE-STATE-UPDATE-001; the later $H$ path count is from RQ2-BP-OBJECTIVE-PATH-001 on frames 70921--71120.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- offset use and assignment factorials
+\begin{frame}[t]{What the offset state actually changes}
+\begin{canvas}
+  \renewcommand{\bs}{0.0125}
+  \panel{0}{-3.75}{6.35}{Offset use $\times$ projection interval}
+  \vbar{0.85}{-3.75}{107}{nusblue}{no use\\native box}
+  \vbar{2.25}{-3.75}{163}{nusorange}{parity use\\native box}
+  \vbar{3.85}{-3.75}{106}{nusblue}{no use\\offset box}
+  \vbar{5.25}{-3.75}{163}{nusorange}{parity use\\offset box}
+
+  \panel{7.45}{-3.75}{6.35}{Check assignment $\times$ replacement}
+  \vbar{8.30}{-3.75}{174}{nusblue}{as-built\\frozen}
+  \vbar{9.70}{-3.75}{61}{nusorange}{deranged\\frozen}
+  \vbar{11.30}{-3.75}{165}{nusblue}{as-built\\refreshed}
+  \vbar{12.70}{-3.75}{70}{nusorange}{deranged\\refreshed}
+
+  \node[note,font=\fontsize{7.1}{7.9}\selectfont,text width=6.25cm] at (0,-4.48) {Parity use raises recovery from 107 to 163 with native bounds. Offset-induced bounds change 107 to 106 without parity use and 163 to 163 with it.};
+  \node[note,font=\fontsize{7.1}{7.9}\selectfont,text width=6.25cm] at (7.45,-4.48) {As-built assignment beats derangement under freezing and replacement. Replacement changes the as-built count from 174 to 165; the equivalence gate does not pass.};
+  \node[evid,font=\fontsize{6.2}{7.2}\selectfont] at (0,-6.3) {Complete-valid 6-dB evidence: RQ2-GD-OFFSET-SPLIT-001 (frames 30001--30200) and RQ2-GD-PARITY-ASSIGNMENT-REFRESH-001 (frames 40001--40200); counts are transmitted words recovered out of 200. These are constructed projected-gradient contrasts, not BP-message or low-SNR claims.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 6 eleven rungs
+\begin{frame}[t]{Historical ladder: one confounded jump}
+\begin{canvas}
+  \node[font=\small\bfseries,anchor=south] at (7.5,-0.17) {6 dB};
+  \node[font=\small\bfseries,anchor=south] at (11.0,-0.17) {1.5 dB};
+  \fill[nusorange!14,visible on=<2->] (0,-2.25) rectangle (14.4,-3.45);
+  \foreach \k/\lab/\six/\low in {%
+    1/{native projected GD}/112/0,
+    2/{shadow edge state}/112/0,
+    3/{frozen offsets, compound parity, box}/172/0,
+    4/{frozen offsets, product parity, box}/150/0,
+    5/{frozen offsets, product parity, no box}/177/0,
+    6/{edge product, residual gradient, tied}/0/0,
+    7/{exact SP, residual gradient, tied}/0/0,
+    8/{exact SP, residual gradient, full}/0/0,
+    9/{exact SP map applied, fixed 30}/200/194,
+    10/{exact SP map, stop at first zero syndrome, cap 30}/200/194,
+    11/{native exact sum-product, cap 80}/200/199}{%
+    \node[anchor=west,font=\scriptsize,inner sep=0pt] at (0,{-0.45-(\k-1)*0.40}) {\k\enspace\lab};
+    \hbarr{6.2}{-0.45-(\k-1)*0.40}{\six}{nusblue}
+    \hbarr{9.7}{-0.45-(\k-1)*0.40}{\low}{nusblue}}
+  \node[anchor=west,font=\scriptsize\itshape,inner sep=0pt,align=left,visible on=<2->] at (10.3,-2.85)
+    {gradient descent on $H$:\\ nothing at either level};
+  \draw[jump,visible on=<3->] (5.95,-3.46) -- (5.95,-3.84);
+  \node[msg,font=\scriptsize\itshape,text width=13.4cm,visible on=<3->] at (0,-4.85) {Rung 8 to 9 changes the update: gradient step to direct map, recovering +200 at 6 dB and +194 at 1.5 dB.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-NATIVE-COMPOSITION-001 v2 rung registry; rungs 1--9 use 30 updates, rung 10 stops at the first zero syndrome with cap 30, and rung 11 is native exact sum-product with cap 80; 6 dB frames 60025--60224, 1.5 dB frames 60225--60424. Rungs 3--5 use frozen per-check offsets. The rung 5$\to$6 transition changes state, target and update together, so it is not a one-factor causal contrast.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 7 one objective
+\begin{frame}[t]{One objective}
+\begin{canvas}
+  \renewcommand{\bs}{0.0125}
+  \node[card,text width=5.2cm] at (0,-0.1) {%
+    \textbf{Held fixed}\\[3pt]
+    tied state: one scalar per bit\\ negative metric gradient\\ backtracking step, box\\ the bounded common coordinate};
+  \node[card,text width=5.2cm] at (0,-2.6) {%
+    \textbf{Changed: the objective only}\\[3pt]
+    $J$: the compound parity objective\\[2pt]
+    $H(\mathbf{z})=\tfrac{1}{2n}\,(\mathbf{z}-F(\mathbf{z}))^{\mathsf T}\mathbf{W}\,(\mathbf{z}-F(\mathbf{z}))$,\\ zero exactly at BP's fixed points};
+  \panel{6.2}{-4.4}{3.6}{6 dB}
+  \vbar{6.9}{-4.4}{113}{nusorange}{$J$\\30}
+  \vbar{7.75}{-4.4}{193}{nusorange}{$J$\\90}
+  \vbar{8.6}{-4.4}{0}{nusblue}{$H$\\30}
+  \vbar{9.45}{-4.4}{0}{nusblue}{$H$\\90}
+  \panel{10.7}{-4.4}{3.6}{1.5 dB}
+  \vbar{11.4}{-4.4}{0}{nusorange}{$J$\\30}
+  \vbar{12.25}{-4.4}{0}{nusorange}{$J$\\90}
+  \vbar{13.1}{-4.4}{0}{nusblue}{$H$\\30}
+  \vbar{13.95}{-4.4}{0}{nusblue}{$H$\\90}
+  \node[msg,font=\scriptsize\itshape,text width=13.4cm] at (0,-4.95) {Changing $J$ to $H$ leaves recovery at zero in every $H$ arm, including the descriptive 90-update runs.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-COMMON-COORDINATE-TARGET-001 (30 updates) and the descriptive, non-inferential RQ2-COMMON-COORDINATE-BUDGET-90-001 diagnostic; 6 dB frames 61745--61944, 1.5 dB frames 61969--62168. $\mathbf{W}$ weights each edge by one over its bit's degree.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 8 eight arms
+\begin{frame}[t]{Eight arms}
+\begin{canvas}
+  \node[card,text width=5.6cm] at (0,-0.1) {\textbf{State}\\[2pt]
+    constrained: one scalar per bit, broadcast\\
+    free: one scalar per directed variable-to-check edge persists};
+  \node[card,text width=5.6cm,visible on=<2->] at (0,-1.75) {\textbf{Direction}\\[2pt]
+    gradient: negative metric gradient of $H$\\
+    map minus state: $F(\mathbf{z})-\mathbf{z}$};
+  \node[card,text width=5.6cm,visible on=<3->] at (0,-3.4) {\textbf{Step}\\[2pt]
+    backtracking: $\alpha=0.2\cdot2^{-b}$, strict decrease of $H$\\
+    unit: $\alpha=1$, $F(\mathbf{z})$ assigned, no test};
+
+  \coordinate (fbl) at (7.3,-4.6); \coordinate (fbr) at (10.1,-4.6);
+  \coordinate (ftl) at (7.3,-1.9); \coordinate (ftr) at (10.1,-1.9);
+  \coordinate (bbl) at (8.7,-3.65); \coordinate (bbr) at (11.5,-3.65);
+  \coordinate (btl) at (8.7,-0.95); \coordinate (btr) at (11.5,-0.95);
+  \draw[edge] (fbl) -- (fbr) -- (ftr) -- (ftl) -- cycle;
+  \draw[edge] (bbl) -- (bbr) -- (btr) -- (btl) -- cycle;
+  \draw[edge] (fbl) -- (bbl); \draw[edge] (fbr) -- (bbr); \draw[edge] (ftl) -- (btl); \draw[edge] (ftr) -- (btr);
+  \foreach \p in {fbl,fbr,ftl,ftr,bbl,bbr,btl,btr}{\fill[white] (\p) circle (0.11); \draw[edge] (\p) circle (0.11);}
+  \fill[nusblue] (fbl) circle (0.11);
+  \fill[nusorange] (btr) circle (0.11);
+  \draw[jump,visible on=<3->] (7.3,-5.05) -- (10.1,-5.05) node[midway,below,font=\scriptsize] {step: backtracking $\to$ unit};
+  \draw[jump,visible on=<2->] (6.85,-4.6) -- (6.85,-1.9) node[midway,above,sloped,font=\scriptsize] {direction: gradient $\to$ map};
+  \draw[jump] (10.5,-4.6) -- (11.9,-3.65) node[midway,below,sloped,font=\scriptsize] {state: constrained $\to$ free};
+  \node[anchor=north east,font=\scriptsize,inner sep=1pt] at (7.1,-5.05) {tied control};
+  \node[anchor=south west,font=\scriptsize,inner sep=1pt] at (11.65,-0.85) {free + map + unit corner};
+  \node[evid] at (0,-6.3) {Held fixed in all eight cells: objective $H$, graph, frames, box, 30 updates, coordinate $z=\tanh(Q/2)$. Evidence: RQ2-COMMON-COORDINATE-STATE-UPDATE-001 v2, an outcome-independent registration; primary and replay passes equal bit for bit.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 9 six decibels
+\begin{frame}[t]{Six decibels}
+\begin{canvas}
+  \node[msg,text width=9.2cm] at (0,-0.15) {The gradient recovers nothing; the map recovers everywhere};
+  \factorial{0}{0}{0}{0}{164}{200}{200}{200}
+  \node[evid] at (0,-6.3) {Evidence: RQ2-COMMON-COORDINATE-STATE-UPDATE-001 v2, 6 dB transfer, frames 70721--70920; direction contrasts Holm-adjusted $p\le 7.7\times10^{-49}$.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 10 one and a half decibels
+\begin{frame}[t]{One and a half decibels}
+\begin{canvas}
+  \node[msg,text width=8.8cm] at (0,-0.15) {Only free state, the map and the unit step together};
+  \factorial{0}{0}{0}{0}{0}{0}{0}{196}
+  \node[evid] at (0,-6.3) {Evidence: RQ2-COMMON-COORDINATE-STATE-UPDATE-001 v2, 1.5 dB transfer, frames 70921--71120; the nonzero cell versus each neighbour, Holm-adjusted $p=2.4\times10^{-58}$.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 11 three contrasts
+\begin{frame}[t]{Three contrasts}
+  \vspace{0.05cm}
+  \begin{itemize}\setlength{\itemsep}{0.24cm}
+    \item The four true-gradient arms recover 0/200 at each SNR
+    \item Map direction: recovers at 6 dB in every cell
+    \item Free state under the gradient: nothing, at either level
+    \item Free state under the map: +36 at 6 dB, +196 at 1.5 dB
+    \item Unit step under the map: +36 at 6 dB, +196 at 1.5 dB
+    \item Three-factor interaction on the risk-difference scale: $-0.18$ at 6 dB, $+0.98$ at 1.5 dB
+  \end{itemize}
+  \begin{canvas}
+    \node[evid] at (0,-6.3) {Evidence: contrasts.csv and interactions.csv of RQ2-COMMON-COORDINATE-STATE-UPDATE-001 v2; paired risk differences on 200 frames per level, McNemar exact tests with Holm adjustment. The +36 at 6 dB is the backtracking cell, 164 to 200; the +196 at 1.5 dB is the unit cell, 0 to 196.};
+  \end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 12 zero recovery is not a diagnosis
+\begin{frame}[t]{Zero is not a diagnosis}
+\begin{canvas}
+  \node[card,text width=5.4cm] at (0,-0.1) {\textbf{Observed at update 30}\\[3pt]
+    all four true-gradient arms recover 0/200 transmitted words at each SNR};
+  \node[anchor=north west,inner sep=0pt] at (6.2,-0.05)
+    {$G_{0.2}(q)=\dfrac{q-\Pi_{\mathcal C}\!\left(q-0.2D^{-1}\nabla h(q)\right)}{0.2}$};
+  \node[note,text width=7.6cm] at (6.2,-1.05) {The endpoint diagnosis combines motion, its late trend, distance from $F(q)=q$, and what the constraints remove.};
+
+  \node[head] at (0,-1.8) {Candidate endpoint conditions};
+  \node[card,font=\fontsize{7.5}{8.5}\selectfont,text width=4.0cm] (moving) at (0,-2.1) {\textbf{Budget-limited progress candidate}\\
+    diagnostic and state change remain non-small and decrease};
+  \node[card,font=\scriptsize,text width=4.0cm] (wrong) at (4.75,-2.1) {\textbf{Wrong stationary point}\\
+    small diagnostic and map displacement, wrong hard decision};
+  \node[card,font=\scriptsize,text width=4.0cm] (blocked) at (9.5,-2.1) {\textbf{Restricted}\\
+    a constraint removes most of a non-small direction};
+  \node[card,font=\scriptsize,text width=4.0cm] (cancel) at (2.35,-3.5) {\textbf{Derivative terms cancel}\\
+    combined derivative is small while its components are not};
+  \node[card,font=\scriptsize,text width=4.0cm] (stall) at (7.1,-3.5) {\textbf{Stall, cycle, or ambiguous}\\
+    motion stops decreasing, repeats, or lies in the gray band};
+  \node[msg] at (0,-4.95) {The registered labels may overlap; mixed and ambiguous outcomes are retained};
+  \node[evid] at (0,-6.3) {Registered definitions: RQ2-GD-TRAJECTORY-DIAGNOSIS-001; four retained true-gradient arms, 30-update endpoints, and prospective thresholds. These diagnostics route a follow-up; they do not themselves establish a decoding-performance cause.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 13 trajectory diagnosis result
+\begin{frame}[t]{At update 30: registered progress-candidate condition}
+\begin{canvas}
+  \node[card,text width=13.4cm] at (0,-0.1) {\textbf{Registered budget-limited-progress-candidate condition at update 30:} the diagnostic and state change remain non-small, the late trend decreases, and no short cycle is detected.};
+
+  \node[head] at (0,-1.05) {True-gradient arm};
+  \node[head] at (5.9,-1.05) {6 dB};
+  \node[head] at (10.0,-1.05) {1.5 dB};
+
+  \node[card,font=\scriptsize,text width=5.3cm] at (0,-1.4) {one scalar per bit $\cdot$ backtracking};
+  \node[card,font=\scriptsize,text width=3.5cm] at (5.8,-1.4) {200 candidates};
+  \node[card,font=\scriptsize,text width=3.5cm] at (9.9,-1.4) {200 candidates};
+
+  \node[card,font=\scriptsize,text width=5.3cm] at (0,-2.05) {one scalar per bit $\cdot$ unit step};
+  \node[card,font=\scriptsize,text width=3.5cm] at (5.8,-2.05) {199 candidates; 1 stall/cycle};
+  \node[card,font=\scriptsize,text width=3.5cm] at (9.9,-2.05) {200 candidates};
+
+  \node[card,font=\fontsize{7.5}{8.5}\selectfont,text width=5.3cm] at (0,-2.7) {one scalar per directed variable-to-check edge $\cdot$ backtracking};
+  \node[card,font=\scriptsize,text width=3.5cm] at (5.8,-2.7) {200 candidates};
+  \node[card,font=\scriptsize,text width=3.5cm] at (9.9,-2.7) {200 candidates};
+
+  \node[card,font=\fontsize{7.5}{8.5}\selectfont,text width=5.3cm] at (0,-3.35) {one scalar per directed variable-to-check edge $\cdot$ unit step};
+  \node[card,font=\scriptsize,text width=3.5cm] at (5.8,-3.35) {200 candidates};
+  \node[card,font=\scriptsize,text width=3.5cm] at (9.9,-3.35) {200 candidates};
+
+  \node[card,text width=13.4cm] at (0,-4.1) {\textbf{6 dB:} $799/800$ candidates; one stall/cycle. \hfill \textbf{1.5 dB:} $800/800$ candidates.};
+  \node[msg,font=\scriptsize\itshape,text width=13.4cm] at (0,-5.05) {This ruled against already-settled endpoints at update 30 and selected the objective-path test; it does not prove eventual recovery or that update budget caused the decoding gap.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-GD-TRAJECTORY-DIAGNOSIS-001 v2; 6 dB frames 70721--70920 and 1.5 dB frames 70921--71120; both transfers and the unpooled joint summary are complete-valid with exact primary/replay equality.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 14 edge copies alone
+\begin{frame}[t]{Edge copies alone}
+\begin{canvas}
+  \renewcommand{\bs}{0.011}
+  \node[head] at (0,-0.05) {Compound objective, 6 dB};
+  \panel{0.7}{-3.9}{3.0}{}
+  \vbar{1.5}{-3.9}{164}{nusblue}{constrained}
+  \vbar{2.9}{-3.9}{0}{nusorange}{relaxed}
+  \node[head] at (4.9,-0.05) {Residual objective};
+  \panel{5.4}{-3.9}{4.2}{}
+  \vbar{6.1}{-3.9}{0}{nusblue}{constrained\\6 dB}
+  \vbar{7.1}{-3.9}{0}{nusorange}{free\\6 dB}
+  \vbar{8.3}{-3.9}{0}{nusblue}{constrained\\1.5 dB}
+  \vbar{9.3}{-3.9}{0}{nusorange}{free\\1.5 dB}
+
+  \node[head] at (10.6,-0.05) {Relaxed copies};
+  \node[chk] (A3) at (11.2,-0.95) {$A$};
+  \node[chk] (B3) at (12.5,-0.95) {$B$};
+  \node[chk] (C3) at (13.8,-0.95) {$C$};
+  \node[bit] (b3) at (12.5,-2.9) {$2$};
+  \draw[edge] (b3) -- (A3); \draw[edge] (b3) -- (B3); \draw[edge] (b3) -- (C3);
+  \node[val,draw=nusorange] at (11.65,-1.75) {$+$};
+  \node[val,draw=nusorange] at (12.5,-1.75) {$-$};
+  \node[val,draw=nusorange] at (13.35,-1.75) {$+$};
+  \node[note,font=\scriptsize,text width=4.2cm] at (10.2,-3.25) {Across 200 frames, mean counts are 5098.24 of 5100 checks satisfied by the copies, 5031.30 by the hard-decision estimate, and 126.86 disagreeing edge signs.};
+  \node[msg,text width=9.4cm] at (0,-4.85) {In these registered gradient comparisons, releasing edge copies is harmful or null};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-BOUNDED-EDGE-FREEDOM-001, 6 dB frames 61521--61720, risk difference $-0.82$ [$-0.87$, $-0.76$]; RQ2-COMMON-COORDINATE-STATE-001, frames 70273--70472 and 70473--70672, risk difference 0.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 15 two levels
+\begin{frame}[t]{Two levels}
+\begin{canvas}
+  \renewcommand{\bs}{0.0125}
+  \panel{0.8}{-3.9}{6.2}{6 dB}
+  \vbar{1.7}{-3.9}{113}{nusorange}{compound\\GD, 30}
+  \vbar{3.2}{-3.9}{193}{nusorange}{compound\\GD, 90}
+  \vbar{4.7}{-3.9}{200}{nusorange}{frozen+box\\90}
+  \vbar{6.2}{-3.9}{200}{nusblue}{map, free\\unit, 30}
+  \panel{8.0}{-3.9}{6.2}{1.5 dB}
+  \vbar{9.2}{-3.9}{0}{nusorange}{compound\\GD, 30}
+  \vbar{11.2}{-3.9}{0}{nusorange}{compound\\GD, 90}
+  \vbar{13.2}{-3.9}{196}{nusblue}{map, free\\unit, 30}
+  \node[evid] at (0,-6.3) {Evidence: 6 dB compound, RQ2-COMMON-COORDINATE-TARGET-001 and descriptive -BUDGET-90-001, frames 61745--61944; assigned/frozen arm, RQ2-CAUSAL-FACTORS-001 block A, frames 50025--50224. Related 1.5 dB native compound diagnostic, RQ2-COMMON-COORDINATE-BUDGET-90-001: $0/200$ at updates 30 and 90. Map arm, RQ2-COMMON-COORDINATE-STATE-UPDATE-001, frames 70721--71120. Frame sets differ.};
+\end{canvas}
+\end{frame}
+% ---------------------------------------------------------------- 16 same fixed points, different directions
+\begin{frame}[t]{Same fixed points, different directions}
+\begin{canvas}
+  \node[card,text width=6.0cm] at (0,-0.1) {%
+    \textbf{Residual objective}\\[3pt]
+    $r(\mathbf z)=\mathbf z-F(\mathbf z)$\\[3pt]
+    $H(\mathbf z)=\dfrac{1}{2n}r(\mathbf z)^{\mathsf T}\mathbf W r(\mathbf z)$};
+  \node[card,text width=6.0cm] at (7.2,-0.1) {%
+    \textbf{Direct recurrence}\\[3pt]
+    $\mathbf z^{+}=F(\mathbf z)$\\[3pt]
+    direction $F(\mathbf z)-\mathbf z=-r(\mathbf z)$};
+
+  \node[anchor=north west,inner sep=0pt] at (0,-2.05)
+    {$\displaystyle \nabla H(\mathbf z)=\frac{1}{n}\bigl(I-J_F(\mathbf z)\bigr)^{\mathsf T}\mathbf W r(\mathbf z)$};
+  \node[note,text width=13.4cm] at (0,-2.75) {The gradient direction contains a Jacobian-transpose transformation. The map direction does not. Both are zero at the same exact fixed points, but away from a fixed point they need not point in the same direction.};
+
+  \node[card,text width=5.5cm] (resid) at (0,-3.7) {$r(\mathbf z)$};
+  \node[card,text width=5.5cm] (grad) at (8.0,-3.7) {$-\bigl(I-J_F\bigr)^{\mathsf T}\mathbf W r/n$};
+  \draw[jump] (resid.east) -- (grad.west) node[midway,above,font=\scriptsize] {changes the direction};
+  \node[msg,font=\scriptsize\itshape,text width=13.4cm] at (0,-5.2) {Same fixed points do not imply the same trajectory, decrease property, or decoded word.};
+  \node[evid] at (0,-6.3) {Definitions: RQ2-COMMON-COORDINATE-TARGET-001 and RQ2-COMMON-COORDINATE-STATE-UPDATE-001. $F$ is the transformed exact sum-product recurrence, $\mathbf W$ is the registered fixed diagonal matrix, and $J_F$ is the Jacobian of $F$. This algebra is a mechanism statement, not a decoder-performance result.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 17 objective path and direction
+\begin{frame}[t]{No registered objective supplied both tests}
+\begin{canvas}
+  \node[head] at (0,-0.05) {Successful exact-recurrence path at 1.5 dB};
+  \node[note,text width=6.4cm] at (0,-0.45) {Fraction of 6,000 requested updates on which the candidate objective increases:};
+
+  \node[anchor=east,font=\small,inner sep=0pt] at (1.45,-1.55) {$H$};
+  \fill[black!8] (1.75,-1.35) rectangle (6.55,-1.72);
+  \fill[nusorange] (1.75,-1.35) rectangle (3.873,-1.72);
+  \node[anchor=west,font=\footnotesize,inner sep=2pt] at (6.65,-1.535) {$22.1\%$};
+
+  \node[anchor=east,font=\small,inner sep=0pt] at (1.45,-2.35) {plug-in Bethe};
+  \fill[black!8] (1.75,-2.15) rectangle (6.55,-2.52);
+  \fill[nusorange] (1.75,-2.15) rectangle (5.974,-2.52);
+  \node[anchor=west,font=\footnotesize,inner sep=2pt] at (6.65,-2.335) {$44.0\%$};
+
+  \node[anchor=east,font=\small,inner sep=0pt] at (1.45,-3.15) {$J_C$};
+  \fill[black!8] (1.75,-2.95) rectangle (6.55,-3.32);
+  \fill[nusblue] (1.75,-2.95) rectangle (1.942,-3.32);
+  \node[anchor=west,font=\footnotesize,inner sep=2pt] at (6.65,-3.135) {$2.0\%$};
+  \node[note,font=\scriptsize,text width=7.4cm] at (0,-3.65) {Counts: $H$ 1,327; plug-in Bethe 2,640; $J_C$ 120 increases, each out of 6,000 requested updates.};
+
+  \node[card,text width=5.8cm] at (8.2,-0.45) {%
+    \textbf{$J_C$ passes the 5\% path test}\\[4pt]
+    but its negative fixed-matrix gradient has\\[2pt]
+    median angle $83.4^{\circ}$ from $F(\mathbf z)-\mathbf z$,\\[2pt]
+    with 2,156 cases where $F(\mathbf z)-\mathbf z=0$\\
+    while the gradient-based candidate remains nonzero.};
+  \node[card,text width=5.8cm,draw=nusorange] at (8.2,-3.15) {%
+    \textbf{Decision}\\[3pt]
+    $H$ and plug-in Bethe fail the path test.\\
+    $J_C$ fails the direction test.};
+  \node[msg,font=\fontsize{5.8}{6.4}\selectfont\bfseries,text width=7.3cm] at (0,-4.6) {Endpoint-ascent caveat: all 196 terminal-success proxy frames reached their first centered-readout zero syndrome before any positive $J_C$ endpoint change; 96/196 never increased over all 30 updates.};
+  \node[note,font=\fontsize{5.3}{6.0}\selectfont,text width=13.4cm] at (0,-5.45) {The 2\% count is therefore not an explanation for first validity. Because $J_C(\mathbf z)=J(C\mathbf z)$ is flat on $\ker C$, a barrier must be certified in the quotient represented by the mean coordinates $\mathbf u=C\mathbf z$, with a separate no-jump check for finite projected trials.};
+  \node[evid,font=\fontsize{4.8}{5.4}\selectfont] at (0,-6.3) {Evidence: complete-valid RQ2-BP-OBJECTIVE-PATH-001 and RQ2-BP-OBJECTIVE-DIRECTION-001; derived post-outcome cross-tabulation on 1.5 dB frames 70921--71120. Exact-recurrence proxy, not native BP.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 18 integrability and geometry
+\begin{frame}[t]{What the mathematics rules out}
+\begin{canvas}
+  \node[card,text width=6.2cm,draw=nusorange] at (0,-0.1) {%
+    \textbf{Ruled out exactly}\\[3pt]
+    $v_L(\mathbf z)=\mathbf M[\Phi_L(\mathbf z)-\mathbf z]$\\[3pt]
+    has a nonsymmetric Jacobian witness for every one of the 400 registered LLR vectors.\\[4pt]
+    Therefore no exact $C^2$ potential generates this field under the registered bounded edge coordinates and fixed diagonal matrix.};
+  \node[card,text width=6.2cm] at (7.2,-0.1) {%
+    \textbf{Still geometrically possible}\\[3pt]
+    A symmetric positive-definite matrix exists pointwise for all active states:\\[3pt]
+    $464/464$ at 6 dB,\\
+    $3{,}564/3{,}564$ at 1.5 dB.\\[3pt]
+    The condition-bound counts are $461/464$ and $3{,}561/3{,}564$.};
+
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,-3.75) {%
+    \textbf{First constructive family: complete-valid scientific failure.}
+    The registered one-hop graph-local fit selected identity scaling only. Held-frame median angles remained $83.48^{\circ}$ at 6 dB and $82.95^{\circ}$ at 1.5 dB.};
+  \node[msg,font=\fontsize{8}{9}\selectfont\itshape,text width=13.4cm] at (0,-4.95) {Pointwise existence is not a decoder or BER result. The failed one-hop family is closed.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-BP-MAP-INTEGRABILITY-001 v2 (400/400 certificates), RQ2-ACTIVE-METRIC-FEASIBILITY-001 v1, and RQ2-GRAPH-LOCAL-METRIC-001 v1. Scope: current coordinates, registered fixed matrix, and the exact fitted one-hop family only.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 19 graph-factorized objective Stage A
+\begin{frame}[t]{Factorized objective: development fit}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=6.1cm] at (0,-0.1) {%
+    \textbf{Held fixed}\\[2pt]
+    one bounded scalar per directed variable-to-check edge; fixed diagonal matrix; initialization; box; centered incident-edge mean readout; 30 updates};
+  \node[card,font=\scriptsize,text width=6.1cm] at (7.2,-0.1) {%
+    \textbf{Changed}\\[2pt]
+    one objective function may use check-local and recipient-excluded two-hop dependencies. The optimization variables are not BP messages.};
+
+  \node[card,text width=3.1cm] (z) at (0.0,-2.15) {$\mathbf z$ and channel LLRs};
+  \node[card,text width=3.1cm] (energy) at (5.1,-2.15) {$E_{\theta}(\mathbf z;\mathbf L)$\\54 registered slots};
+  \node[card,text width=3.1cm] (dir) at (10.2,-2.15) {$-\mathbf M^{-1}\nabla E_{\theta}$\\candidate direction};
+  \draw[flow] (z.east) -- (energy.west) node[midway,font=\scriptsize,yshift=-12pt] {local graph terms};
+  \draw[flow] (energy.east) -- (dir.west) node[midway,font=\scriptsize,yshift=-12pt] {partial derivatives};
+  \node[note,font=\scriptsize,text width=13.4cm] at (0,-3.35) {25 coefficients are fitted; 29 are fixed exactly to zero. Exact sum-product is an offline teacher during development and is forbidden during candidate inference.};
+
+  \node[card,font=\scriptsize,text width=6.1cm] at (0,-4.05) {\textbf{6 dB development}\quad median angle $83.46^{\circ}\to39.74^{\circ}$; candidate p90 $41.72^{\circ}$; relative error 0.658.};
+  \node[card,font=\scriptsize,text width=6.1cm] at (7.2,-4.05) {\textbf{1.5 dB development}\quad median angle $82.99^{\circ}\to65.75^{\circ}$; candidate p90 $72.94^{\circ}$; relative error 0.927.};
+  \node[msg,font=\fontsize{8}{9}\selectfont\bfseries,text width=13.4cm] at (0,-5.0) {HISTORICAL DEVELOPMENT RESULT: 400 reused frames; no decoder or performance claim.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-GRAPH-FACTORIZED-ENERGY-001 Stage A v2; frames 70721--70920 and 70921--71120, 4,028 active states. The sealed artifact contains 54 slots: 25 fitted and 29 exact zero. Primary and normalized replay science SHA-256 are equal.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 20 factorized Stage B result
+\begin{frame}[t]{Fresh direction screen}
+\begin{canvas}
+  \node[card,text width=13.4cm] at (0,-0.1) {\textbf{48 fresh direction cases; coefficients unchanged; primary and replay identical.}\quad This screen calculated directions only. It did not run a decoder.};
+
+  \node[card,text width=6.1cm] at (0,-1.2) {\textbf{6 dB: PASS}\hfill 24 frames, 53 states\\[4pt]
+    median angle $39.59^{\circ}\le60^{\circ}$\\
+    p90 angle $41.38^{\circ}\le85^{\circ}$\\
+    median relative error $0.659\le0.9$};
+  \node[card,text width=6.1cm,draw=nusorange] at (7.2,-1.2) {\textbf{1.5 dB: FAIL}\hfill 24 frames, 453 states\\[4pt]
+    median angle $66.16^{\circ}>60^{\circ}$\\
+    p90 angle $74.01^{\circ}\le85^{\circ}$\\
+    median relative error $0.938>0.9$};
+
+  \node[card,text width=13.4cm] at (0,-3.75) {The direction generalized at 6 dB but missed two prospective low-SNR gates. The exact graph-factorized objective-function family is closed; its decoder stages did not run.};
+  \node[msg,font=\fontsize{8}{9}\selectfont\itshape,text width=13.4cm] at (0,-5.05) {This is a causal routing result about direction alignment, not a decoding-performance result.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-GRAPH-FACTORIZED-ENERGY-001 Stage B v1; fresh frames 71569--71592 and 71593--71616. Operational status complete-valid; scientific status direction\_screen\_fail.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 21 distinguish two meanings of best
+\begin{frame}[t]{Which candidate is best?}
+\begin{canvas}
+  \node[card,text width=6.1cm] at (0,-0.1) {\textbf{Best verified 6 dB gradient result}\\[4pt]
+    compound objective $+$ box\\
+    90 updates: $200/200$ transmitted words\\
+    30 updates: $177/200$\\[3pt]
+    \textit{Verified at 6 dB only}};
+  \node[card,text width=6.1cm,draw=nusorange] at (7.2,-0.1) {\textbf{Best current cross-SNR candidate to test}\\[4pt]
+    state-dependent two-hop symmetric positive-definite matrix\\
+    fitted on retained 6 dB and 1.5 dB trajectories\\
+    no fresh direction screen or decoder result\\[3pt]
+    \textit{Unvalidated as a decoder}};
+
+  \node[card,text width=13.4cm] at (0,-2.9) {On that 200-case 6 dB population, the first result proves that a registered gradient construction can close the recovery gap with a larger update budget. It does not solve the low-SNR problem: that exact construction has no completed 1.5 dB transfer, while a related native compound diagnostic remained $0/200$ through 90 updates.};
+  \node[msg,text width=13.4cm] at (0,-4.75) {Therefore ``best verified result'' and ``best candidate for the two-SNR research objective'' are different statements};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-CAUSAL-FACTORS-001 block A, 6 dB frames 50025--50224, assigned/frozen compound+box at checkpoints 30 and 90; related 1.5 dB result from RQ2-COMMON-COORDINATE-BUDGET-90-001. The candidate status comes from RQ2-TWO-HOP-POSITIVE-METRIC-001 V5.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 22 current candidate mechanism
+\begin{frame}[t]{Best current gradient candidate to test}
+\begin{canvas}
+  \node[card,text width=3.0cm] (state) at (0,-0.1) {$\mathbf z,\mathbf L$\\[3pt]one bounded scalar per directed variable-to-check edge};
+  \node[card,text width=3.0cm] (grad) at (5.1,-0.1) {$\mathbf g=\nabla J_C(\mathbf z)$\\[3pt]partial derivatives of the unchanged objective};
+  \node[card,text width=3.0cm] (dir) at (10.2,-0.1) {$\mathbf d_\theta=-\mathbf P_\theta(\mathbf z,\mathbf L)\mathbf g$\\[3pt]candidate direction};
+  \draw[flow] (state.east) -- (grad.west);
+  \draw[flow] (grad.east) -- (dir.west);
+
+  \node[card,font=\scriptsize,text width=6.1cm] at (0,-2.05) {\textbf{Held fixed}\\[2pt]
+    $J_C$; directed-edge coordinates; initialization; componentwise box; Armijo backtracking; centered readout; hard-decision rule; 30 attempted updates};
+  \node[card,font=\scriptsize,text width=6.1cm,draw=nusorange] at (7.2,-2.05) {\textbf{Only causal change}\\[2pt]
+    replace the fixed diagonal action $\mathbf M^{-1}$ by a bounded state-dependent symmetric positive-definite matrix with recipient-excluded two-hop support};
+
+  \node[card,font=\fontsize{7.2}{7.9}\selectfont,text width=13.4cm] at (0,-3.65) {Why this family: the fixed-matrix and one-hop directions failed. The scalar-energy predecessor already tested two-hop support; here that support acts in the matrix geometry while $J_C$ and the descent machinery remain fixed.};
+  \node[msg,font=\fontsize{5.6}{6.2}\selectfont\itshape,text width=13.4cm] at (0,-4.55) {5{,}636 synthetic assertions $=$ 2{,}240 earlier source-and-interface assertions $+$ 3{,}396 dormant Stage-C assertions. A pure checker recalculates every objective, partial-derivative vector, direction, trial, Armijo decision, readout, syndrome, and cross-record link; 35 altered traces and constructor-bypassed coefficients fail closed.};
+  \node[note,font=\fontsize{5.0}{5.7}\selectfont,text width=13.4cm] at (0,-5.45) {Production-size synthetic receipt: four candidate/control cells, three one-thread repetitions each. Update-cap trace 69{,}861{,}148 bytes; decoder 5.78--6.45 s; complete check 5.53--5.76 s; measured child peak RSS at most 899{,}579{,}904 bytes.};
+  \node[evid,font=\fontsize{5.4}{6.1}\selectfont] at (0,-6.25) {Boundary: source/resource readiness only---no complete-valid second range-audit result, registered frame, Stage-B science, retained-wall result, capsule audit, registered decoder-anchor execution, recovery, or BER/FER result. RQ2-TWO-HOP-POSITIVE-METRIC-001; support terms are not a new decoder name.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 22b projection compatibility
+\begin{frame}[t]{Projection can erase raw descent}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=3.1cm] (raw) at (0,-0.1) {\textbf{Raw matrix direction}\\[3pt]
+    $\mathbf d=-\mathbf P_\theta\mathbf g$\\
+    $\mathbf g^T\mathbf d<0$\\
+    $(-2.8535\times10^{-4})$};
+  \node[card,font=\scriptsize,text width=3.1cm] (proj) at (5.05,-0.1) {\textbf{Componentwise box}\\[3pt]
+    $\boldsymbol\delta_b=\Pi_{[-1,1]}(\mathbf z+2^{-b}\mathbf d)-\mathbf z$};
+  \node[card,font=\scriptsize,text width=3.1cm,draw=nusorange] (reject) at (10.1,-0.1) {\textbf{All 13 trials reject}\\[3pt]
+    $\mathbf g^T\boldsymbol\delta_b>0$\\
+    $b=0,\ldots,12$};
+  \draw[flow] (raw.east) -- (proj.west);
+  \draw[flow] (proj.east) -- (reject.west);
+
+  \node[card,font=\fontsize{7.0}{7.7}\selectfont,text width=6.05cm,draw=nusorange] at (0,-2.15) {\textbf{Nonzero two-hop candidate stall}\\[2pt]
+    registered fixed-diagonal projected-gradient mapping:\\
+    $\lVert\mathbf G_{0.2}\rVert_2=0.0180151$\\
+    diagnostic step: $\Delta J_C=-4.6152\times10^{-5}$\\[1pt]
+    \textit{not box-stationary}};
+  \node[card,font=\fontsize{7.0}{7.7}\selectfont,text width=6.05cm] at (7.15,-2.15) {\textbf{Exact-zero control stall}\\[2pt]
+    same graph and channel-LLR vector\\
+    projected-gradient mapping is bit-exact zero\\[1pt]
+    \textit{box-stationary under this diagnostic}};
+
+  \node[msg,font=\fontsize{6.3}{7.0}\selectfont\bfseries,text width=13.4cm] at (0,-4.25) {Positive definiteness proves descent before projection; ordinary coordinatewise projection need not preserve it for a non-diagonal matrix action.};
+  \node[note,font=\fontsize{5.4}{6.0}\selectfont,text width=13.4cm] at (0,-5.15) {An independent dense implementation reproduces the 30-update and late-stall paths within $3\times10^{-13}$; a nondegenerate fixture proves that the recipient-excluded operation creates edge-specific state that affects the next direction.};
+  \node[evid,font=\fontsize{5.0}{5.7}\selectfont] at (0,-6.15) {Evidence: dormant six-variable synthetic fixture only. No registered frame, BP value, truth word, decoder rule, coefficient, threshold, or gate changed. This is a projection/action compatibility diagnosis, not performance evidence.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 23 full synthetic chain
+\begin{frame}[t]{Full synthetic chain fails closed}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=2.55cm] (input) at (0,-0.1) {synthetic graph, bounded state, channel LLRs, coefficients};
+  \node[card,font=\scriptsize,text width=2.55cm] (prod) at (3.35,-0.1) {unchanged $J_C$, fixed diagonal, candidate direction};
+  \node[card,font=\scriptsize,text width=2.55cm] (diag) at (6.7,-0.1) {offline comparison diagnostic and origin adapter};
+  \node[card,font=\scriptsize,text width=2.55cm] (gates) at (10.05,-0.1) {three-row reduction and registered gates};
+  \draw[flow] (input.east) -- (prod.west); \draw[flow] (prod.east) -- (diag.west); \draw[flow] (diag.east) -- (gates.west);
+
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,-1.55) {\textbf{Exact interface identities:} the frozen comparison vector equals the candidate direction, and all three synthetic origin rows repeat one already-materialized diagnostic.};
+  \node[card,font=\scriptsize,text width=5.9cm,draw=nusblue] at (0,-2.75) {\textbf{Target-specific gate: pass}\\[2pt]
+    the intended source, pairing and denominator contracts hold};
+  \node[card,font=\scriptsize,text width=6.2cm,draw=nusorange] at (7.2,-2.75) {\textbf{Generic direction $+$ combined gates: fail}\\[2pt]
+    $0.6852959854888271^{\circ}<15^{\circ}$ required paired improvement};
+
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,-4.15) {The earlier supplied-arithmetic seam produced $0.9935439809818444^{\circ}$; it is distinct from this full chain, which calculates the unchanged $J_C$ path before the offline comparison. The $15^{\circ}$ requirement was not changed.};
+  \node[msg,font=\fontsize{7.4}{8.1}\selectfont\bfseries,text width=13.4cm] at (0,-5.25) {This is deterministic interface validation only---not BP agreement, population science, a decoder, or a performance result.};
+  \node[evid,font=\fontsize{6.3}{7.1}\selectfont] at (0,-6.25) {Evidence: 84 full-chain assertions within the pre-Stage-C subtotal of 2{,}240. This chain opens no registered frame and performs no state update, projection, line search, readout, recovery or BER/FER scoring, or threshold change.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 24 retained V5 fit
+\begin{frame}[t]{V5 retained fit selects two-hop geometry}
+\begin{canvas}
+  \node[card,text width=13.4cm] at (0,-0.1) {\textbf{Complete-valid retained fit:} 400 reused frames; exact primary/replay identity; production-constructor handoff passed; fresh cases opened: 0.};
+
+  \node[head] at (0,-1.15) {Registered retained fit loss};
+  \node[anchor=east,font=\footnotesize,inner sep=1pt] at (2.4,-2.0) {identity-only};
+  \fill[black!10] (2.6,-1.78) rectangle (11.8,-2.16);
+  \fill[nusorange] (2.6,-1.78) rectangle (11.8,-2.16);
+  \node[anchor=west,font=\footnotesize,inner sep=3pt] at (11.8,-1.97) {$2301.244$};
+  \node[anchor=east,font=\footnotesize,inner sep=1pt] at (2.4,-2.75) {full two-hop};
+  \fill[black!10] (2.6,-2.53) rectangle (11.8,-2.91);
+  \fill[nusblue] (2.6,-2.53) rectangle (5.191,-2.91);
+  \node[anchor=west,font=\footnotesize,inner sep=3pt] at (5.191,-2.72) {$648.030$};
+  \node[card,text width=3.0cm] at (10.7,-2.4) {\centering\textbf{$71.84\%$ lower}\\registered fit loss};
+
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,-3.55) {$[\theta_0,\beta_0,\beta_1,\beta_2,\beta_3] =$\\[2pt]
+    $[0,\,-0.0989697,\,-0.191296,\,-0.705845,\,-0.00368998]$\qquad all four two-hop coefficients are nonzero};
+  \node[msg,font=\fontsize{8}{9}\selectfont\bfseries,text width=13.4cm] at (0,-5.15) {This is a retained direction-fit result. It is not a fresh angle, transmitted-word recovery, or BER result.};
+  \node[evid] at (0,-6.3) {Evidence: RQ2-TWO-HOP-POSITIVE-METRIC-001 Stage A V5; retained frames 70721--70920 and 70921--71120; terminal classification retained\_fit\_complete\_nonzero\_two\_hop; science SHA-256 b14d0afb\ldots c3f52c5.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 25 current governance gate
+\begin{frame}[t]{Fresh scientific validation has not opened}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=2.6cm] (a) at (0,-0.1) {V5 retained Stage A\\\textbf{complete-valid}};
+  \node[card,font=\scriptsize,text width=2.6cm] (b) at (3.25,-0.1) {coefficient intake\\\textbf{verified}};
+  \node[card,font=\scriptsize,text width=2.6cm] (c) at (6.5,-0.1) {v10 audit: \textbf{failed}\\v11 retry: \textbf{failed}};
+  \node[card,font=\fontsize{7.2}{7.9}\selectfont,text width=3.0cm] (d) at (9.6,-0.1) {V2 seal $+$ amendment\\\textbf{complete}; retained wall $+$\\capsule audit\\\textbf{not complete}};
+  \draw[flow] (a.east) -- (b.west); \draw[flow] (b.east) -- (c.west); \draw[flow] (c.east) -- (d.west);
+
+  \node[card,font=\fontsize{7.0}{7.8}\selectfont,text width=13.4cm,draw=nusorange] at (0,-1.65) {\textbf{Governance boundary:} V1 remains invalid and excluded. The separately approved V2 seal is complete-valid (authorization \texttt{06944b79\ldots803b}; manifest \texttt{a71ebef9\ldots38c5}; member \texttt{173a68f4\ldots3078}) and opened no frame.};
+
+  \node[card,text width=5.9cm] at (0,-2.85) {\textbf{Reserved fresh direction screen}\\[3pt]
+    6 dB: registered 24-case block\\
+    1.5 dB: registered 24-case block\\
+    24 cases at each level};
+  \node[card,text width=6.2cm] at (7.2,-2.85) {\textbf{Current permissions}\\[3pt]
+    Stage B: false\\
+    fresh input: false\\
+    registered decoder-anchor execution: false\\
+    BER/FER scoring: false};
+
+  \node[msg,font=\fontsize{5.8}{6.3}\selectfont\itshape,text width=13.4cm] at (0,-5.15) {The approved corrected v11 retry completed the repository scan and failed on two registered gates: one documentary self-collision and a coordinator field of 6{,}140{,}592 KiB versus the 2{,}097{,}152-KiB cap. Fresh-child reproduction proved that field inherited a pre-existing process-lifetime peak across \texttt{execve}; it is not scanner allocation. No scientific input opened.};
+  \node[evid,font=\fontsize{4.8}{5.4}\selectfont] at (0,-6.2) {Formal failure stands; V11 result SHA-256 10618db4\ldots a9f5ff. Fresh route parser: 54{,}668 KiB; threshold CSV: 80{,}024 KiB; controlled pre-exec peak: 269{,}952 KiB. All other registered gates passed; no manifest, fresh input, or Stage-B science exists.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 26 validation ladder
+\begin{frame}[t]{Causal validation ladder}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=2.25cm] (g1) at (0,-0.15) {\textbf{1. Direction}\\24+24 untouched cases\\all gates at both levels};
+  \node[card,font=\scriptsize,text width=2.25cm] (g2) at (3.0,-0.15) {\textbf{2. Decoder anchor}\\24+24 cases\\candidate $\ge20/24$};
+  \node[card,font=\scriptsize,text width=2.25cm] (g3) at (6.0,-0.15) {\textbf{3. Recovery proxy}\\200+200 cases\\candidate $\ge190/200$};
+  \node[card,font=\scriptsize,text width=2.25cm] (g4) at (9.0,-0.15) {\textbf{4. Native BP}\\same case identities\\recovery and coded-bit BER};
+  \draw[flow] (g1.east) -- (g2.west); \draw[flow] (g2.east) -- (g3.west); \draw[flow] (g3.east) -- (g4.west);
+
+  \node[card,text width=13.4cm] at (0,-2.1) {\textbf{Causal contrast:} the candidate and its zero-coefficient lower endpoint differ only in the registered coefficients: the candidate uses $\mathbf P_\theta(\mathbf z,\mathbf L)$, while the lower endpoint uses $\mathbf P_0(\mathbf z,\mathbf L)$. Every other registered operation stays fixed.};
+  \node[card,text width=13.4cm] at (0,-3.45) {\textbf{Recovery proxy:} the decoder-anchor and transfer gates compare the candidate with the exact recurrence under the registered 30-update construction. Passing them establishes only the preregistered two-SNR recovery proxy.};
+  \node[msg,font=\fontsize{8}{9}\selectfont\bfseries,text width=13.4cm] at (0,-5.15) {A BP-approach claim still requires direct native sum-product comparison under its first-valid-syndrome stopping rule and 80-message-passing-iteration cap, reporting transmitted-word recovery and coded-bit BER.};
+  \node[evid] at (0,-6.3) {Prospective gates: RQ2-TWO-HOP-POSITIVE-METRIC-001 experiment card, Stages B--D. Any claim remains bounded to the registered regular $(10200,5100)$ code, AWGN populations, two SNRs and stated work limits.};
+\end{canvas}
+\end{frame}
+
+% ---------------------------------------------------------------- 27 current conclusion
+\begin{frame}[t]{Where the explanation stands}
+\begin{canvas}
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,0.0) {%
+    \textbf{Map first; then state and step.} In the 30-update factorial, every true-gradient arm recovered $0/200$ at both SNRs. At 1.5 dB, only free recipient-specific state, map displacement and a unit step together recovered transmitted words: $196/200$.};
+  \node[card,font=\scriptsize,text width=13.4cm] at (0,-1.25) {%
+    \textbf{Why the gradient route differs.} Its Jacobian-transformed direction is not the map displacement. Fixed-matrix candidates and the first graph-factorized objective did not supply the required low-SNR direction.};
+  \node[card,font=\fontsize{7.2}{7.8}\selectfont,text width=13.4cm] at (0,-2.45) {%
+    \textbf{Best current candidate.} Dormant source applies the current-state two-hop symmetric positive-definite matrix to unchanged-$J_C$ partial derivatives, then uses the registered projection and Armijo rule. A synthetic late stall is not box-stationary because projection turns raw descent into ascent; the method remains unchanged and fresh direction and decoder-anchor gates remain unopened.};
+  \node[card,font=\scriptsize,text width=13.4cm,draw=nusorange] at (0,-3.65) {%
+    \textbf{Current conclusion.} A gradient-based decoder approaching native BP remains mathematically possible and experimentally unproven. No recovery or BER result approaching BP has yet been established. \textbf{The research objective is materially advanced, not complete.}};
+  \node[msg,font=\fontsize{8}{9}\selectfont\bfseries,text width=13.4cm] at (0,-5.15) {The next scientific evidence is the untouched direction screen---after every governance and source gate is valid.};
+  \node[evid] at (0,-6.3) {This conclusion preserves interactions and does not allocate the native BP--GD gap additively. It distinguishes a verified 6 dB gradient result from an unvalidated cross-SNR candidate.};
+\end{canvas}
+\end{frame}
+
+\end{document}

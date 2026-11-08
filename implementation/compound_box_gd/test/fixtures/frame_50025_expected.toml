@@ -1,0 +1,37 @@
+accepted_steps = 90
+fixture_sha256 = "545271b4439a7ed1f4f39d0cadef90082cc5432b7bdd205de51e4b389a97d79a"
+frame = 50025
+graph_sha256 = "94d94376995c6eb9e21a5859dde6354d7233f61634b5dbdc91fd70653f5f6e2d"
+last_effective_update = 90
+llr_sha256 = "c46b9cbcc539105cd24f5e3e412159cd87273b75401705566d1e6144bd4edf93"
+maximum_finite_difference_error_float64_hex = "3d63fbf900000000"
+noise_seed = 20311037
+oracle_config_sha256 = "6c0a6cc093c405b851b816c917df5f385fbb4dc3c02257a0052e730ce75a246f"
+oracle_runner_sha256 = "c6e524179ca693f9128e3e3341bc100e96338272f9dafd8541d5dc026aba07a4"
+physical_esn0_db = 6.0
+schema_version = "compound-box-oracle-fixture/v1"
+status = "steps_completed"
+
+[checkpoints.1]
+accepted_step_float64_hex = "3fc999999999999a"
+delta_sha256 = "efdc31c6ecd83334766a9e0084fe50304431287ef99cb0624c175e723390261f"
+hard_sha256 = "4002e81a5d15fb05e5c7f9427be8be0636338b7301c4d9cb2cce5181a0e17806"
+objective_float64_hex = "c00dd34d623fda56"
+trial_count = 1
+x_sha256 = "a05bd4f03cd2037a1a898747b02137d9b0fe0c7b21b8431a6424d5115983632d"
+
+[checkpoints.30]
+accepted_step_float64_hex = "3fc999999999999a"
+delta_sha256 = "efdc31c6ecd83334766a9e0084fe50304431287ef99cb0624c175e723390261f"
+hard_sha256 = "ba3034389d17096112316b051f75f2e365e5fd93b6dd5fef17ebe310b4d35560"
+objective_float64_hex = "c00ff3f02541a602"
+trial_count = 1
+x_sha256 = "81964d5e32f372b4940077975fdef2c2643bcd7f8cb0fd9c44d2de1ded62eba4"
+
+[checkpoints.90]
+accepted_step_float64_hex = "3fc999999999999a"
+delta_sha256 = "efdc31c6ecd83334766a9e0084fe50304431287ef99cb0624c175e723390261f"
+hard_sha256 = "ba3034389d17096112316b051f75f2e365e5fd93b6dd5fef17ebe310b4d35560"
+objective_float64_hex = "c00ff3f1ad532687"
+trial_count = 1
+x_sha256 = "ad276dbea0d958fd7766800010dfba6318ca647b30b79511c8cd7fe79594c4cb"

@@ -1,0 +1,51 @@
+schema_version = "compound-box-gd-validation/v1"
+validated_utc = "2026-11-06T03:32:38Z"
+status = "pass"
+classification = "implementation reproduction; no new performance run"
+julia_version = "1.12.6"
+
+[portable_tests]
+command = "JULIA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 julia --startup-file=no --project=. -e 'using Pkg; Pkg.resolve(); Pkg.instantiate(); Pkg.test()'"
+ordinary_command = "julia --startup-file=no --project=. test/runtests.jl"
+required_julia_threads = 1
+self_enforced_blas_threads = 1
+environment_checks = 2
+fixture_provenance_checks = 10
+projection_checks = 4
+equivalence_and_invariant_checks = 10242
+total_checks = 10258
+legacy_objective_alias_checked = true
+stored_state_objective_binding_checked = true
+update1_objective_distinction_checked = true
+exit_code = 0
+
+[live_oracle]
+command = "JULIA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 julia --startup-file=no --project=FROZEN_JADE_PROJECT test/generate_frozen_oracle_fixture.jl"
+frame = 50025
+physical_esn0_db = 6.0
+checkpoints = [1, 30, 90]
+exact_scalar_state = true
+exact_offset_state = true
+exact_hard_word = true
+exact_objective = true
+exact_objective_semantics = "snapshot.objective is the backward-compatible alias of accepted_objective"
+exact_accepted_step = true
+exact_trial_count = true
+accepted_steps = 90
+status = "steps_completed"
+exit_code = 0
+
+[source_identity]
+portable_runner_sha256 = "7ccbf95f514585977691402e1dedb88ff4314afde38562a7748046c077f101d4"
+portable_config_sha256 = "eba8f945e446971ad7be3ddf6fd0ef16ba639ade6f4d6d700372ee01bd2aef7c"
+oracle_generator_sha256 = "d58aa190973790eae6ef12ebe93737caa462c046de3a0cd129b37522b68e5c81"
+portable_test_sha256 = "33ad47d4fdc2550f9c9e1a586a70203aa4456a9cad621251538431e318a183bd"
+fixture_sha256 = "545271b4439a7ed1f4f39d0cadef90082cc5432b7bdd205de51e4b389a97d79a"
+expected_record_sha256 = "a125e148e85656cfeee3f0dd48c1b67180c0c6a11fcaa5d61c49cb0a618a5b0f"
+frozen_oracle_runner_sha256 = "c6e524179ca693f9128e3e3341bc100e96338272f9dafd8541d5dc026aba07a4"
+frozen_oracle_config_sha256 = "6c0a6cc093c405b851b816c917df5f385fbb4dc3c02257a0052e730ce75a246f"
+
+[dependency_boundary]
+production_requires_jadejcade = false
+portable_tests_require_jadejcade = false
+fixture_regeneration_requires_historical_frozen_capsule = true

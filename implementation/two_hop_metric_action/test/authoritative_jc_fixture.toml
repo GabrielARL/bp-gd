@@ -1,0 +1,553 @@
+schema_version = "rq2-two-hop-positive-metric-001/authoritative-jc-fixture-v2"
+classification = "deterministic synthetic arithmetic fixture; no scientific input"
+corpus_id = "rq2-two-hop-positive-metric-001/portable-jc-corpus-40-v2"
+input_corpus_sha256 = "8812d5f3e074beddaa925d21131622a3fdf485f053eb3eca1ee073f131d55432"
+float_encoding = "IEEE-754 binary64 bit pattern as 16 lowercase hexadecimal digits"
+generator_julia_version = "1.12.6"
+generator_seed = 1511506142
+case_count = 40
+graph_n = 8
+graph_checks = [[1, 2], [1, 3, 4], [2, 3, 5, 6], [1, 4, 5, 7, 8], [2, 3, 4, 6, 7, 8], [1, 5, 6, 8]]
+graph_check_edges = [[1, 2], [3, 4, 5], [6, 7, 8, 9], [10, 11, 12, 13, 14], [15, 16, 17, 18, 19, 20], [21, 22, 23, 24]]
+graph_variable_edges = [[1, 3, 10, 21], [2, 6, 15], [4, 7, 16], [5, 11, 17], [8, 12, 22], [9, 18, 23], [13, 19], [14, 20, 24]]
+graph_edge_variable = [1, 2, 1, 3, 4, 2, 3, 5, 6, 1, 4, 5, 7, 8, 2, 3, 4, 6, 7, 8, 1, 5, 6, 8]
+graph_edge_check = [1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6]
+check_degrees = [2, 3, 4, 5, 6, 4]
+variable_degrees = [4, 3, 3, 3, 3, 3, 2, 3]
+edge_count = 24
+objective_schema_version = "rq2-two-hop-positive-metric-001/compound-objective-jc-v1"
+objective_field_order = ["schema_version", "value", "partial_derivatives", "scalar_partial_derivatives", "mean_state", "terms", "clipped_llr"]
+objective_term_field_order = ["channel", "parity", "binary"]
+parity_weight_bits = "4000000000000000"
+binary_weight_bits = "3fc999999999999a"
+llr_clip_min_bits = "c034000000000000"
+llr_clip_max_bits = "4034000000000000"
+metric_diagonal_bits = ["3fe199999999999a", "3fe2222222222222", "3fe199999999999a", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe199999999999a", "3fe2222222222222", "3fe2222222222222", "3fe3333333333333", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222", "3fe3333333333333", "3fe2222222222222", "3fe199999999999a", "3fe2222222222222", "3fe2222222222222", "3fe2222222222222"]
+
+[sources]
+registered_jc_source_path = "/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_factorized_energy_001/graph_factorized_energy.jl"
+registered_jc_source_sha256 = "000371f8b403e426c4757e691e10a70a0b5222376e879f83577b77b82c838d5c"
+registered_fixed_diagonal_source_path = "/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_graph_factorized_energy_001/followup/stage_c/stage_c_decoder.jl"
+registered_fixed_diagonal_source_sha256 = "f2f92ca7f06264b079785534cf15c1ddf5f1e9985f384879b19244b2368204bb"
+generator_source_sha256 = "721fe4641e4f23a55b0234200a641f94b9b0a847c6f8c0f96306ee6271bbf21f"
+production_jc_source_sha256 = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+
+[[cases]]
+case_index = 1
+state_bits = ["0000000000000000", "3fc373ec645ec5cc", "bfe7b900eca297da", "bfde01140df48d5d", "3fccd72a54ff928c", "bfea6bb591f34a25", "bfe1b52c54bb989c", "bfeb3e304aeec6a9", "bfeb6f9b5405c465", "3fc3218c6307749c", "3fe78aa49bbd1775", "bfe81a11c3cea54d", "bfdcf3b05298a35f", "3fe0b2281ae59b1f", "3fe5924263b539e5", "3fea53e99b86f5e1", "3fec94e6226579ad", "bfd729239128eb30", "3fd4b69bd979870e", "3fbea25f10724688", "3fcfed2eff64b3dc", "bfe9fc6330ac8747", "3fde484be1c9751e", "bfb7d83d714a1ca0"]
+llr_bits = ["4034000000000000", "c02e11e695d03466", "402a57524af219b8", "c020490639e4fd30", "bffa1b83701b99c0", "c005097a3d1c83d0", "c032205940116ad5", "3ffeb51ca839d120"]
+objective_value_bits = "3ffea7305136e4e8"
+partial_derivative_bits = ["bfd3e0d96baf6b13", "3fd51a549d4d1ef3", "bfd3e0d96baf6b13", "bfd0db808250f69f", "3fc3faf3f9f00924", "3fd51a549d4d1ef3", "bfd0db808250f69f", "3fa5d88073ddf695", "3faef3a7f9301155", "bfd3e0d96baf6b13", "3fc3faf3f9f00924", "3fa5d88073ddf695", "3fe22aa42eb8150d", "bfa5c8be75ea1b55", "3fd51a549d4d1ef3", "bfd0db808250f69f", "3fc3faf3f9f00924", "3faef3a7f9301155", "3fe22aa42eb8150d", "bfa5c8be75ea1b55", "bfd3e0d96baf6b13", "3fa5d88073ddf695", "3faef3a7f9301155", "bfa5c8be75ea1b55"]
+scalar_partial_derivative_bits = ["bff3e0d96baf6b13", "3fefa77eebf3ae6c", "bfe94940c37971ef", "3fddf86df6e80db6", "3fc0626056e678f0", "3fc736bdfae40d00", "3ff22aa42eb8150d", "bfc0568ed86f9480"]
+mean_state_bits = ["bfb5eaa4280f1b78", "3f22d4e488b11000", "bfb104ccab27c3c4", "3fe3c71c7120d1ec", "bfe9c6e1bfcdfbbf", "bfcfd55ee4f1ff40", "bfb07a28f23e38a4", "3fc76490690e2b26"]
+channel_term_bits = "3fd08c06c3f8937c"
+parity_term_bits = "3ff8004b50bad363"
+binary_term_bits = "3fc41f1a7bef6531"
+clipped_llr_bits = ["4034000000000000", "c02e11e695d03466", "402a57524af219b8", "c020490639e4fd30", "bffa1b83701b99c0", "c005097a3d1c83d0", "c032205940116ad5", "3ffeb51ca839d120"]
+
+[[cases]]
+case_index = 2
+state_bits = ["8000000000000000", "3fe015178d9d6c2d", "bfcc97044a5a8890", "bfe12a7116238b2d", "bfa7b30541eb2960", "bfda8a34e50bb01a", "bfe113848692c2b0", "3fe4f6005babebf9", "3fde2d64f8c2837e", "bfd38721d5db79a2", "3fd4a0f0be136c36", "bf50f6bf50e1f600", "3fb556f1404c29f0", "bfea64d8dc83f2dc", "3fb4dcef0fdf0520", "3fddeca60942d9ce", "bfe9b6ce998c081f", "3fce68838bf370c4", "bfae215edf9f7cd0", "bfdc48f9f043f577", "bfe314c028ce70b8", "bf8106ad63f54e40", "bfd2bb27e02ec938", "bfe3b05f72f56829"]
+llr_bits = ["c034000000000000", "402b78e34776e7e0", "c032cc110cff8f9d", "4014a33c9d82ed90", "40244a4b4d23215c", "bff2f72514c128a0", "c0238c660b25282c", "c028186a383ff84f"]
+objective_value_bits = "3fe07121d412dd8e"
+partial_derivative_bits = ["3fd3d12418a63a7a", "bfcea59d89a3b645", "3fd3d12418a63a7a", "3fd8ec5961bc70ed", "bfbc8439182e869d", "bfcea59d89a3b645", "3fd8ec5961bc70ed", "bfcc6844053e1a58", "3f8d3a8dfa498428", "3fd3d12418a63a7a", "bfbc8439182e869d", "bfcc6844053e1a58", "3fd39e6b9c3e0b0d", "3fd0f680c1603648", "bfcea59d89a3b645", "3fd8ec5961bc70ed", "bfbc8439182e869d", "3f8d3a8dfa498428", "3fd39e6b9c3e0b0d", "3fd0f680c1603648", "3fd3d12418a63a7a", "bfcc6844053e1a58", "3f8d3a8dfa498428", "3fd0f680c1603648"]
+scalar_partial_derivative_bits = ["3ff3d12418a63a7a", "bfe6fc36273ac8b4", "3ff2b143094d54b2", "bfd5632ad222e4f6", "bfe54e3303ee93c2", "3fa5ebea7bb7231e", "3fe39e6b9c3e0b0d", "3fe971c12210516c"]
+mean_state_bits = ["bfd1ff09132967d6", "3face88ff067c410", "bfc9b4d8cac6814a", "bfc68208be2c0623", "3fcb8c8db344dd06", "3fc1c454945e4c70", "3f89190741f1ae20", "bfe4133c6d33c740"]
+channel_term_bits = "bff2b97774d1672b"
+parity_term_bits = "3ff82b500f5d5f90"
+binary_term_bits = "3fc635c27bebb314"
+clipped_llr_bits = ["c034000000000000", "402b78e34776e7e0", "c032cc110cff8f9d", "4014a33c9d82ed90", "40244a4b4d23215c", "bff2f72514c128a0", "c0238c660b25282c", "c028186a383ff84f"]
+
+[[cases]]
+case_index = 3
+state_bits = ["3ff0000000000000", "3fd3f328b7030e62", "3fdadf8717823552", "3fd60260683a6876", "3fd21df5ee4f7646", "3fe1a30094922211", "bfdf4cecd0929cb0", "3fdee8e7582a0316", "3fc64cdb5d0f733c", "3fdd1c071a43548e", "3fe7e39fd241dd85", "3fcc317d613bf44c", "3fce7d91b6ba1abc", "bfebee71c676b669", "bfe2ef1fe7d91ec2", "bfe4e6f69dbec877", "bfd4c25e8ab0d036", "3fc8fd1f5ac95cdc", "3fdc92748cafdb5a", "3fde157badebf362", "bf9957e4ebf072e0", "bfc3cd6df65b14f4", "3fe64622feff7dbd", "3fd0f761b76f788a"]
+llr_bits = ["4039000000000000", "4037bcc595520492", "402f9f1eaf3786b8", "c033c17a1328fe58", "c0233b4490bcd505", "c035213848ff6f97", "401043274d97ad40", "4035ae1623a8228a"]
+objective_value_bits = "40006c749cd67315"
+partial_derivative_bits = ["bfd4baf86795f61c", "bfdf6770b0592a0b", "bfd4baf86795f61c", "bfd5cee9cdf66b58", "3fdb3b16f502d87c", "bfdf6770b0592a0b", "bfd5cee9cdf66b58", "3fc9449f2ba376cf", "3fda17909a7207d0", "bfd4baf86795f61c", "3fdb3b16f502d87c", "3fc9449f2ba376cf", "bfc22b91ad3c5e25", "bfdaf47d3b1f2bd4", "bfdf6770b0592a0b", "bfd5cee9cdf66b58", "3fdb3b16f502d87c", "3fda17909a7207d0", "bfc22b91ad3c5e25", "bfdaf47d3b1f2bd4", "bfd4baf86795f61c", "3fc9449f2ba376cf", "3fda17909a7207d0", "bfdaf47d3b1f2bd4"]
+scalar_partial_derivative_bits = ["bff4baf86795f61c", "bff78d948442df88", "bff05b2f5a78d082", "3ff46c5137c2225d", "3fe2f37760ba991b", "3ff391ac73d585dc", "bfd22b91ad3c5e25", "bff4375dec5760df"]
+mean_state_bits = ["3fdd9983f8c1a0ac", "3fb723e2c09c1c00", "bfd108288bf1ec62", "3fce173a056c40bc", "3fc7674a0911a1d6", "3fd6bb16734e7682", "3fd5e89eb406745c", "bfa78010698557c0"]
+channel_term_bits = "3fd8ba45e54fa5d2"
+parity_term_bits = "3ff7eee379a7475a"
+binary_term_bits = "3fc5dba2358daae1"
+clipped_llr_bits = ["4034000000000000", "4034000000000000", "402f9f1eaf3786b8", "c033c17a1328fe58", "c0233b4490bcd505", "c034000000000000", "401043274d97ad40", "4034000000000000"]
+
+[[cases]]
+case_index = 4
+state_bits = ["bff0000000000000", "3fd7b7bdb3b1ca7e", "bfda2541d0a70d6f", "3f992a512a88fc40", "3fdd87b6b166244a", "3fe5e11363c299f3", "bfeb1073f9f5b828", "3fe47bb036605c25", "bfc6a80fb05142dc", "3fea4c141efc198f", "bfecaa07832869e1", "3fe792231bc9f1a3", "bfc8fdaae5d0da18", "bfe7fdf1d7b7e3fc", "3fd0c52c7c1ce85a", "3fea0154b706a65d", "bfd9bd7ba967786a", "3fb047013d13f1c0", "bfc5267643a5f828", "bfd5a26bc010eb3a", "3fe9d30342197781", "3fcf6467c31f6474", "bfca98caed9f4274", "bfe1544ca331775b"]
+llr_bits = ["c039000000000000", "c02a8f7ac9516b9f", "c03173d00e760292", "c0012d581e8c9e10", "c0141af682b0e530", "40288e7b196a0268", "c00b7d1ee2ef8e70", "bffaf2d4fe670dc0"]
+objective_value_bits = "40019230942e4b8a"
+partial_derivative_bits = ["3fd058f2f87ca2e4", "3fd060531351f454", "3fd058f2f87ca2e4", "3fd7b26a32575325", "3fab0e1b4aab9fac", "3fd060531351f454", "3fd7b26a32575325", "3fb776d65bd5b517", "bfcfeeb7fa550eb8", "3fd058f2f87ca2e4", "3fab0e1b4aab9fac", "3fb776d65bd5b517", "3fbd6e46ef733271", "3fa8a4d57f24559b", "3fd060531351f454", "3fd7b26a32575325", "3fab0e1b4aab9fac", "bfcfeeb7fa550eb8", "3fbd6e46ef733271", "3fa8a4d57f24559b", "3fd058f2f87ca2e4", "3fb776d65bd5b517", "bfcfeeb7fa550eb8", "3fa8a4d57f24559b"]
+scalar_partial_derivative_bits = ["3ff058f2f87ca2e4", "3fe8907c9cfaee7e", "3ff1c5cfa5c17e5c", "3fc44a947800b7c1", "3fd19920c4e047d1", "bfe7f309fbbfcb0a", "3fcd6e46ef733271", "3fc27ba01f5b4034"]
+mean_state_bits = ["3fac31d9e3082960", "3fdc1505a7c6a23f", "bf67443dde434da8", "bfd1d89bff70b7f6", "3fe14cf9c0fb624c", "bfbb68e6aa445da0", "bfc7121094bb6920", "bfe16126c8fb45a7"]
+channel_term_bits = "3fe18e753539fbb8"
+parity_term_bits = "3ff7cd0156748334"
+binary_term_bits = "3fc48129ba58b018"
+clipped_llr_bits = ["c034000000000000", "c02a8f7ac9516b9f", "c03173d00e760292", "c0012d581e8c9e10", "c0141af682b0e530", "40288e7b196a0268", "c00b7d1ee2ef8e70", "bffaf2d4fe670dc0"]
+
+[[cases]]
+case_index = 5
+state_bits = ["bfeae0188ba372a3", "bfe7b29b35398e10", "bfeae0188ba372a3", "bf9e1a10bab97b40", "3fec8849282a048f", "bfe7b29b35398e10", "bf9e1a10bab97b40", "bfe68d381fe0fec6", "bfe17018cf7a718b", "bfeae0188ba372a3", "3fec8849282a048f", "bfe68d381fe0fec6", "3fe07dbe29463371", "3fbf1319d965b868", "bfe7b29b35398e10", "bf9e1a10bab97b40", "3fec8849282a048f", "bfe17018cf7a718b", "3fe07dbe29463371", "3fbf1319d965b868", "bfeae0188ba372a3", "bfe68d381fe0fec6", "bfe17018cf7a718b", "3fbf1319d965b868"]
+llr_bits = ["0000000000000000", "402ff45799432884", "401bc172a0117198", "c0046e4799f80ba0", "402cdd048eb7f828", "c03034919fcedf6a", "c02520b3891dba76", "40216358692c1c18"]
+objective_value_bits = "4004efb8ebde366e"
+partial_derivative_bits = ["3fa60ed474a4dbb8", "bfd117ce12ab50c9", "3fa60ed474a4dbb8", "3f963fe17d456840", "3fa311cbfa3d99fd", "bfd117ce12ab50c9", "3f963fe17d456840", "bfd27e1b016c2f1d", "3fd5c703eea23f64", "3fa60ed474a4dbb8", "3fa311cbfa3d99fd", "bfd27e1b016c2f1d", "3fd2f22f8adfd267", "bfc609d314e893ef", "bfd117ce12ab50c9", "3f963fe17d456840", "3fa311cbfa3d99fd", "3fd5c703eea23f64", "3fd2f22f8adfd267", "bfc609d314e893ef", "3fa60ed474a4dbb8", "bfd27e1b016c2f1d", "3fd5c703eea23f64", "bfc609d314e893ef"]
+scalar_partial_derivative_bits = ["3fc60ed474a4dbb8", "bfe9a3b51c00f92e", "3fb0afe91df40e30", "3fbc9ab1f75c66fb", "bfebbd28822246ac", "3ff05542f2f9af8b", "3fe2f22f8adfd267", "bfe0875e4fae6ef3"]
+mean_state_bits = ["bfeae0188ba372a3", "bfe7b29b35398e10", "bf9e1a10bab97b40", "3fec8849282a048f", "bfe68d381fe0fec6", "bfe17018cf7a718b", "3fe07dbe29463371", "3fbf1319d965b868"]
+channel_term_bits = "3ff40aa23d6d6515"
+parity_term_bits = "3ff4655202334e68"
+binary_term_bits = "3fb6f7d981bb9608"
+clipped_llr_bits = ["0000000000000000", "402ff45799432884", "401bc172a0117198", "c0046e4799f80ba0", "402cdd048eb7f828", "c03034919fcedf6a", "c02520b3891dba76", "40216358692c1c18"]
+
+[[cases]]
+case_index = 6
+state_bits = ["3fc607bad7313944", "3fd64453fd627792", "3fc6951139969e0c", "bfcdc4bf4301b490", "bfcbff0d14a34cec", "3fe16d5f364e96a3", "bfe0483d269747a0", "bfe3ed891d9045a4", "bfe19619d5156bc4", "3fb893626540c960", "3fd7e8c3ae620216", "bfd948d25331dab0", "3fe8b9f08e2a4f83", "bfe46c1712699986", "3fc4903f6b2ff8c4", "3febb22e231c4e47", "bfd6af14cc143ffa", "3fd2617d6b942f9e", "3fc9fc3ba181d2c4", "3faba9e13d8669a0", "bfd2b320b20da7b8", "bfe91910626cfb09", "3fe9571c31856f1d", "3fc39c810d127d1c"]
+llr_bits = ["8000000000000000", "40237b7cf71d7b88", "c0341802085f7b03", "c02abd927a7e11c1", "c019d15192e8cfb8", "4035e0cafa25172a", "402c547d7924a3c4", "c01591da4b9eebfc"]
+objective_value_bits = "3fdff0c4855e3574"
+partial_derivative_bits = ["bfa745dc40464348", "bfcbff98e50ca8ab", "bfa745dc40464348", "3fdb0009c7868b47", "3fd1efb1a866dd26", "bfcbff98e50ca8ab", "3fdb0009c7868b47", "3fc2cfdbf725351f", "bfdaf95a14795c07", "bfa745dc40464348", "3fd1efb1a866dd26", "3fc2cfdbf725351f", "bfdd843a3b0c402f", "3fbe1aaf34ef46b8", "bfcbff98e50ca8ab", "3fdb0009c7868b47", "3fd1efb1a866dd26", "bfdaf95a14795c07", "bfdd843a3b0c402f", "3fbe1aaf34ef46b8", "bfa745dc40464348", "3fc2cfdbf725351f", "bfdaf95a14795c07", "3fbe1aaf34ef46b8"]
+scalar_partial_derivative_bits = ["bfc745dc40464348", "bfe4ffb2abc97e80", "3ff4400755a4e875", "3feae78a7c9a4bb9", "3fdc37c9f2b7cfae", "bff43b038f5b0505", "bfed843a3b0c402f", "3fd6940367b3750a"]
+mean_state_bits = ["3fa3803bdf4cec90", "3fd677bb5fdd35be", "3fa52eb0e96ddd68", "bfb107ca355a85ce", "bfe33900e3320f57", "3fc697ac184d798c", "3fdf38ff768ac434", "bfc26320f9bb6f88"]
+channel_term_bits = "bff292f9753b6c64"
+parity_term_bits = "3ff7e72d2c38b61e"
+binary_term_bits = "3fc53feb52d21d19"
+clipped_llr_bits = ["8000000000000000", "40237b7cf71d7b88", "c034000000000000", "c02abd927a7e11c1", "c019d15192e8cfb8", "4034000000000000", "402c547d7924a3c4", "c01591da4b9eebfc"]
+
+[[cases]]
+case_index = 7
+state_bits = ["3fce8796b40b0fcc", "3fe5d2a59c3cbbb1", "bfd3c4113797e2e0", "3fc1326293dc04e4", "bfa4cb15807ce980", "bfdd33d299418ef4", "3fe039a0f03c52b1", "3f947c407ca67a00", "bfd936085153d4ee", "3fdb38472d5c8852", "bfa293cd0b78e920", "3fce3b8bd7eba48c", "3fd5a2f0082043ce", "bfc2d924a6292710", "bfb988450d61e370", "3fcf823775e0a00c", "bfe808e178155c52", "3fd1451730a4ebfe", "3f9ffeecf2a44ca0", "3fe8c85838a36ff3", "bfe60d94ee02b7e8", "3fe6e15dc3bbbc15", "bfeaadfe0f865bfa", "bfd701c9c87e493c"]
+llr_bits = ["c00541964f627c48", "401e6c8b11e4ff20", "c0029365cfeceb20", "bfe914ca31ca4100", "c038a7ffbb7d391c", "c0358409bc09561e", "bff1e10b3e9305e0", "400d17f61008bc58"]
+objective_value_bits = "3ffac12b47ed2e17"
+partial_derivative_bits = ["3fa97f0389b3388d", "bfc20766a2023fc5", "3fa97f0389b3388d", "3fa2926511667812", "3f9db3540f63d86b", "bfc20766a2023fc5", "3fa2926511667812", "3fda0fb3f43195f7", "3fdb43014aafb727", "3fa97f0389b3388d", "3f9db3540f63d86b", "3fda0fb3f43195f7", "3f9a6e3800b6fb4e", "bfb49635df65bf9c", "bfc20766a2023fc5", "3fa2926511667812", "3f9db3540f63d86b", "3fdb43014aafb727", "3f9a6e3800b6fb4e", "bfb49635df65bf9c", "3fa97f0389b3388d", "3fda0fb3f43195f7", "3fdb43014aafb727", "bfb49635df65bf9c"]
+scalar_partial_derivative_bits = ["3fc97f0389b3388d", "bfdb0b19f3035fa7", "3fbbdb979a19b41b", "3fb6467f0b8ae250", "3ff38bc6f7253079", "3ff47240f803c95d", "3faa6e3800b6fb4e", "bfcee150cf189f6a"]
+mean_state_bits = ["bfb563288c3b4278", "3fa57e68f4fe7ed0", "3fd2ef2fa1c7a7f4", "bfd1a9dfc08dd0fe", "3fd4b817291290b0", "bfd46ef9bfe935a1", "3fc7a2ded74a8898", "3fb6d87072455982"]
+channel_term_bits = "bf797ec5854f0132"
+parity_term_bits = "3ff7fa0963ce29a7"
+binary_term_bits = "3fc705054d229b85"
+clipped_llr_bits = ["c00541964f627c48", "401e6c8b11e4ff20", "c0029365cfeceb20", "bfe914ca31ca4100", "c034000000000000", "c034000000000000", "bff1e10b3e9305e0", "400d17f61008bc58"]
+
+[[cases]]
+case_index = 8
+state_bits = ["3fe39b23bd97eb45", "bfe125b8f2e227bb", "bf96ad9feff47900", "3fcc90298cd5bce4", "bfbe750dcf4f5aa8", "bfe4950bc201ae1e", "bfb4dfb55a1b08c0", "bfb34fc73ee09190", "bfea80d00c642d65", "3fc191ebe0dc2694", "bfd43ef5a6b98728", "3f910e42a5466a80", "3fdb24d2121b2d62", "bfd48e1785aee252", "bfcd1698aafb5ac8", "bfd3bebd8b99a052", "bfc8d4dd59829e64", "3fe01e1cc67519cf", "3fac223c6f4fc060", "3fa9dfceeef7a020", "bfe559d27ce914af", "3fd626876d80c73a", "3fec692e558d3d57", "3fdc30cff8c70c1e"]
+llr_bits = ["40233e7ad0f78e78", "c03401e07aff36a3", "c023b8b815437432", "c0305dde431ae3df", "bfff0da3f8385e80", "40301c0b683bbe6c", "3ff66ddabfd17f10", "4038ff84a8ce4800"]
+objective_value_bits = "3fe2551a4fe617c0"
+partial_derivative_bits = ["bfb7e00fdf62a680", "3fdb4b694c9583d3", "bfb7e00fdf62a680", "3fcac634a4503430", "3fd6421414497315", "3fdb4b694c9583d3", "3fcac634a4503430", "3fa2a7a8049eb3a1", "bfd5e47e758b2894", "bfb7e00fdf62a680", "3fd6421414497315", "3fa2a7a8049eb3a1", "bfac3321dd97cf3d", "bfdac95bfa20ba45", "3fdb4b694c9583d3", "3fcac634a4503430", "3fd6421414497315", "bfd5e47e758b2894", "bfac3321dd97cf3d", "bfdac95bfa20ba45", "bfb7e00fdf62a680", "3fa2a7a8049eb3a1", "bfd5e47e758b2894", "bfdac95bfa20ba45"]
+scalar_partial_derivative_bits = ["bfd7e00fdf62a680", "3ff4788ef97022de", "3fe414a77b3c2724", "3ff0b18f0f371650", "3fbbfb7c06ee0d72", "bff06b5ed8285e6f", "bfbc3321dd97cf3d", "bff41704fb988bb4"]
+mean_state_bits = ["3f8f05f39663c740", "bfde00473fc1c85d", "bfac7c3af48eb580", "bfcad9c52f89c8ae", "3fb884a26026b752", "3fc808a414d2e254", "3fcea919a005256e", "3facfc862d3da4d8"]
+channel_term_bits = "bff1cf5776aeca8a"
+parity_term_bits = "3ff80d4703f00c70"
+binary_term_bits = "3fc764ecd58e4fd0"
+clipped_llr_bits = ["40233e7ad0f78e78", "c034000000000000", "c023b8b815437432", "c0305dde431ae3df", "bfff0da3f8385e80", "40301c0b683bbe6c", "3ff66ddabfd17f10", "4034000000000000"]
+
+[[cases]]
+case_index = 9
+state_bits = ["bfd54b3b365c2e1c", "3fd3de66fd11ec2e", "bfea25d1b774dd64", "3fd33b64232cb8ea", "3fba1d2b5d755198", "3fe490402d2fb601", "3fe4f09b029103e1", "3fdbe0ed44bb5cbe", "bfe11e9f9f953e08", "3fbe5b4616dec748", "bfdd9f77cc1303eb", "3fe68a2e8422020d", "bfe8ab31979941c7", "bfe7c9cdfa0a6c65", "3fe40a4071bf9415", "3fd8ab6d867429d6", "bfe791ad2654bdf3", "3feb6e6d5a08ecd1", "3fd38a158eda20ea", "3fbaeda9e53d2208", "bfa18c6da4760b70", "3fe9fb9f55e3904d", "bfd5fd9f1748cc24", "3fe5964d107cbfff"]
+llr_bits = ["4034000000000000", "402a7d10ef2c7f34", "40151a5a23d99618", "4015a942cf415550", "4007ee54fefccfb8", "402a25c0d21340b4", "c036b754f401bc61", "c037c630fada419c"]
+objective_value_bits = "3ff2fbde88f4dd2b"
+partial_derivative_bits = ["bfd72918a54e8edd", "bfce6aed952ceff1", "bfd72918a54e8edd", "bfc187caf23b6e93", "bfb5578fa3256f94", "bfce6aed952ceff1", "bfc187caf23b6e93", "bfb312cab897a18c", "bfd307de77d6c195", "bfd72918a54e8edd", "bfb5578fa3256f94", "bfb312cab897a18c", "3fe4589859c8c526", "3fdac95eb58364cf", "bfce6aed952ceff1", "bfc187caf23b6e93", "bfb5578fa3256f94", "bfd307de77d6c195", "3fe4589859c8c526", "3fdac95eb58364cf", "bfd72918a54e8edd", "bfb312cab897a18c", "bfd307de77d6c195", "3fdac95eb58364cf"]
+scalar_partial_derivative_bits = ["bff72918a54e8edd", "bfe6d0322fe1b3f5", "bfda4bb06b5925dc", "bfd001abba5c13af", "bfcc9c3014e37252", "bfec8bcdb3c22260", "3ff4589859c8c526", "3ff4170708228b9b"]
+mean_state_bits = ["bfd10c66b5073e20", "3fe0d8915f281564", "3fdc98028f964e2c", "bfd7692d15ca63ce", "3fe4d216d4211593", "bf7d2af832c93700", "bfcdcc4da05862a4", "3f88d9b1977f5200"]
+channel_term_bits = "bfe0931b75d04e5a"
+parity_term_bits = "3ff8deb08a1eca48"
+binary_term_bits = "3fc335ddcdf1d07d"
+clipped_llr_bits = ["4034000000000000", "402a7d10ef2c7f34", "40151a5a23d99618", "4015a942cf415550", "4007ee54fefccfb8", "402a25c0d21340b4", "c034000000000000", "c034000000000000"]
+
+[[cases]]
+case_index = 10
+state_bits = ["bfea88e4b5cf1c41", "bfcbb6fbb9da1be8", "bfea88e4b5cf1c41", "3fcd77032dbdfdbc", "bfc27e091ef820b0", "bfcbb6fbb9da1be8", "3fcd77032dbdfdbc", "bfe547a02ce56dc3", "3fd506362d4cadba", "bfea88e4b5cf1c41", "bfc27e091ef820b0", "bfe547a02ce56dc3", "bfdd0b4f52f22053", "3fd8c13ef1169c2a", "bfcbb6fbb9da1be8", "3fcd77032dbdfdbc", "bfc27e091ef820b0", "3fd506362d4cadba", "bfdd0b4f52f22053", "3fd8c13ef1169c2a", "bfea88e4b5cf1c41", "bfe547a02ce56dc3", "3fd506362d4cadba", "3fd8c13ef1169c2a"]
+llr_bits = ["c034000000000000", "3fef3bf918b82da0", "403330cf1560c6fe", "c032d249ec5e1978", "402921ef5af617e8", "4032b236add1e83e", "c015a52648024cf4", "4004d343c1456b48"]
+objective_value_bits = "bfac71a188a54ac0"
+partial_derivative_bits = ["3fd6db23880c5a0e", "3fbb9f88ffdde0cf", "3fd6db23880c5a0e", "bfdbc665f6c64a21", "3fdc5d4132e21b25", "3fbb9f88ffdde0cf", "bfdbc665f6c64a21", "bfcd0ca598ad50a0", "bfdc0156f3075183", "3fd6db23880c5a0e", "3fdc5d4132e21b25", "bfcd0ca598ad50a0", "3fc8e4f30cf4d01f", "bfb95a4d6c8b7028", "3fbb9f88ffdde0cf", "bfdbc665f6c64a21", "3fdc5d4132e21b25", "bfdc0156f3075183", "3fc8e4f30cf4d01f", "bfb95a4d6c8b7028", "3fd6db23880c5a0e", "bfcd0ca598ad50a0", "bfdc0156f3075183", "bfb95a4d6c8b7028"]
+scalar_partial_derivative_bits = ["3ff6db23880c5a0e", "3fd4b7a6bfe6689b", "bff4d4cc7914b799", "3ff545f0e629945c", "bfe5c97c3281fc78", "bff5010136457d22", "3fd8e4f30cf4d01f", "bfd303ba1168941e"]
+mean_state_bits = ["bfea88e4b5cf1c41", "bfcbb6fbb9da1be8", "3fcd77032dbdfdbc", "bfc27e091ef820b0", "bfe547a02ce56dc3", "3fd506362d4cadba", "bfdd0b4f52f22053", "3fd8c13ef1169c2a"]
+channel_term_bits = "bff8c1eaf1940cbb"
+parity_term_bits = "3ff5bd60495f8ffc"
+binary_term_bits = "3fc107ecdf7a9348"
+clipped_llr_bits = ["c034000000000000", "3fef3bf918b82da0", "403330cf1560c6fe", "c032d249ec5e1978", "402921ef5af617e8", "4032b236add1e83e", "c015a52648024cf4", "4004d343c1456b48"]
+
+[[cases]]
+case_index = 11
+state_bits = ["0000000000000000", "3fd3d8dc3768106e", "3fc0bf211f69984c", "bfd77c148c9f5324", "bfe8615690ba8960", "3fe0090800b71ad3", "3fd6b2c4f8dafc0e", "3fda6d01e5f2e2b6", "bfe5adfc5fb107d2", "bfd0c9b13d5e3e02", "3fe608369296d327", "3fe366388395c58f", "3fd44c2760ac2dd2", "3fc8830e43f3b494", "3fe2303bd13f2b07", "3fe4dca5afde407f", "bfd0001c3948f1c8", "bfe956162a6c86ef", "3febd8d8d47d401b", "bfe091de417c206a", "3fccd5ca7084b73c", "3fe4294a2d1681f1", "3fd90a54bf1d1742", "3fe72eeb81aa2611"]
+llr_bits = ["4039000000000000", "c0295a5ca659e58a", "4012c053afd38dcc", "4037695c1b163aa2", "c023d2b976e218d2", "c00bcf1c21aae228", "40340d1e649d08ac", "c038bf4d6944009e"]
+objective_value_bits = "3ffc07ee878ef981"
+partial_derivative_bits = ["bfd73edda877c752", "3fd054fd1f72e6d3", "bfd73edda877c752", "bfb6bd524ba7593f", "bfda7955db8431dc", "3fd054fd1f72e6d3", "bfb6bd524ba7593f", "3fc996a668f2c1c8", "3fb2d3f055aefac4", "bfd73edda877c752", "bfda7955db8431dc", "3fc996a668f2c1c8", "bfe49e1e4b4eb123", "3fda6c367070c207", "3fd054fd1f72e6d3", "bfb6bd524ba7593f", "bfda7955db8431dc", "3fb2d3f055aefac4", "bfe49e1e4b4eb123", "3fda6c367070c207", "bfd73edda877c752", "3fc996a668f2c1c8", "3fb2d3f055aefac4", "3fda6c367070c207"]
+scalar_partial_derivative_bits = ["bff73edda877c752", "3fe87f7baf2c5a3c", "bfd10dfdb8bd82ef", "bff3db0064a32565", "3fe330fcceb61156", "3fcc3de880867826", "bff49e1e4b4eb123", "3ff3d128d4549185"]
+mean_state_bits = ["3f9803122a63a708", "3fdd6e769e718960", "3fcb4aa7dd501bec", "bfbb987af215d2f8", "3fe197568be1e849", "bfd6ff4571b4acbf", "3fe2ff764269ab82", "3fc0fd166c3943bb"]
+channel_term_bits = "3fb7f4b3de117944"
+parity_term_bits = "3ff8140f48aee7af"
+binary_term_bits = "3fc3a4a007f7d1f3"
+clipped_llr_bits = ["4034000000000000", "c0295a5ca659e58a", "4012c053afd38dcc", "4034000000000000", "c023d2b976e218d2", "c00bcf1c21aae228", "4034000000000000", "c034000000000000"]
+
+[[cases]]
+case_index = 12
+state_bits = ["8000000000000000", "bfe502912e5e8e30", "3fd1745c23baddfa", "3fd6c5ffcadb7d66", "3fd6f4257c90c502", "3fe5173e54a30179", "3fe1e411565ca46b", "bfd5863fc60d38aa", "3fd208b64344210e", "bfe9ac09dcca4f83", "bfe4fa42d6720aac", "bfe23bcc8e288437", "bfd60e3352f555f0", "bfdf32ace34385a7", "3fe2304a859ccbbf", "3fda21c34eef415a", "bfc4b63e03ba4e80", "3fe51e8d06226dc9", "bfc96816b5043318", "bfe9da3569b8d7a0", "bfd77b17a126f4b0", "bfe75aa4c4a3e5a8", "bfe2bf6f9adc7334", "3fe1976fbdeaa4dd"]
+llr_bits = ["c039000000000000", "4038b9edc6416c68", "c020ddf63af78230", "400b73bbae3db950", "4016a010ea010ac4", "c03304391f09ad40", "c0311a0b1da69496", "c001688cfb2a0190"]
+objective_value_bits = "3ff71424f0f78d76"
+partial_derivative_bits = ["3fd31c42ddca49ee", "bfd840f8f40488af", "3fd31c42ddca49ee", "3fc485cc8aad3409", "bfaa8243732d2fc8", "bfd840f8f40488af", "3fc485cc8aad3409", "bfbbb4d245f1718c", "3fd9ee5c87dc1bc3", "3fd31c42ddca49ee", "bfaa8243732d2fc8", "bfbbb4d245f1718c", "3fe176c56a9f6ec2", "3fa97b0417852afc", "bfd840f8f40488af", "3fc485cc8aad3409", "bfaa8243732d2fc8", "3fd9ee5c87dc1bc3", "3fe176c56a9f6ec2", "3fa97b0417852afc", "3fd31c42ddca49ee", "bfbbb4d245f1718c", "3fd9ee5c87dc1bc3", "3fa97b0417852afc"]
+scalar_partial_derivative_bits = ["3ff31c42ddca49ee", "bff230bab7036683", "3fdec8b2d003ce0e", "bfc3e1b29661e3d6", "bfd4c79db4751529", "3ff372c565e514d2", "3ff176c56a9f6ec2", "3fc31c4311a3e03d"]
+mean_state_bits = ["bfccaf679b805ade", "3fc85bf4e52c540c", "3fdc3aa1ecd6ad32", "bfc39254cc204fb8", "bfe1733067465767", "3fbe5e96cd1572f6", "bfd1611f56bbb7be", "bfcfd0257c954773"]
+channel_term_bits = "bfcf1adc6c719944"
+parity_term_bits = "3ff84fd334cff572"
+binary_term_bits = "3fc53d6a4dae5962"
+clipped_llr_bits = ["c034000000000000", "4034000000000000", "c020ddf63af78230", "400b73bbae3db950", "4016a010ea010ac4", "c03304391f09ad40", "c0311a0b1da69496", "c001688cfb2a0190"]
+
+[[cases]]
+case_index = 13
+state_bits = ["3ff0000000000000", "3fd998f721fd510a", "3fb8aab62c197260", "bfd2f1e1c02576ac", "3fe4cd28c8373a47", "bfdcbc813d666003", "3fe1780420b56baf", "bfc2d71e3c2a8e48", "3fda789f817b6cfa", "3fe4247a9a0944bd", "bfdebe4b323a3daf", "3fcbc2d506a18c7c", "3fd930b72466ecce", "3fd5f7a79ec47322", "bfd79533fff78c78", "3fe1f107b19f68bb", "3fe74d5b0c17c24b", "bfd2f1d927c0cd8e", "3feb71c792574e65", "3fea8f5b7476af85", "3fe7db2601a62a25", "3fe06af8ff29b601", "bfdbc3a62bb2fb1f", "3fdc90c640c91402"]
+llr_bits = ["0000000000000000", "4030d4e36489f168", "4033fb21ba667230", "3fe1199020154c00", "3fc72d673dd5e000", "c03240d7387afdaa", "402bc8492af1d0f8", "bfd810e5d61e5e40"]
+objective_value_bits = "3fe9dff352efe424"
+partial_derivative_bits = ["bf5532196a044878", "bfdd37d79a59cd70", "bf5532196a044878", "bfdd187c66b105e0", "bfab6a12e7f8d97d", "bfdd37d79a59cd70", "bfdd187c66b105e0", "bf8ed0839556c3d4", "3fd7fb8ea83997bb", "bf5532196a044878", "bfab6a12e7f8d97d", "bf8ed0839556c3d4", "bfdd51485bed7b02", "bf7b1aca89f4b7c0", "bfdd37d79a59cd70", "bfdd187c66b105e0", "bfab6a12e7f8d97d", "3fd7fb8ea83997bb", "bfdd51485bed7b02", "bf7b1aca89f4b7c0", "bf5532196a044878", "bf8ed0839556c3d4", "3fd7fb8ea83997bb", "bf7b1aca89f4b7c0"]
+scalar_partial_derivative_bits = ["bf7532196a044878", "bff5e9e1b3c35a14", "bff5d25d4d04c468", "bfc48f8e2dfaa31e", "bfa71c62b00112df", "3ff1fcaafe2b31cc", "bfed51485bed7b02", "bf945417e77789d0"]
+mean_state_bits = ["3fe3c53dd84ca74b", "bfc1d07ebceb124c", "3fd14abca181660e", "3fd32794277693d2", "3fc8dd3397b49cbe", "bfbafbd517f5cf98", "3fe4051192456266", "3fe146862169d108"]
+channel_term_bits = "bfeb53511f418d20"
+parity_term_bits = "3ff846d9f4241bd5"
+binary_term_bits = "3fc2964227a4e66a"
+clipped_llr_bits = ["0000000000000000", "4030d4e36489f168", "4033fb21ba667230", "3fe1199020154c00", "3fc72d673dd5e000", "c03240d7387afdaa", "402bc8492af1d0f8", "bfd810e5d61e5e40"]
+
+[[cases]]
+case_index = 14
+state_bits = ["bff0000000000000", "bfd5448defb59122", "3fead4ac2e74e435", "3faa810ff5e56900", "bfdb986ba99622d3", "bfd7f155a4616a12", "bfd154ac04dd1576", "bfe3eb0bdc5ac5e2", "3fe17f594d5f112d", "3fd7a92f1c7ad792", "bfe0e4020475f718", "3fe9bafa411edbed", "bfa550a1d3fb58b0", "bfec96d5f5933055", "bfe783720330ca98", "3f8fbad825e5a480", "3febc16226b2cea9", "3fdf3efb1bee072e", "bfdf7a82e56c1403", "bfb5634b76e56d98", "3fddb07133f9179e", "3fd1d2ebe1b8dc2e", "bfe91425daa564da", "3fc0ac720c764d44"]
+llr_bits = ["8000000000000000", "c01349f2da3c8610", "c034f2b54dc9b7be", "4035d8cdbc4616da", "c02ab6252f02a6d1", "40223c3a5516d0c4", "40356b83249ba95a", "40333517ee9d5318"]
+objective_value_bits = "40024266b4f12865"
+partial_derivative_bits = ["3faf427f0cb09e13", "3fb5294679dbab80", "3faf427f0cb09e13", "3fdaee27a5a8d5f3", "bfda80bd8fce5681", "3fb5294679dbab80", "3fdaee27a5a8d5f3", "3fd1816d187fbce1", "bfc89e4b8a8156bc", "3faf427f0cb09e13", "bfda80bd8fce5681", "3fd1816d187fbce1", "bfe39b050bdecd2d", "bfd914cc673b05dd", "3fb5294679dbab80", "3fdaee27a5a8d5f3", "bfda80bd8fce5681", "bfc89e4b8a8156bc", "bfe39b050bdecd2d", "bfd914cc673b05dd", "3faf427f0cb09e13", "3fd1816d187fbce1", "bfc89e4b8a8156bc", "bfd914cc673b05dd"]
+scalar_partial_derivative_bits = ["3fcf427f0cb09e13", "3fcfbde9b6c98140", "3ff4329dbc3ea076", "bff3e08e2bdac0e1", "3fea4223a4bf9b52", "bfe276b8a7e1010d", "bff39b050bdecd2d", "bff2cf994d6c4466"]
+mean_state_bits = ["3fc5817c56aedbd0", "bfdebeed337d8576", "bfb15e445bec4eed", "bf9f48e77097be60", "3fc3a1db1cd60584", "3fb571d801d72a6c", "bfd1124b8ff5bf8c", "bfd2101740e18724"]
+channel_term_bits = "3fe1f4bcb6b76e1c"
+parity_term_bits = "3ff8abc94db35404"
+binary_term_bits = "3fc6f52e069a2dbd"
+clipped_llr_bits = ["8000000000000000", "c01349f2da3c8610", "c034000000000000", "4034000000000000", "c02ab6252f02a6d1", "40223c3a5516d0c4", "4034000000000000", "40333517ee9d5318"]
+
+[[cases]]
+case_index = 15
+state_bits = ["bfd82162decfd040", "3fc08ed67b4e0994", "bfd82162decfd040", "3fd42cf367072c42", "3fc0ebb9c3c3ef0c", "3fc08ed67b4e0994", "3fd42cf367072c42", "3fba25073d89ea58", "3fdf70b212037892", "bfd82162decfd040", "3fc0ebb9c3c3ef0c", "3fba25073d89ea58", "3fd51dc40bca7d42", "3fe746ccdc1bb2a1", "3fc08ed67b4e0994", "3fd42cf367072c42", "3fc0ebb9c3c3ef0c", "3fdf70b212037892", "3fd51dc40bca7d42", "3fe746ccdc1bb2a1", "bfd82162decfd040", "3fba25073d89ea58", "3fdf70b212037892", "3fe746ccdc1bb2a1"]
+llr_bits = ["c030f065852c30da", "403422278716ae70", "402d182eaf487aec", "c028a66d72630b54", "c031c9a88ac05f68", "c02b675d24a9aab7", "3febe955e518c100", "c01c4a641a6e3540"]
+objective_value_bits = "3ffc85028c39afff"
+partial_derivative_bits = ["3fcf6bdbe1f1efca", "bfd6f0dc1a828e88", "3fcf6bdbe1f1efca", "bfd38d7526c3bb07", "3fd17dd393d06825", "bfd6f0dc1a828e88", "bfd38d7526c3bb07", "3fd8df6c753d9cab", "3fd1b805746ad3b9", "3fcf6bdbe1f1efca", "3fd17dd393d06825", "3fd8df6c753d9cab", "bfa541303ab4fb8e", "3fc1d3455c4e3f75", "bfd6f0dc1a828e88", "bfd38d7526c3bb07", "3fd17dd393d06825", "3fd1b805746ad3b9", "bfa541303ab4fb8e", "3fc1d3455c4e3f75", "3fcf6bdbe1f1efca", "3fd8df6c753d9cab", "3fd1b805746ad3b9", "3fc1d3455c4e3f75"]
+scalar_partial_derivative_bits = ["3fef6bdbe1f1efca", "bff134a513e1eae6", "bfed542fba25988b", "3fea3cbd5db89c38", "3ff2a79157ee3580", "3fea94082ea03d96", "bfb541303ab4fb8e", "3fdabce80a755f30"]
+mean_state_bits = ["bfd82162decfd040", "3fc08ed67b4e0994", "3fd42cf367072c42", "3fc0ebb9c3c3ef0c", "3fba25073d89ea58", "3fdf70b212037892", "3fd51dc40bca7d42", "3fe746ccdc1bb2a1"]
+channel_term_bits = "3fb795b58f4d90f6"
+parity_term_bits = "3ff8a0251f5a40a6"
+binary_term_bits = "3fc35c109f54b253"
+clipped_llr_bits = ["c030f065852c30da", "4034000000000000", "402d182eaf487aec", "c028a66d72630b54", "c031c9a88ac05f68", "c02b675d24a9aab7", "3febe955e518c100", "c01c4a641a6e3540"]
+
+[[cases]]
+case_index = 16
+state_bits = ["bfe54ba3c0a15441", "3fd798242addc43e", "bfdd21bdf66db872", "3fc98346a2b92e54", "bfc71304136b469c", "3fdebf40086cec82", "3fe2318029a79889", "3fe263c5ae092101", "3fca73905a40a974", "bfeb22a108fa1625", "bfbd7259206a8840", "bfe9ac797eb6189f", "bfe36e473ee04f3d", "bfdb9031dcc8879d", "bfeb23d6ed1610a1", "3f94e1d216709ea0", "bfdcefa26de61846", "3fc96e10b2495b04", "3f7c8843a7d56100", "bfe61fca25929f3e", "bfe483307b3bb066", "bfe01e27280d4085", "3fe8dac8da8af2cb", "3fb452b7058941f0"]
+llr_bits = ["4018db8dd32b1078", "c0368fdc754c90bd", "4032b26416ce10e4", "c0107d463e6c57f4", "3fe97934d73956c0", "3fcd404c8a815f80", "c010e061ce1cc20c", "c0158b0cda396540"]
+objective_value_bits = "3ff5794dd599d082"
+partial_derivative_bits = ["bfb5c267d96e42a9", "3fe0f6534f2f7d95", "bfb5c267d96e42a9", "bfdb1c3ef95e94c3", "3fbe4547f2aff5bd", "3fe0f6534f2f7d95", "bfdb1c3ef95e94c3", "bf9ba5ab353afd77", "bf7a5f9422375373", "bfb5c267d96e42a9", "3fbe4547f2aff5bd", "bf9ba5ab353afd77", "3fc22e825bad5d24", "3fbc1721eae119c8", "3fe0f6534f2f7d95", "bfdb1c3ef95e94c3", "3fbe4547f2aff5bd", "bf7a5f9422375373", "3fc22e825bad5d24", "3fbc1721eae119c8", "bfb5c267d96e42a9", "bf9ba5ab353afd77", "bf7a5f9422375373", "3fbc1721eae119c8"]
+scalar_partial_derivative_bits = ["bfd5c267d96e42a9", "3ff9717cf6c73c60", "bff4552f3b06ef92", "3fd6b3f5f603f84e", "bfb4bc4067ec3e19", "bf93c7af19a97e96", "3fd22e825bad5d24", "3fd511597028d356"]
+mean_state_bits = ["bfe4e09510037dc1", "3f34f3217e14a800", "3fd0d0eaecb0f0b7", "bfcfe3d1d5243e6e", "bfcf33cea0f84adc", "3fd9377613c8f7f0", "bfd33536b790a47b", "bfd63e5d7783d1df"]
+channel_term_bits = "bfd3a6eaed1ed7bf"
+parity_term_bits = "3ff7e06ad456628d"
+binary_term_bits = "3fc414ede4591f24"
+clipped_llr_bits = ["4018db8dd32b1078", "c034000000000000", "4032b26416ce10e4", "c0107d463e6c57f4", "3fe97934d73956c0", "3fcd404c8a815f80", "c010e061ce1cc20c", "c0158b0cda396540"]
+
+[[cases]]
+case_index = 17
+state_bits = ["bfe61c6fa7d01176", "3feb3afbe85764ef", "3fc423cb7d64826c", "3fc71432dab3c24c", "3fc32e1274208944", "3fe0aa8034d2a479", "3fb9fc7617d4d308", "3fad2b2bcc813480", "bfe495a7825048fc", "bfadecad93f73100", "bfd875debd4eabee", "bfdb431461df425b", "bfd64810d8526c92", "bfc8e46b8917cde4", "bfe1a37fbcc89480", "3feb7582fa5685a3", "3fb362b473382700", "3fdcb2b213895fde", "3fe900ae27c7f7cd", "3fd9da5d327c0c16", "3fa0a313965e8130", "3fbaf64a138f09b8", "bfd48d12f602dcb8", "3fe27610a4deb279"]
+llr_bits = ["4034000000000000", "403662691979612a", "40236da6403261b8", "c01051943bea1748", "c0351bec572fe10d", "c0276c0d82a6ac76", "c026e9782071fa16", "bfe8c4eeef6b1e40"]
+objective_value_bits = "3ff383f6a53865d2"
+partial_derivative_bits = ["bfd5ed8f00eca206", "bfd9b86ef66981e4", "bfd5ed8f00eca206", "bfcb89b96fd0d515", "3fb87a4c1cca921d", "bfd9b86ef66981e4", "bfcb89b96fd0d515", "3fdaf8aa7a5f6947", "3fd009758cfa2d45", "bfd5ed8f00eca206", "3fb87a4c1cca921d", "3fdaf8aa7a5f6947", "3fd6400c4766b234", "3f810fa9016b6145", "bfd9b86ef66981e4", "bfcb89b96fd0d515", "3fb87a4c1cca921d", "3fd009758cfa2d45", "3fd6400c4766b234", "3f810fa9016b6145", "bfd5ed8f00eca206", "3fdaf8aa7a5f6947", "3fd009758cfa2d45", "3f810fa9016b6145"]
+scalar_partial_derivative_bits = ["bff5ed8f00eca206", "bff34a5338cf216b", "bfe4a74b13dc9fd0", "3fd25bb91597ed96", "3ff43a7fdbc78ef5", "3fe80e30537743e8", "3fe6400c4766b234", "3f99977d822111e7"]
+mean_state_bits = ["bfc1e81668507bd8", "3fd18152eaeba344", "3fd85169a2a96064", "bfaabb166680f974", "bfb68025d9e47726", "bfc603ca9a115f36", "3fcbb94b773d8308", "3fd0c6c2e7e4835d"]
+channel_term_bits = "bfdea8591d8d250d"
+parity_term_bits = "3ff848132570541e"
+binary_term_bits = "3fc72fce395ad7b6"
+clipped_llr_bits = ["4034000000000000", "4034000000000000", "40236da6403261b8", "c01051943bea1748", "c034000000000000", "c0276c0d82a6ac76", "c026e9782071fa16", "bfe8c4eeef6b1e40"]
+
+[[cases]]
+case_index = 18
+state_bits = ["bf9b240a0476bd40", "bfce78568bdeb464", "3fe474e1df958319", "bfdf0eade97d9060", "bfe4181873ad0b8b", "bfca94856d6cf6e4", "3fb2dd33c650e790", "bfc6dfbf1448ac78", "bfddae95675eedab", "bfb26dcfd934d0d8", "bfdc4623335f413e", "bfec95a75700b92c", "3fd3e97edd5a365e", "3fe96ab84ef884d7", "3fba247f32d08408", "3f78c8693ecf1000", "bfcfc9756d9f7544", "3fd5ae204619a9ae", "bfea731fcf31b206", "bfe0f58ab8e7a2d3", "bfe17286f5a5435a", "bfb3a7897a525af8", "3fe6c0583136f00f", "bfd6c6400389493c"]
+llr_bits = ["c034000000000000", "40166aff2f8bafe0", "3ff03fd170b6aa20", "c0286d32dd7a7c32", "3fc4ed3e2f67ae80", "402bfcb1eac14418", "bfd27fcce66a9d00", "40226e88be6d43ec"]
+objective_value_bits = "3ff3c7e38085e144"
+partial_derivative_bits = ["3fd469f5003faca2", "bfbd5079361c48ed", "3fd469f5003faca2", "bf92b23ca525ba90", "3fd109f1335f49d1", "bfbd5079361c48ed", "bf92b23ca525ba90", "3f7c9712db61db3c", "bfd2feaccebb34e0", "3fd469f5003faca2", "3fd109f1335f49d1", "3f7c9712db61db3c", "3f958e6c205440d8", "bfc874aae06a906f", "bfbd5079361c48ed", "bf92b23ca525ba90", "3fd109f1335f49d1", "bfd2feaccebb34e0", "3f958e6c205440d8", "bfc874aae06a906f", "3fd469f5003faca2", "3f7c9712db61db3c", "bfd2feaccebb34e0", "bfc874aae06a906f"]
+scalar_partial_derivative_bits = ["3ff469f5003faca2", "bfd5fc5ae89536b2", "bfac0b5af7b897d8", "3fe98ee9cd0eeeba", "3f95714e2489646d", "bfec7e033618cf50", "3fa58e6c205440d8", "bfe25780284fec53"]
+mean_state_bits = ["bf523fb0ad082300", "bfbd51bd9542462d", "bfc14d7f8c9ebc28", "bfdc1e5a45d85ba8", "bfd881b0323e1fc6", "3fc9002780c5bd6a", "bfd07e60608496d6", "bf9f3f6f277d7120"]
+channel_term_bits = "bfdc4aa58654ff6e"
+parity_term_bits = "3ff80246cd33d7ae"
+binary_term_bits = "3fc6c230a73a4b86"
+clipped_llr_bits = ["c034000000000000", "40166aff2f8bafe0", "3ff03fd170b6aa20", "c0286d32dd7a7c32", "3fc4ed3e2f67ae80", "402bfcb1eac14418", "bfd27fcce66a9d00", "40226e88be6d43ec"]
+
+[[cases]]
+case_index = 19
+state_bits = ["3fce677109796ccc", "3fda59af6408a70a", "bfcdb89014432128", "bf8cc18519cfbf00", "3fe29545264c3d57", "3fe9fe6013aab139", "3fdcf8a904bab44a", "bfdb1fdc83ffa429", "bfe902897c6231dc", "bfe477f5189abc3b", "bfc71522041ef82c", "bfbd5ce120c06cc0", "3fe8eff908bd821f", "3fd3baa74eaecaba", "3fd5ef790009b62a", "3fd056e981bd47d2", "3fe7c66c5b9620c3", "bfb0316e14897d50", "bfeaab9f037330ae", "3f98161648e8b000", "3fd6dbed06ba962e", "3fbb0cbf53631c78", "bfbac15df60e6350", "bfc7a5bd34de0128"]
+llr_bits = ["4039000000000000", "c03146c340302c5c", "401f015cd4514418", "c02118fa12b19d7a", "c036dcfc2599fb6a", "402e0a76d99b0980", "4022599dcf387fb4", "4030269ffe139352"]
+objective_value_bits = "40042181cdd350cd"
+partial_derivative_bits = ["bfd8f26c3ff47afc", "3fd6e0d8045cf3c7", "bfd8f26c3ff47afc", "bfc58b9687c227bd", "3fc5c00140c4a4ab", "3fd6e0d8045cf3c7", "bfc58b9687c227bd", "3fdb5c9b2315b61b", "bfd33d4ca1eb0d1a", "bfd8f26c3ff47afc", "3fc5c00140c4a4ab", "3fdb5c9b2315b61b", "bfd2414a4ce34f31", "bfd59bb196131084", "3fd6e0d8045cf3c7", "bfc58b9687c227bd", "3fc5c00140c4a4ab", "bfd33d4ca1eb0d1a", "bfd2414a4ce34f31", "bfd59bb196131084", "bfd8f26c3ff47afc", "3fdb5c9b2315b61b", "bfd33d4ca1eb0d1a", "bfd59bb196131084"]
+scalar_partial_derivative_bits = ["bff8f26c3ff47afc", "3ff128a20345b6d5", "bfe028b0e5d19dce", "3fe05000f0937b80", "3ff485745a504894", "bfecdbf2f2e093a7", "bfe2414a4ce34f31", "bff034c5308e4c63"]
+mean_state_bits = ["bfb1bc8cafdfbc78", "3fe0b6516c914a9c", "3fcd9baee91ba96d", "3fd864460091c00a", "bfc277edfa39fad2", "bfd4409753ce1ea0", "bf9bba5fab5ae8e0", "3fa9187042263868"]
+channel_term_bits = "3fea653ae6fa05a0"
+parity_term_bits = "3ff84d03e2274d2e"
+binary_term_bits = "3fc61b1230128ce3"
+clipped_llr_bits = ["4034000000000000", "c03146c340302c5c", "401f015cd4514418", "c02118fa12b19d7a", "c034000000000000", "402e0a76d99b0980", "4022599dcf387fb4", "4030269ffe139352"]
+
+[[cases]]
+case_index = 20
+state_bits = ["3fe09ea3daece153", "bfc6fc4a21c3b1f0", "3fe09ea3daece153", "3fc7d05e3bbfcfec", "3fe185fe7ffaf155", "bfc6fc4a21c3b1f0", "3fc7d05e3bbfcfec", "bfb40c9ba0a04440", "bfb09b59a87d2448", "3fe09ea3daece153", "3fe185fe7ffaf155", "bfb40c9ba0a04440", "bfe3b8276ad2c6e0", "3fd0ff5817674162", "bfc6fc4a21c3b1f0", "3fc7d05e3bbfcfec", "3fe185fe7ffaf155", "bfb09b59a87d2448", "bfe3b8276ad2c6e0", "3fd0ff5817674162", "3fe09ea3daece153", "bfb40c9ba0a04440", "bfb09b59a87d2448", "3fd0ff5817674162"]
+llr_bits = ["c039000000000000", "c034e2dd2d0cdceb", "40095ebdfe1c64a8", "403746d4c56e0e96", "402ce8867a6c1648", "bfdddc5f806255c0", "c02022b38cfa7e1c", "3fecee8961ea1b60"]
+objective_value_bits = "3ff1edbf0fb54572"
+partial_derivative_bits = ["3fd420062297dbbf", "3fd4f58eb86d52fd", "3fd420062297dbbf", "bfbddaee620b5c51", "bfdc87160ed4f1c4", "3fd4f58eb86d52fd", "bfbddaee620b5c51", "bfd28a0961f09a0c", "3f8a161b95e5f315", "3fd420062297dbbf", "bfdc87160ed4f1c4", "bfd28a0961f09a0c", "3fd172ab67338408", "bf9e5f77ed48915c", "3fd4f58eb86d52fd", "bfbddaee620b5c51", "bfdc87160ed4f1c4", "3f8a161b95e5f315", "3fd172ab67338408", "bf9e5f77ed48915c", "3fd420062297dbbf", "bfd28a0961f09a0c", "3f8a161b95e5f315", "bf9e5f77ed48915c"]
+scalar_partial_derivative_bits = ["3ff420062297dbbf", "3fef705614a3fc7c", "bfd66432c988853d", "bff565508b1fb553", "bfebcf0e12e8e712", "3fa39094b06c7650", "3fe172ab67338408", "bfb6c799f1f66d05"]
+mean_state_bits = ["3fe09ea3daece153", "bfc6fc4a21c3b1f0", "3fc7d05e3bbfcfec", "3fe185fe7ffaf155", "bfb40c9ba0a04440", "bfb09b59a87d2448", "bfe3b8276ad2c6e0", "3fd0ff5817674162"]
+channel_term_bits = "bfe1b66c640f36d7"
+parity_term_bits = "3ff85645ccc481a8"
+binary_term_bits = "3fc3957ba7c2f9a8"
+clipped_llr_bits = ["c034000000000000", "c034000000000000", "40095ebdfe1c64a8", "4034000000000000", "402ce8867a6c1648", "bfdddc5f806255c0", "c02022b38cfa7e1c", "3fecee8961ea1b60"]
+
+[[cases]]
+case_index = 21
+state_bits = ["0000000000000000", "3fe0ef8f4966a697", "bfc54ef3a89221d0", "bfe0e86199fb5fa8", "3fd210ae30a0a826", "bfd3422ec833af70", "3fc589513fe7bf4c", "bfdea8e077e4984d", "bfe9888ec793ac4c", "bfdec0e0fb9f3593", "bfdf27c4ec873fd2", "3fdbcec6920b0d86", "3fe10d2ab8a98c87", "bfdcc473cc7eb817", "3fe7c110c40e9fd5", "bfe45f515f74f55c", "bfe999658e17022d", "bfb84f2e00a77b88", "3fe2da8751cf18fd", "3fe735f47a62cbab", "3fb619c7ba1072c0", "bfda1624b554d46a", "3fe32347a5421603", "bfebb9f1a595a586"]
+llr_bits = ["0000000000000000", "3fff4576d24f2de0", "402b6dbcde4bf888", "c0318a25630a7c9a", "4027235f26c2d670", "c0321ffce3b9a146", "c00e11a2344dd228", "3fc785e283af0b80"]
+objective_value_bits = "3ffb5300e6903ed0"
+partial_derivative_bits = ["bfaa934766155b09", "bf99f0eae911e2ed", "bfaa934766155b09", "bfd233ca2e306a63", "3fd78da02d1e0f33", "bf99f0eae911e2ed", "bfd233ca2e306a63", "bfce47a33982e505", "3fd849b14f7376e5", "bfaa934766155b09", "3fd78da02d1e0f33", "bfce47a33982e505", "3fb903b06cc00c01", "3f6f44351680bb23", "bf99f0eae911e2ed", "bfd233ca2e306a63", "3fd78da02d1e0f33", "3fd849b14f7376e5", "3fb903b06cc00c01", "3f6f44351680bb23", "bfaa934766155b09", "bfce47a33982e505", "3fd849b14f7376e5", "3f6f44351680bb23"]
+scalar_partial_derivative_bits = ["bfca934766155b09", "bfb374b02ecd6a32", "bfeb4daf45489f94", "3ff1aa3821d68b66", "bfe6b5ba6b222bc4", "3ff23744fb96992c", "3fc903b06cc00c01", "3f877327d0e08c5a"]
+mean_state_bits = ["bfc1f0f470b214e6", "3fd4b505c63cf478", "bfd5439470f998cc", "bfd56df5f2b18958", "bfc34ad467743f74", "bfb92877b1116498", "3fe1f3d9053c52c2", "bfc932f41742f288"]
+channel_term_bits = "3f844e0d07a8ca84"
+parity_term_bits = "3ff87f31ffc1a3ae"
+binary_term_bits = "3fc5599665fa4c68"
+clipped_llr_bits = ["0000000000000000", "3fff4576d24f2de0", "402b6dbcde4bf888", "c0318a25630a7c9a", "4027235f26c2d670", "c0321ffce3b9a146", "c00e11a2344dd228", "3fc785e283af0b80"]
+
+[[cases]]
+case_index = 22
+state_bits = ["8000000000000000", "bfdd3b661a7f2fd1", "3fe0054e4495d851", "3fe835c8f748a2e5", "bfe8f7f6fa5e76a9", "bfe9b0e461a882d6", "3fca0e05ff91c514", "3fc922c928db43d4", "3fe4021a868fbc61", "bfadcc2ed12bcc10", "3fbdda8651ae5ac8", "3fc0d2c4ae3c4ec4", "bfb730c6a95852e0", "bfe6748288966d5b", "3f6fa989561df300", "bfb2c9e1fb495f48", "3fd58641d2d7f5e6", "3fdae304540258ea", "3fe8e02b9e1b8ccf", "bfe048e68b1f9804", "3fd52d37d866d562", "3fe174093e2c684b", "3fe5063c0e788c79", "3fd24ac5935579f6"]
+llr_bits = ["8000000000000000", "40362261aee3a690", "40355376e02d9256", "402b1e6694fd5b9c", "401a3d4d1b963950", "40363172d7ecf4bc", "40368ea319e1ac92", "c024570e3d21793b"]
+objective_value_bits = "3fe057d2195a3e64"
+partial_derivative_bits = ["3fafba2e8f92dc66", "bfdcb61a9815e21b", "3fafba2e8f92dc66", "bfda3be11fd8d20d", "bfd27a750ac83dc6", "bfdcb61a9815e21b", "bfda3be11fd8d20d", "bfc06b9b69cac51c", "bfdae4b1843953ac", "3fafba2e8f92dc66", "bfd27a750ac83dc6", "bfc06b9b69cac51c", "bfe47b19c3a53650", "3fcb9c785fe6d6c4", "bfdcb61a9815e21b", "bfda3be11fd8d20d", "bfd27a750ac83dc6", "bfdae4b1843953ac", "bfe47b19c3a53650", "3fcb9c785fe6d6c4", "3fafba2e8f92dc66", "bfc06b9b69cac51c", "bfdae4b1843953ac", "3fcb9c785fe6d6c4"]
+scalar_partial_derivative_bits = ["3fcfba2e8f92dc66", "bff58893f2106994", "bff3ace8d7e29d8a", "bfebb7af902c5ca9", "bfd8a1691eb027aa", "bff42b85232afec1", "bff47b19c3a53650", "3fe4b55a47ed2113"]
+mean_state_bits = ["3fc8bf2743b68641", "bfdac9f3ee615332", "3fd2eab4252d4581", "bfbbeeb8bca1d648", "3fd2a0f322a188a1", "3fe2289d9503271a", "3fd5fa12c8f08273", "bfd3baaedc078599"]
+channel_term_bits = "bff3526a2888514e"
+parity_term_bits = "3ff8f81e6a577bcc"
+binary_term_bits = "3fc431a656efa5a3"
+clipped_llr_bits = ["8000000000000000", "4034000000000000", "4034000000000000", "402b1e6694fd5b9c", "401a3d4d1b963950", "4034000000000000", "4034000000000000", "c024570e3d21793b"]
+
+[[cases]]
+case_index = 23
+state_bits = ["3ff0000000000000", "bfe9ee767aa8d21c", "3fc66a7a6d211c8c", "3fe4c9e6dff53a8b", "3fd6552a0ed6e5ba", "3fc36a11df3bb064", "3fcb7ea8def70fd4", "3fea6cb3375d83d1", "bfd8041f6a08d1cc", "bf8fbf4a05d78680", "3fd0ddc6e0610662", "bfcd686b1e484848", "3fbd2b150f3dc618", "bfd42a6912fabd7a", "bfe084955f505bb7", "bfe7749a04ba7dac", "3febbbb6f77c1633", "bfe8fa2c4caaeeef", "bfa7959c66df56c0", "bfe47a9addc2a826", "3fe9c6b766c6da8f", "3fe9152876d5b15d", "3fcc7f2e10143344", "3fe2a10291df0a65"]
+llr_bits = ["4029b2535d3b768c", "401f35cb2881dc60", "c010497aeb100014", "c0212f7229a89314", "c0354bc5cc200f67", "c03181af4377b9af", "403455015b645152", "402bde6e8a262254"]
+objective_value_bits = "4000fe9da6885a90"
+partial_derivative_bits = ["bfc406c804e7686d", "bfcfc1a5b04977df", "bfc406c804e7686d", "3fa17cbb634a49e9", "3fc4e34ebb064556", "bfcfc1a5b04977df", "3fa17cbb634a49e9", "3fd9a572d1579e6c", "3fd852739ca55854", "bfc406c804e7686d", "3fc4e34ebb064556", "3fd9a572d1579e6c", "bfe3f0d6f1be1db8", "bfd19dc5788833e1", "bfcfc1a5b04977df", "3fa17cbb634a49e9", "3fc4e34ebb064556", "3fd852739ca55854", "bfe3f0d6f1be1db8", "bfd19dc5788833e1", "bfc406c804e7686d", "3fd9a572d1579e6c", "3fd852739ca55854", "bfd19dc5788833e1"]
+scalar_partial_derivative_bits = ["bfe406c804e7686d", "bfe7d13c443719e7", "3fba3b1914ef6ede", "3fdf54f618896801", "3ff33c161d01b6d1", "3ff23dd6b57c023f", "bff3f0d6f1be1db8", "bfea6ca834cc4dd2"]
+mean_state_bits = ["3fdf712c6cfbe1cc", "bfd9105a41718127", "3fa66fd0652d59c0", "3fdf8e1f9f655d80", "3fdd6fd5ef161767", "bfd3e84afe718758", "3fa16046dbce1ab8", "bfbfd2223902a150"]
+channel_term_bits = "3fd7dc9085c9b29f"
+parity_term_bits = "3ff98475d697ddea"
+binary_term_bits = "3fc40d0aa833546e"
+clipped_llr_bits = ["4029b2535d3b768c", "401f35cb2881dc60", "c010497aeb100014", "c0212f7229a89314", "c034000000000000", "c03181af4377b9af", "4034000000000000", "402bde6e8a262254"]
+
+[[cases]]
+case_index = 24
+state_bits = ["bff0000000000000", "bfd96f9adf2c414c", "3fe752e487559971", "bfe8b1a704eae6fa", "3fd56e2dd7eed37a", "bfea490822eabae1", "bfde53e9ae552543", "3fc4e9ec825da644", "bfd016c8b147a732", "bfe2765e55b1f521", "bfe6833908382aec", "bfea8edf590ed1eb", "3fe9d6097fd01131", "3fe517704dff6579", "3fe7266e0eaa840f", "3feb6a96421c82bb", "bfeafc8848bf4b79", "bfe1fe6af6c36bfa", "3fe132a73fe53ad7", "3fe495c4c9016c4b", "bfdadc93a0f0de68", "3fd39ab4410dad1e", "3fdca7a5c7171d5a", "bfb18b23dccfb678"]
+llr_bits = ["c033d502236b0420", "3fe33e16c8794c00", "401493b73ec38368", "402bfeb863b89d80", "402345957866d35c", "4025d02e318a80c8", "403375426f6e7b1e", "3ff29be99918ad30"]
+objective_value_bits = "3feebf10f0a6422f"
+partial_derivative_bits = ["3fd4f55345c98e33", "3fa645459afe9adb", "3fd4f55345c98e33", "bfbfb418068ba330", "bfd27e1b386cfede", "3fa645459afe9adb", "bfbfb418068ba330", "bfca3bd2311f3cf3", "bfcccce09018ecb5", "3fd4f55345c98e33", "bfd27e1b386cfede", "bfca3bd2311f3cf3", "bfe40008da3d4b4b", "bfa103fb355fbff3", "3fa645459afe9adb", "bfbfb418068ba330", "bfd27e1b386cfede", "bfcccce09018ecb5", "bfe40008da3d4b4b", "bfa103fb355fbff3", "3fd4f55345c98e33", "bfca3bd2311f3cf3", "bfcccce09018ecb5", "bfa103fb355fbff3"]
+scalar_partial_derivative_bits = ["3ff4f55345c98e33", "3fc0b3f4343ef424", "bfd7c71204e8ba64", "bfebbd28d4a37e4d", "bfe3acdda4d76db6", "bfe599a86c12b188", "bff40008da3d4b4b", "bfb985f8d00f9fec"]
+mean_state_bits = ["bfd448e1cf6a6572", "bfc52334afc874a1", "bfc096b222a1492c", "bfd9db1c43555dc6", "bfbebd703fd6da1c", "bfbf3aa11f9f2d10", "3fe584585fdaa604", "3fda528b124491f8"]
+channel_term_bits = "bfe5e0eaacac2e65"
+parity_term_bits = "3ff7c5487dad0c3c"
+binary_term_bits = "3fc455aa87e16072"
+clipped_llr_bits = ["c033d502236b0420", "3fe33e16c8794c00", "401493b73ec38368", "402bfeb863b89d80", "402345957866d35c", "4025d02e318a80c8", "403375426f6e7b1e", "3ff29be99918ad30"]
+
+[[cases]]
+case_index = 25
+state_bits = ["bfe39b7baca8bf2c", "bfd376dce9c23738", "bfe39b7baca8bf2c", "3fa12f88a8ad7620", "bfe31797af6c521d", "bfd376dce9c23738", "3fa12f88a8ad7620", "3fdf9e23730406fa", "3fd9c99ae6677f3e", "bfe39b7baca8bf2c", "bfe31797af6c521d", "3fdf9e23730406fa", "3fda50b74ecc8e7a", "3feb3040801d77ed", "bfd376dce9c23738", "3fa12f88a8ad7620", "bfe31797af6c521d", "3fd9c99ae6677f3e", "3fda50b74ecc8e7a", "3feb3040801d77ed", "bfe39b7baca8bf2c", "3fdf9e23730406fa", "3fd9c99ae6677f3e", "3feb3040801d77ed"]
+llr_bits = ["4034000000000000", "40384e54ffa77b8a", "3fe2a8b4570521e0", "403389d166e087f8", "c0371ea800a32e0d", "4025e4d9f364d3e0", "c011bc7efbe605d4", "c028f8f6fcee741b"]
+objective_value_bits = "40122bee7d46df61"
+partial_derivative_bits = ["bfd1f8a3af254a32", "bfd4cd2823a4eb68", "bfd1f8a3af254a32", "bfb14d8be816a656", "bfd7f14bfe206937", "bfd4cd2823a4eb68", "bfb14d8be816a656", "3fdb1b626391c2d4", "bfc883a3f4bebcb9", "bfd1f8a3af254a32", "bfd7f14bfe206937", "3fdb1b626391c2d4", "3fb5c3d88d71c573", "3fd0d3c3068b1d3b", "bfd4cd2823a4eb68", "bfb14d8be816a656", "bfd7f14bfe206937", "bfc883a3f4bebcb9", "3fb5c3d88d71c573", "3fd0d3c3068b1d3b", "bfd1f8a3af254a32", "3fdb1b626391c2d4", "bfc883a3f4bebcb9", "3fd0d3c3068b1d3b"]
+scalar_partial_derivative_bits = ["bff1f8a3af254a32", "bfef33bc3577611c", "bfc9f451dc21f981", "bff1f4f8fe984ee9", "3ff45489caad521f", "bfe262baf78f0d8b", "3fc5c3d88d71c573", "3fe93da489d0abd8"]
+mean_state_bits = ["bfe39b7baca8bf2c", "bfd376dce9c23738", "3fa12f88a8ad7620", "bfe31797af6c521d", "3fdf9e23730406fa", "3fd9c99ae6677f3e", "3fda50b74ecc8e7a", "3feb3040801d77ed"]
+channel_term_bits = "4007f0307390c348"
+parity_term_bits = "3ff6f170da3f5cde"
+binary_term_bits = "3fbdde833ba9a15c"
+clipped_llr_bits = ["4034000000000000", "4034000000000000", "3fe2a8b4570521e0", "403389d166e087f8", "c034000000000000", "4025e4d9f364d3e0", "c011bc7efbe605d4", "c028f8f6fcee741b"]
+
+[[cases]]
+case_index = 26
+state_bits = ["3fd381935e4d9b8a", "3fe2ab32d3c35b0d", "3fe73196aec6e013", "bfa4036f6780ef70", "3fcf88cbbbafc84c", "3fe19fcdf11aed0b", "3fe40072dade817f", "bfdaf801420f87e1", "3fe54834c884be47", "3fbb521c16fb58a8", "bfeaa9b46c4e5041", "bfe50cc1b5f086e8", "bfd1722f788bd976", "3fa2a3dca74c2460", "bfd82ac6d06ef740", "bfe32914c7a0b966", "bf9c772700291900", "3fd66f7ae340a002", "bfd7ae705a4b4994", "bfda06abb3507601", "bfe5c10250249dd1", "bfd981c10b53c526", "bfe4b58a9161f182", "bfe3410caab86d64"]
+llr_bits = ["c034000000000000", "bfe42437ae16da40", "c0377ee16db0d26c", "4027c6281d139584", "c031054864b4e394", "c038f64cfd34889f", "c03036f8177d0206", "4017a3d0b4fae510"]
+objective_value_bits = "3ff6147175d05e2f"
+partial_derivative_bits = ["3fd19ced9f07fbba", "bf8b30d4b07b81f5", "3fd19ced9f07fbba", "3fdb184d1227018f", "bfceb9d3b6fc36a8", "bf8b30d4b07b81f5", "3fdb184d1227018f", "3fd790d3067a31b7", "3fda3578ba3b9660", "3fd19ced9f07fbba", "bfceb9d3b6fc36a8", "3fd790d3067a31b7", "3fe0b4a408913875", "bfbc97ea46d9d59f", "bf8b30d4b07b81f5", "3fdb184d1227018f", "bfceb9d3b6fc36a8", "3fda3578ba3b9660", "3fe0b4a408913875", "bfbc97ea46d9d59f", "3fd19ced9f07fbba", "3fd790d3067a31b7", "3fda3578ba3b9660", "bfbc97ea46d9d59f"]
+scalar_partial_derivative_bits = ["3ff19ced9f07fbba", "bfa4649f845ca178", "3ff45239cd9d412b", "bfe70b5ec93d28fe", "3ff1ac9e44dba549", "3ff3a81a8bacb0c8", "3ff0b4a408913875", "bfd571efb5236037"]
+mean_state_bits = ["3fbd37432150f638", "3fd023be3dc48850", "bf71797b34612500", "bfca39a39c84de9e", "bfdf866c9316c8f2", "3fbf71146cb2f768", "bfd4904fe96b9185", "bfd4bc187bf29969"]
+channel_term_bits = "bfd1b9d7250326d5"
+parity_term_bits = "3ff7be8880849e4a"
+binary_term_bits = "3fc622f5f4644cd3"
+clipped_llr_bits = ["c034000000000000", "bfe42437ae16da40", "c034000000000000", "4027c6281d139584", "c031054864b4e394", "c034000000000000", "c03036f8177d0206", "4017a3d0b4fae510"]
+
+[[cases]]
+case_index = 27
+state_bits = ["bfe94e785d230d25", "3fa90bfaa15d49e0", "3fd2983fc47ad17a", "bfe123219b2626c2", "3fe54a3d744d1f7b", "3fe40131b4d75473", "bfe313e2cdc7c180", "3fad539d41adbf60", "3fe9ca8db30f3d67", "bfa3afc7a8589040", "3fd88dade2d87f22", "3fddd5a38e539c8a", "bfcbf921040e6bd8", "bfec6f13bd7d9e03", "3fe4e692d86ff913", "bfc7c8c0d09f2db0", "bfe5e48ba137fd04", "3fd3684b1cbb8316", "bfe3412dc5cc2cba", "3fe36d848d7aa9b9", "3fe2ef4b71f35087", "3fe42a923b4ad405", "bfd42ff2b9b131a8", "3fd2f33df7dbe93e"]
+llr_bits = ["4039000000000000", "4021344f8f086ddc", "c00ad61ab8162038", "403563c51cad569c", "402488ab2a4444f8", "c02f15294f6be7c7", "4013789b23caca5c", "c0158df0bde29d1c"]
+objective_value_bits = "3ff4f336528051ee"
+partial_derivative_bits = ["bfd71d8849bfda9c", "bfc7c43f81526535", "bfd71d8849bfda9c", "3fb2e3bb41f26cce", "bfdadc74d9ae4803", "bfc7c43f81526535", "3fb2e3bb41f26cce", "bfcba89187be27c1", "3fd5023e68fe43eb", "bfd71d8849bfda9c", "bfdadc74d9ae4803", "bfcba89187be27c1", "bfc14974e5625252", "3fbc8aa22019cab8", "bfc7c43f81526535", "3fb2e3bb41f26cce", "bfdadc74d9ae4803", "3fd5023e68fe43eb", "bfc14974e5625252", "3fbc8aa22019cab8", "bfd71d8849bfda9c", "bfcba89187be27c1", "3fd5023e68fe43eb", "3fbc8aa22019cab8"]
+scalar_partial_derivative_bits = ["bff71d8849bfda9c", "bfe1d32fa0fdcbe8", "3fcc5598e2eba335", "bff42557a342b602", "bfe4be6d25ce9dd1", "3fef835d9d7d65e0", "bfd14974e5625252", "3fd567f99813580a"]
+mean_state_bits = ["3f8b1f67c88231c0", "3fdc505824e8c16d", "bfdc1b7868b92274", "3fbf216cb6ae5ac0", "3fd89c6939b4fed5", "3fd0ef269862eebe", "bfda3f7606cfc7b0", "3f7402a1fc800e80"]
+channel_term_bits = "bfd727f764e068e2"
+parity_term_bits = "3ff81e560cad7bce"
+binary_term_bits = "3fc4f6f0f85782bf"
+clipped_llr_bits = ["4034000000000000", "4021344f8f086ddc", "c00ad61ab8162038", "4034000000000000", "402488ab2a4444f8", "c02f15294f6be7c7", "4013789b23caca5c", "c0158df0bde29d1c"]
+
+[[cases]]
+case_index = 28
+state_bits = ["bfe72798733924f9", "3fbf6225b294f788", "3fd5b27a4f4d7506", "bfe834d8f488c872", "bfe1d9f4a7591af1", "bfe51e874c9d1bdd", "bfe4f0a0a82569c0", "3feb4a3b36ed3e1f", "bfe3333df375d7f8", "bfe5f14c244ee129", "bfe79b25b7b91ed5", "3fe47e428cbed6bf", "3fd3ea9e2e42cc12", "bfe05dfa41cd61e0", "bfe62472cf682e85", "bfc1646a1b8dc9d8", "bfb50650bddbd450", "bfa8336ff05bfce0", "3fe8f7c8adb460a3", "bfe235f534f0f10c", "bfd60acf8bb91054", "bfd54ea3483c62e4", "3fc961ee99f888ac", "bfe76875cce5059a"]
+llr_bits = ["c039000000000000", "c030f472ba40a563", "c010877b56f89eac", "4033023622fe662c", "bff3cddae75d0f90", "bfe2d58c3f226280", "c0224aa01516937b", "c0175c6d8fb98794"]
+objective_value_bits = "3ff4892e8607c6b5"
+partial_derivative_bits = ["3fd47bfb94e856e4", "3fda1cbd26046f34", "3fd47bfb94e856e4", "3fb05636c9b86e59", "bfdb483ef0d79d5d", "3fda1cbd26046f34", "3fb05636c9b86e59", "3fa1bec7f3d90b61", "bf9053465aa6113d", "3fd47bfb94e856e4", "bfdb483ef0d79d5d", "3fa1bec7f3d90b61", "3fd1d36ebb438a04", "3fbfb47cdd0bfc8b", "3fda1cbd26046f34", "3fb05636c9b86e59", "bfdb483ef0d79d5d", "bf9053465aa6113d", "3fd1d36ebb438a04", "3fbfb47cdd0bfc8b", "3fd47bfb94e856e4", "3fa1bec7f3d90b61", "bf9053465aa6113d", "3fbfb47cdd0bfc8b"]
+scalar_partial_derivative_bits = ["3ff47bfb94e856e4", "3ff3958ddc835367", "3fc881522e94a586", "bff4762f34a1b606", "3fba9e2bedc59112", "bfa87ce987f919dc", "3fe1d36ebb438a04", "3fd7c75da5c8fd68"]
+mean_state_bits = ["bfd6a2879adee9e4", "bfda39ce43cc724c", "bfe07f86b685e18d", "bfdd63eda48922e0", "3fd8c0c815094249", "bfc327f70ffc9cd0", "3fe1768be26ae356", "bfe35421c13672d7"]
+channel_term_bits = "bfd64600426f8f9c"
+parity_term_bits = "3ff806b74cb5dbfe"
+binary_term_bits = "3fc09fba4f6e74f4"
+clipped_llr_bits = ["c034000000000000", "c030f472ba40a563", "c010877b56f89eac", "4033023622fe662c", "bff3cddae75d0f90", "bfe2d58c3f226280", "c0224aa01516937b", "c0175c6d8fb98794"]
+
+[[cases]]
+case_index = 29
+state_bits = ["3fda41cbbe984c62", "bfdbf96f0b79216c", "bfa22e91bf9bc800", "3fe36dd42e937019", "bfbb5dc55eb891d0", "3fe8ff069c2671c9", "3fe562b2427dcb77", "3fd9db03aae6af4a", "3fe17728be7b7213", "bfd7f560909803e8", "3fdb47cd08099a62", "3fca4e079e5cb16c", "bfdab5cbeada1d11", "3fe3d49d46ebf7d1", "bfdbb92450bf94f6", "3fc702acf31d94dc", "3fe2147b0fba3741", "bfe4cf87d5362c6f", "3fd4cc109fc94fae", "bfc4ce109cf93b80", "3fe0334273e7edfd", "3fd621c09ea9b816", "bfe4afe8b3848ddd", "bfe53276315bc1e0"]
+llr_bits = ["0000000000000000", "c0209ccb4230f9d6", "c0160bb42b77e168", "402fff72d3499edc", "c0363fc62747cad3", "c02731f56d10f503", "c0154ddb70cb14c0", "40366fbf9f91e398"]
+objective_value_bits = "3ffcfe18c436139e"
+partial_derivative_bits = ["bf92147cc0d21d44", "3fc46403207cb263", "bf92147cc0d21d44", "3fb8903d055e9bf1", "bfd68d1605e826eb", "3fc46403207cb263", "3fb8903d055e9bf1", "3fd9fe4f189cf17d", "3fd00adfd02752e7", "bf92147cc0d21d44", "bfd68d1605e826eb", "3fd9fe4f189cf17d", "3fc5a0a45ab1aa99", "bfda684a6a7880f3", "3fc46403207cb263", "3fb8903d055e9bf1", "bfd68d1605e826eb", "3fd00adfd02752e7", "3fc5a0a45ab1aa99", "bfda684a6a7880f3", "bf92147cc0d21d44", "3fd9fe4f189cf17d", "3fd00adfd02752e7", "bfda684a6a7880f3"]
+scalar_partial_derivative_bits = ["bfb2147cc0d21d44", "3fde9604b0bb0b95", "3fd26c2dc406f4f5", "bff0e9d0846e1d30", "3ff37ebb5275b51e", "3fe8104fb83afc5a", "3fd5a0a45ab1aa99", "bff3ce37cfda60b6"]
+mean_state_bits = ["3fc0368eeeee55ba", "bf9e6d7614e9b990", "3fdf0b7673e5c085", "3fd2ddc5efeff6d0", "3fd46142b2ea4007", "bfd00585317f857a", "bfa7a6ed2c433588", "bfb183a2d9d04278"]
+channel_term_bits = "3fc2626ffac55a53"
+parity_term_bits = "3ff7df1d67a7c572"
+binary_term_bits = "3fc6956ae9ad170c"
+clipped_llr_bits = ["0000000000000000", "c0209ccb4230f9d6", "c0160bb42b77e168", "402fff72d3499edc", "c034000000000000", "c02731f56d10f503", "c0154ddb70cb14c0", "4034000000000000"]
+
+[[cases]]
+case_index = 30
+state_bits = ["bfe66e6ad30e6658", "3fd7077c0afb4b6a", "bfe66e6ad30e6658", "3fe5281b06460a37", "bfe81f0db221badd", "3fd7077c0afb4b6a", "3fe5281b06460a37", "3fd2814341dce0c2", "bfda56167e83f0d9", "bfe66e6ad30e6658", "bfe81f0db221badd", "3fd2814341dce0c2", "bfe4f10cba0c0352", "3fde50039a6e63b2", "3fd7077c0afb4b6a", "3fe5281b06460a37", "bfe81f0db221badd", "bfda56167e83f0d9", "bfe4f10cba0c0352", "3fde50039a6e63b2", "bfe66e6ad30e6658", "3fd2814341dce0c2", "bfda56167e83f0d9", "3fde50039a6e63b2"]
+llr_bits = ["8000000000000000", "c034203a81bc3d3f", "c0190e9f49faf8cc", "4033062ad6fc3f54", "bff62f132e64e090", "403128029a3ce5fa", "c032b0004a182673", "4034bee79c4c5e54"]
+objective_value_bits = "4002be4dacb18c80"
+partial_derivative_bits = ["bf82578a48ec0f00", "3fe2757d8fddef1c", "bf82578a48ec0f00", "3fb2f407f8754eb5", "bfd67ccd13cd0c29", "3fe2757d8fddef1c", "3fb2f407f8754eb5", "3fa64c1920baec73", "bfd685f52220797d", "bf82578a48ec0f00", "bfd67ccd13cd0c29", "3fa64c1920baec73", "3fe264d2ae23302f", "bfdaa9396d78603d", "3fe2757d8fddef1c", "3fb2f407f8754eb5", "bfd67ccd13cd0c29", "bfd685f52220797d", "3fe264d2ae23302f", "bfdaa9396d78603d", "bf82578a48ec0f00", "3fa64c1920baec73", "bfd685f52220797d", "bfdaa9396d78603d"]
+scalar_partial_derivative_bits = ["bfa2578a48ec0f00", "3ffbb03c57cce6aa", "3fcc6e0bf4aff610", "bff0dd99ced9c91f", "3fc0b912d88c3156", "bff0e477d9985b1e", "3ff264d2ae23302f", "bff3feeb121a482e"]
+mean_state_bits = ["bfe66e6ad30e6658", "3fd7077c0afb4b6a", "3fe5281b06460a37", "bfe81f0db221badd", "3fd2814341dce0c2", "bfda56167e83f0d9", "bfe4f10cba0c0352", "3fde50039a6e63b2"]
+channel_term_bits = "3fe6dfb8a970ef35"
+parity_term_bits = "3ff87562bd8dc4d5"
+binary_term_bits = "3fb975c471cdc90f"
+clipped_llr_bits = ["8000000000000000", "c034000000000000", "c0190e9f49faf8cc", "4033062ad6fc3f54", "bff62f132e64e090", "403128029a3ce5fa", "c032b0004a182673", "4034000000000000"]
+
+[[cases]]
+case_index = 31
+state_bits = ["0000000000000000", "bfbbd72d48e94770", "3fe9f621821a55d7", "3fccc1516d954784", "bf9796e462ccc400", "3fd82bf6ba2a1af2", "bfe4120ec01b35e6", "3fe36f982033c7dd", "bfe8c2026aaefe36", "bfdaf2c6cd8c7722", "3fe21a34ca37e53f", "bfd87c837e1e755c", "bfd8c47046699e68", "3fb18dcc35a7d890", "bfd94c08223c8bf2", "bfec00d90c4a4cf7", "bfd44ede3bad5690", "bfc5da0bdc04d6a0", "bfd1b2e927e2022a", "bfdd68a8edf2663f", "bfe28b2def303e9f", "bfd97e4be7d1603a", "bfd64f25675b2508", "3fbfe0121c0a5e78"]
+llr_bits = ["c014cf8f5f4cb180", "4024bbe5dc7bac60", "40283f912cbee2b8", "c011e28bf5cf3f50", "c01dd2d5d80387a8", "c024e8f51e353ea8", "c025e0b054f70cca", "403338fdc759788a"]
+objective_value_bits = "3ff9a1a528890cd4"
+partial_derivative_bits = ["3fb78e0f1883dec3", "bfca3da3cc373a8f", "3fb78e0f1883dec3", "bfcebf0e283f0335", "3fb65b65cd190d07", "bfca3da3cc373a8f", "bfcebf0e283f0335", "3fc455871ffa033f", "3fcd675d7747b5e3", "3fb78e0f1883dec3", "3fb65b65cd190d07", "3fc455871ffa033f", "3fd6d26bc73b64be", "bfd96e5215202570", "bfca3da3cc373a8f", "bfcebf0e283f0335", "3fb65b65cd190d07", "3fcd675d7747b5e3", "3fd6d26bc73b64be", "bfd96e5215202570", "3fb78e0f1883dec3", "3fc455871ffa033f", "3fcd675d7747b5e3", "bfd96e5215202570"]
+scalar_partial_derivative_bits = ["3fd78e0f1883dec3", "bfe3ae3ad9296beb", "bfe70f4a9e2f4268", "3fd0c48c59d2c9c5", "3fde804aaff704df", "3fe60d861975c86a", "3fe6d26bc73b64be", "bff312bd8fd81c14"]
+mean_state_bits = ["bfa839bf4f709164", "bfa58fa1f0ccb24a", "bfdb41b7a0aacb54", "3fb33ad16e1cdf93", "bfad9efdb96b64f0", "bfdb95656393d997", "bfd53bacb725d049", "bfb6bc41ccb275fe"]
+channel_term_bits = "bfb2b6afd6d263d4"
+parity_term_bits = "3ff7f7b7d72d5e02"
+binary_term_bits = "3fc6aac27646a878"
+clipped_llr_bits = ["c014cf8f5f4cb180", "4024bbe5dc7bac60", "40283f912cbee2b8", "c011e28bf5cf3f50", "c01dd2d5d80387a8", "c024e8f51e353ea8", "c025e0b054f70cca", "403338fdc759788a"]
+
+[[cases]]
+case_index = 32
+state_bits = ["8000000000000000", "bfddb454126ff699", "3fe05afa2fec3885", "bfea01d4a235a91b", "bfd36d4c867c105e", "3fe50c402b8ae023", "3fd64dfc67cb0072", "bfc40eb30dee7620", "bfd18bb2631cb6b2", "3fd7981105ab22c2", "bfe07073a3272312", "bfd02d6d19744278", "3feaa727a7821e37", "bfe9bff3f99784d9", "bfc0f72c525a7658", "bfb55fcf1d7cd5e0", "3fec76c219d5d0bb", "3fe182963351fd8b", "bfe5fdea1d012457", "bfe771a46cc9335c", "bfe412d434dfc65c", "bfb9269450f12118", "bfd3ef7f414958e4", "3fe2542748fcdc85"]
+llr_bits = ["4015c39d97babf30", "c02434fdedffc4d9", "4035e874a2db85c8", "c00d75e6a44e9e48", "c01980b8e50f7df0", "4033cdd34a26c286", "4021762bc086f1fc", "c033404fb4325656"]
+objective_value_bits = "3ff7022ffa839c3d"
+partial_derivative_bits = ["bfb6a836f31df31c", "3fc985033962e5b0", "bfb6a836f31df31c", "bfda4e8deed76717", "3fb3ea8cbe942497", "3fc985033962e5b0", "bfda4e8deed76717", "3fc1b28de7e9827d", "bfda6bde9cb757bd", "bfb6a836f31df31c", "3fb3ea8cbe942497", "3fc1b28de7e9827d", "bfd1b1da8614680d", "3fda483233abc9f3", "3fc985033962e5b0", "bfda4e8deed76717", "3fb3ea8cbe942497", "bfda6bde9cb757bd", "bfd1b1da8614680d", "3fda483233abc9f3", "bfb6a836f31df31c", "3fc1b28de7e9827d", "bfda6bde9cb757bd", "3fda483233abc9f3"]
+scalar_partial_derivative_bits = ["bfd6a836f31df31c", "3fe323c26b0a2c44", "bff3baea73218d51", "3fcddfd31dde36e3", "3fda8bd4dbde43bc", "bff3d0e6f58981ce", "bfe1b1da8614680d", "3ff3b625a6c0d776"]
+mean_state_bits = ["3fb0285cfbc40714", "3f94d875e7d84d60", "bfc75e6b17ffaf7c", "3f98a70224b18fc0", "bfc5a99d231a83df", "bf8a4037e8163000", "3fb2a4f62a03e780", "bfd493a0be429275"]
+channel_term_bits = "bfd0315cbf79abf5"
+parity_term_bits = "3ff7fe086dd5434d"
+binary_term_bits = "3fc883f5e4661f69"
+clipped_llr_bits = ["4015c39d97babf30", "c02434fdedffc4d9", "4034000000000000", "c00d75e6a44e9e48", "c01980b8e50f7df0", "4033cdd34a26c286", "4021762bc086f1fc", "c033404fb4325656"]
+
+[[cases]]
+case_index = 33
+state_bits = ["3ff0000000000000", "3fe9f1f045e0c393", "3fe2128004c556ab", "bfdfcdac31a21bfb", "3fded7a214a7cc26", "3fd079749ccac106", "bfe423f1dee48ed6", "3fd4252d99bcb31a", "bfca8ee1dfcd9350", "bfdb390783736216", "bfec76b20e6b6239", "bfc957c78d604f50", "bfa5a2e9231529d0", "bfa2cddad2a239b0", "3fe6af7212446ea5", "3fb9cf0088e38d58", "bfd750b2dc730f2e", "bfb6740564e248d8", "3f433a4615df3800", "3fe9183dabb9138b", "3fe12b7bca74a28d", "3fe34ebf58e049ef", "bfd3d39859ef8c64", "bfd044b51140f600"]
+llr_bits = ["4034000000000000", "403360c1d725230c", "402d535121e7a410", "4023aafd108bb4dc", "c0031adc33b6db20", "3fef52153a22e520", "c030aba2adee6b2f", "402aebc7343a3818"]
+objective_value_bits = "3fe4d4d3f7e0ab0b"
+partial_derivative_bits = ["bfd8bb1f7b142bdf", "bfde3165aaf93e3b", "bfd8bb1f7b142bdf", "bfd17ea7d830702d", "bfc63ede99f20224", "bfde3165aaf93e3b", "bfd17ea7d830702d", "3fa351f11c8b04c1", "bf81ba5fc61ef6e3", "bfd8bb1f7b142bdf", "bfc63ede99f20224", "3fa351f11c8b04c1", "3fe0c06aefaeb2fb", "bfd214644a9c9289", "bfde3165aaf93e3b", "bfd17ea7d830702d", "bfc63ede99f20224", "bf81ba5fc61ef6e3", "3fe0c06aefaeb2fb", "bfd214644a9c9289", "bfd8bb1f7b142bdf", "3fa351f11c8b04c1", "bf81ba5fc61ef6e3", "bfd214644a9c9289"]
+scalar_partial_derivative_bits = ["bff8bb1f7b142bdf", "bff6a50c403aeeac", "bfea3dfbc448a844", "bfe0af26f375819b", "3fbcfae9aad08722", "bf9a978fa92e7254", "3ff0c06aefaeb2fb", "bfeb1e966feadbce"]
+mean_state_bits = ["3fdad0bc06c02416", "3fe2f4b43783863e", "bfd5e09a99bb721c", "bfd0777c4c360280", "3fceb9db03336a36", "bfc9d007175f4581", "bf9556000abdacf0", "3fc50c0747e89beb"]
+channel_term_bits = "bfec367104c9cf07"
+parity_term_bits = "3ff5eb4d3486eb1c"
+binary_term_bits = "3fc4d2aa4e728f66"
+clipped_llr_bits = ["4034000000000000", "403360c1d725230c", "402d535121e7a410", "4023aafd108bb4dc", "c0031adc33b6db20", "3fef52153a22e520", "c030aba2adee6b2f", "402aebc7343a3818"]
+
+[[cases]]
+case_index = 34
+state_bits = ["bff0000000000000", "3feafe6c2c200319", "3fdc2d726d02366e", "3fe57a83c0d55dc9", "3fea311086b71cef", "bfc53808c2b013f0", "bfe61e36c377ee72", "bfcf0d1771d85ec4", "bfdc3427304da52f", "bfc64168ce996558", "3fe7ea0cf16f8a09", "bfa9dfeae635be20", "bfe89d45b02724fb", "3fa3a52d0e368000", "3fe8853b7c74b699", "bfe4e51342b682f8", "3fe1d5f8654e9913", "3feb52d74ea1b579", "bfe3f84a8324c7ff", "3fd1d91211bb2386", "bfe02fc0710ad8fc", "3fe367926eb73181", "bfdf96156b87467e", "bfd41f18425250f2"]
+llr_bits = ["c034000000000000", "4009d4a7356becf0", "c03317db3ca6fe55", "c0151db9a2730b0c", "403048269f954d9a", "c00cdaba1b7daad0", "c02abf811e14fb9d", "4031d038f864253a"]
+objective_value_bits = "3fdf264175c77730"
+partial_derivative_bits = ["3fd13b22d520a8ee", "bf94d793c0140ccb", "3fd13b22d520a8ee", "3fdc2681127267a4", "3fb651e8b37a45d5", "bf94d793c0140ccb", "3fdc2681127267a4", "bfd5f640fc84f1fc", "3fb3f1db146ed7b9", "3fd13b22d520a8ee", "3fb651e8b37a45d5", "bfd5f640fc84f1fc", "3fdbe5517d854d03", "bfd7ead8fbdf2a87", "bf94d793c0140ccb", "3fdc2681127267a4", "3fb651e8b37a45d5", "3fb3f1db146ed7b9", "3fdbe5517d854d03", "bfd7ead8fbdf2a87", "3fd13b22d520a8ee", "bfd5f640fc84f1fc", "3fb3f1db146ed7b9", "bfd7ead8fbdf2a87"]
+scalar_partial_derivative_bits = ["3ff13b22d520a8ee", "bfaf435da01e1330", "3ff51ce0cdd5cdbb", "3fd0bd6e869bb460", "bff078b0bd63b57d", "3fcdeac89ea64396", "3febe5517d854d03", "bff1f022bce75fe5"]
+mean_state_bits = ["bfd3d4b0b7180b8e", "3fdece6e4ff0787a", "bfccb65db1cc1a2c", "3fe6a5b1f47c6aae", "3fbabb7a5fa4a524", "bf9b6d9ff85d5940", "bfe64ac819a5f67d", "3f4f14f61fc1b800"]
+channel_term_bits = "bff36db60420b2b9"
+parity_term_bits = "3ff8e552dca2a8ff"
+binary_term_bits = "3fc28f9c277f3c32"
+clipped_llr_bits = ["c034000000000000", "4009d4a7356becf0", "c03317db3ca6fe55", "c0151db9a2730b0c", "403048269f954d9a", "c00cdaba1b7daad0", "c02abf811e14fb9d", "4031d038f864253a"]
+
+[[cases]]
+case_index = 35
+state_bits = ["bfe395afea2fce1c", "bfb5c21a5d93bde8", "bfe395afea2fce1c", "bfdef5d9692301d6", "3fb38a1803833030", "bfb5c21a5d93bde8", "bfdef5d9692301d6", "3fe22ece923d2ded", "3fe5a4440e163fcf", "bfe395afea2fce1c", "3fb38a1803833030", "3fe22ece923d2ded", "bfe57da901af1f17", "3fcfa0b997cbd6fc", "bfb5c21a5d93bde8", "bfdef5d9692301d6", "3fb38a1803833030", "3fe5a4440e163fcf", "bfe57da901af1f17", "3fcfa0b997cbd6fc", "bfe395afea2fce1c", "3fe22ece923d2ded", "3fe5a4440e163fcf", "3fcfa0b997cbd6fc"]
+llr_bits = ["4039000000000000", "3fd2ef3ccd3a3dc0", "40268541c2080764", "4009e17c6c78ca88", "bfc48e78612a0900", "c038213421f9a9ac", "40244c5ba0ab3ed8", "4012db6a504f5de4"]
+objective_value_bits = "400f368ab7cc15d0"
+partial_derivative_bits = ["bfd33362c65d6c19", "3fbf86bbc1d23468", "bfd33362c65d6c19", "bfcacd57a228cf73", "bfc0405733b60c25", "3fbf86bbc1d23468", "bfcacd57a228cf73", "3f66320eed5bc255", "3fda9d2a32f5965b", "bfd33362c65d6c19", "bfc0405733b60c25", "3f66320eed5bc255", "bfd305bcd8c04017", "bfb133759b74d80b", "3fbf86bbc1d23468", "bfcacd57a228cf73", "bfc0405733b60c25", "3fda9d2a32f5965b", "bfd305bcd8c04017", "bfb133759b74d80b", "bfd33362c65d6c19", "3f66320eed5bc255", "3fda9d2a32f5965b", "bfb133759b74d80b"]
+scalar_partial_derivative_bits = ["bff33362c65d6c19", "3fd7a50cd15da74e", "bfe41a01b99e9b96", "bfd86082cd911237", "3f80a58b3204d1c0", "3ff3f5dfa63830c4", "bfe305bcd8c04017", "bfc9cd30692f4410"]
+mean_state_bits = ["bfe395afea2fce1c", "bfb5c21a5d93bde8", "bfdef5d9692301d6", "3fb38a1803833030", "3fe22ece923d2ded", "3fe5a4440e163fcf", "bfe57da901af1f17", "3fcfa0b997cbd6fc"]
+channel_term_bits = "40025dffde2d0224"
+parity_term_bits = "3ff7bc92f851af01"
+binary_term_bits = "3fbf482baec7857b"
+clipped_llr_bits = ["4034000000000000", "3fd2ef3ccd3a3dc0", "40268541c2080764", "4009e17c6c78ca88", "bfc48e78612a0900", "c034000000000000", "40244c5ba0ab3ed8", "4012db6a504f5de4"]
+
+[[cases]]
+case_index = 36
+state_bits = ["bfd2258f2a0c0458", "bfec505d8e944f58", "bfc88c19c66f11c8", "3fe80d1f3bc3df89", "3fe0a68f91a0d7c7", "bfd989d89df887ec", "3fe52f20840c1bd5", "bfe0ea46dc0ac085", "bfe6b168084810a8", "3fea60b7efa64cc1", "bfea1fe611e0d3eb", "3fd8bd2e82d5041e", "3fd489a3fcf7809a", "bfeac20143b078f8", "bfd306c4ce89a3f4", "3fca2db345ae78d4", "3fdfa1c43164ff26", "3feb7cbee5e1b077", "3fc8b2c936fcb094", "bf82c3ce5b9d0700", "3fe065277fb3b739", "bfe8c915f14a15d4", "3fe9f775ebdbe7df", "bfb603acacbd5c48"]
+llr_bits = ["c039000000000000", "4031df21b219c7b4", "4027dea3ed752574", "4026e6268d41a394", "c027d4988ebffa0a", "c013165505027f28", "401d14c0f0e28e50", "3fd95b950bf43fc0"]
+objective_value_bits = "3ffdcac7d88d46ef"
+partial_derivative_bits = ["3fd7d43b1968071e", "bfd9045da9eaae18", "3fd7d43b1968071e", "bfd16c95a788841d", "bfd0c4e6077a3fb7", "bfd9045da9eaae18", "bfd16c95a788841d", "3fd1a95e09f9ef3b", "3fb276b8a7c22039", "3fd7d43b1968071e", "bfd0c4e6077a3fb7", "3fd1a95e09f9ef3b", "bfceb8436ed9fb0a", "3f749af1cb3b6b73", "bfd9045da9eaae18", "bfd16c95a788841d", "bfd0c4e6077a3fb7", "3fb276b8a7c22039", "bfceb8436ed9fb0a", "3f749af1cb3b6b73", "3fd7d43b1968071e", "3fd1a95e09f9ef3b", "3fb276b8a7c22039", "3f749af1cb3b6b73"]
+scalar_partial_derivative_bits = ["3ff7d43b1968071e", "bff2c3463f700292", "bfea22e07b4cc62c", "bfe927590b375f92", "3fea7e0d0ef6e6d9", "3fcbb214fba33056", "bfdeb8436ed9fb0a", "3f8ee86ab0d9212c"]
+mean_state_bits = ["3fcb901168b83d5c", "bfe0dd8ec19c7718", "3fe1428edb13dddc", "3fb0e97441315e7c", "bfd38dd907f18d86", "3fd481dddba3afcc", "3fd071844c3aec72", "bfd3de5961cf1068"]
+channel_term_bits = "3fc567cea8b965b3"
+parity_term_bits = "3ff89eb56454a9f2"
+binary_term_bits = "3fc3f8c4f90b8237"
+clipped_llr_bits = ["c034000000000000", "4031df21b219c7b4", "4027dea3ed752574", "4026e6268d41a394", "c027d4988ebffa0a", "c013165505027f28", "401d14c0f0e28e50", "3fd95b950bf43fc0"]
+
+[[cases]]
+case_index = 37
+state_bits = ["3fc2518ac3e8fbac", "bfd7b248d49af00e", "3fe89d7e22d7e82f", "bfec30965a4665d1", "3fc34a4de5f00724", "3fde2a5777fb3d42", "bfa2f7a1d4930a70", "bfbaec3a9dc77438", "3fdb48511513eb7e", "3f7d290c7c654980", "bfd0b892b6e4bbf0", "3fdb595f63991f76", "bfe8df1dcb0fb0a9", "3fe23ac5c0da3d37", "3fc2c0b5c7f0306c", "3fcf5fdcf4cf268c", "3fa0ed1c69c30aa0", "bfd8d7deb8853e00", "3fc0fbe0df2c9fbc", "bfde96061dbde86c", "3feb17e5e9d167fb", "3fd2e5e56808dbee", "bfea0cfb514a469b", "3f99097f93091300"]
+llr_bits = ["0000000000000000", "4007f6f47677b858", "3fdfd85894399b00", "c0241cdabfb13b04", "40301029efc8c1ee", "4038b0fdcb89f9d0", "4028736ef1756cb0", "c027c96ea18de664"]
+objective_value_bits = "40003500df609254"
+partial_derivative_bits = ["bf93c328730c5134", "bfc1ab3e4b7c2ec5", "bf93c328730c5134", "bf44e147c4de8a4b", "3fcd0f501ed53361", "bfc1ab3e4b7c2ec5", "bf44e147c4de8a4b", "bfd5d7e23a91007d", "bfda2611b0d15710", "bf93c328730c5134", "3fcd0f501ed53361", "bfd5d7e23a91007d", "bfd78674360a2c32", "3fd0049092bd1cc0", "bfc1ab3e4b7c2ec5", "bf44e147c4de8a4b", "3fcd0f501ed53361", "bfda2611b0d15710", "bfd78674360a2c32", "3fd0049092bd1cc0", "bf93c328730c5134", "bfd5d7e23a91007d", "bfda2611b0d15710", "3fd0049092bd1cc0"]
+scalar_partial_derivative_bits = ["bfb3c328730c5134", "bfda80dd713a4627", "bf5f51eba74dcf70", "3fe5cb7c171fe689", "bff061e9abecc05e", "bff39c8d449d014c", "bfe78674360a2c32", "3fe806d8dc1bab20"]
+mean_state_bits = ["3fdc420c6b4e2cd4", "3fb5208cb475dc8c", "bfccb576f87a6670", "bf9a742bce6c7ae0", "3fca58241820143a", "bfd08dd6c201f53c", "bfd4a025934488ba", "3fa3d5a3a3130880"]
+channel_term_bits = "3fd77d552da175a0"
+parity_term_bits = "3ff7b14934ce7f72"
+binary_term_bits = "3fc6cb19f4523e71"
+clipped_llr_bits = ["0000000000000000", "4007f6f47677b858", "3fdfd85894399b00", "c0241cdabfb13b04", "40301029efc8c1ee", "4034000000000000", "4028736ef1756cb0", "c027c96ea18de664"]
+
+[[cases]]
+case_index = 38
+state_bits = ["bfe87fd5166dd65a", "3fcfdc67f318de24", "bfe7f2ef595fd8e5", "bfe4d47b7d9e1ac7", "3fd76a16749e23a6", "bfe6fd965a1af213", "3fcb19aa874308b4", "3fe50144fa7bbe79", "3fc225fe7893fc64", "3f843fe5b5c12c80", "3fd20d9b1cfcf772", "3fdc14f078c552ae", "bfd433a591c8f268", "3fe22cf677c1821f", "3fb10b6f31bc6598", "bfe29cb7eccf5eb9", "bfe9841edb173a8f", "bfe84f2ce983284d", "3fce79b09115bdfc", "bfd808b6e3dff424", "bfe6a845c65af8e6", "3fc7b3437d269e1c", "bfe47784a4d2c362", "bfdcf4621aa0eb51"]
+llr_bits = ["8000000000000000", "c010308e12ea5254", "c025ccfdb9e4c439", "c00f018c8cb5cad0", "40280aca2ac30fac", "c0378c93e9afe304", "c0253edc5ba67f5c", "40117f732a4761e8"]
+objective_value_bits = "3fe088615a60074c"
+partial_derivative_bits = ["3f958fb0d3c7cc0c", "3fc4f80bda1a0de9", "3f958fb0d3c7cc0c", "3fcd3dd811599cd9", "3faa0d9f865c32ad", "3fc4f80bda1a0de9", "3fcd3dd811599cd9", "bfd05a01e1fc57ca", "3fdaf95ac6692474", "3f958fb0d3c7cc0c", "3faa0d9f865c32ad", "bfd05a01e1fc57ca", "3fd563184812c04e", "bfbad53549769610", "3fc4f80bda1a0de9", "3fcd3dd811599cd9", "3faa0d9f865c32ad", "3fdaf95ac6692474", "3fd563184812c04e", "bfbad53549769610", "3f958fb0d3c7cc0c", "bfd05a01e1fc57ca", "3fdaf95ac6692474", "bfbad53549769610"]
+scalar_partial_derivative_bits = ["3fb58fb0d3c7cc0c", "3fdf7411c72714de", "3fe5ee620d0335a3", "3fc38a37a4c52602", "bfe88702d2fa83af", "3ff43b0414cedb57", "3fe563184812c04e", "bfd41fe7f718f08c"]
+mean_state_bits = ["bfe1b282a7d468dd", "bfc131689ed19274", "bfd5c73085bdcf8d", "bfa98175b6de4568", "3fdb505eb9700a3a", "bfdad376a0209db8", "bfa3db3524f84da8", "bfb62ee5695279a0"]
+channel_term_bits = "bff1fe0993120754"
+parity_term_bits = "3ff7a329fa9ff0e4"
+binary_term_bits = "3fc4f8822d10d0ac"
+clipped_llr_bits = ["8000000000000000", "c010308e12ea5254", "c025ccfdb9e4c439", "c00f018c8cb5cad0", "40280aca2ac30fac", "c034000000000000", "c0253edc5ba67f5c", "40117f732a4761e8"]
+
+[[cases]]
+case_index = 39
+state_bits = ["bfe3e08aee8b47ec", "3fc3865117e685dc", "bfeb08efad41425e", "bfc88a26d9100b70", "bf7d3732a0ab1e80", "bfe61e615d03cb22", "bfe0817151563945", "bfe0375646a9daa2", "bfe3dc6fda8a2768", "bfe86a5043b092db", "3fc72a47e7e6cf7c", "bfe7e72e0486a081", "3feae5e3afae769f", "3fe712be0562a185", "bfd5b510b7e56386", "3feb7e27603da9cb", "3fe7c2500cb57f21", "3fe119cf6a587143", "bfd016b96f73c9e0", "3fda934a64184b02", "bfe5fa83fd06dd36", "3fe826e227d6c539", "bfc7b94d5fae0fcc", "bfe4629a6c238d52"]
+llr_bits = ["c032d284752f85d0", "4037c5414f741448", "4033d80a63e727a4", "c0386df420f893a4", "c030048c604b0260", "c01c232e6a5a17a8", "c017cb984698ae2c", "c02a0fd33d24bea7"]
+objective_value_bits = "3ff70eca461e070b"
+partial_derivative_bits = ["3fd515dde3f3d6f3", "bfd3fc7e7d5f5335", "3fd515dde3f3d6f3", "bfd81f24fc74fdd0", "3fda68c7b69e4c31", "bfd3fc7e7d5f5335", "bfd81f24fc74fdd0", "3fd5afc56e76e27c", "3fc2a99380755010", "3fd515dde3f3d6f3", "3fda68c7b69e4c31", "3fd5afc56e76e27c", "3fc5dfe0746dffc4", "3fd1077ad94d9547", "bfd3fc7e7d5f5335", "bfd81f24fc74fdd0", "3fda68c7b69e4c31", "3fc2a99380755010", "3fc5dfe0746dffc4", "3fd1077ad94d9547", "3fd515dde3f3d6f3", "3fd5afc56e76e27c", "3fc2a99380755010", "3fd1077ad94d9547"]
+scalar_partial_derivative_bits = ["3ff515dde3f3d6f3", "bfedfabdbc0efccf", "bff2175bbd57be5c", "3ff3ce95c8f6b925", "3ff043d412d929dd", "3fdbfe5d40aff818", "3fd5dfe0746dffc4", "3fe98b3845f45feb"]
+mean_state_bits = ["bfe75393b720fe97", "bfd2ba38f7533cf5", "3fa9e0ec83679e3c", "3fd38c4d16493dd7", "bfc54a2d84779d38", "bfb72d34c04df040", "3fd2da86f7f491ae", "3fc54d0bb9b9a244"]
+channel_term_bits = "bfc123e93f325fc3"
+parity_term_bits = "3ff6915e0607a5a3"
+binary_term_bits = "3fc50f4b3fe56b00"
+clipped_llr_bits = ["c032d284752f85d0", "4034000000000000", "4033d80a63e727a4", "c034000000000000", "c030048c604b0260", "c01c232e6a5a17a8", "c017cb984698ae2c", "c02a0fd33d24bea7"]
+
+[[cases]]
+case_index = 40
+state_bits = ["bfec493748a9ef2b", "3feb7116a648fdf5", "bfec493748a9ef2b", "bfe5c619c6b7d0cb", "3fa4f1cecd8d1210", "3feb7116a648fdf5", "bfe5c619c6b7d0cb", "3fced3b7968ed51c", "bfe01f29e8ba4c72", "bfec493748a9ef2b", "3fa4f1cecd8d1210", "3fced3b7968ed51c", "3fea9e5979add4a7", "3fdff6862c3f8716", "3feb7116a648fdf5", "bfe5c619c6b7d0cb", "3fa4f1cecd8d1210", "bfe01f29e8ba4c72", "3fea9e5979add4a7", "3fdff6862c3f8716", "bfec493748a9ef2b", "3fced3b7968ed51c", "bfe01f29e8ba4c72", "3fdff6862c3f8716"]
+llr_bits = ["c02d1db74c1c00ec", "4032d723c9982b44", "c034e3bbc9f69bae", "c03295cf5ba0ca82", "402d1dbc3f8733b0", "c036933323e63d3f", "c02c508b7db9d4b0", "c02a36e499db935e"]
+objective_value_bits = "bfd225f795489028"
+partial_derivative_bits = ["3fab98cc65d38f7c", "bfc3d158e314b9e5", "3fab98cc65d38f7c", "3fdcee7eb36b0430", "3fd21604914e2381", "bfc3d158e314b9e5", "3fdcee7eb36b0430", "bfd8e497329d5c30", "3fde0a4253a6ace4", "3fab98cc65d38f7c", "3fd21604914e2381", "bfd8e497329d5c30", "3fdb7806336842a3", "3fcf2166042e30f8", "bfc3d158e314b9e5", "3fdcee7eb36b0430", "3fd21604914e2381", "3fde0a4253a6ace4", "3fdb7806336842a3", "3fcf2166042e30f8", "3fab98cc65d38f7c", "bfd8e497329d5c30", "3fde0a4253a6ace4", "3fcf2166042e30f8"]
+scalar_partial_derivative_bits = ["3fcb98cc65d38f7c", "bfddba05549f16d8", "3ff5b2df06904324", "3feb2106d9f53542", "bff2ab7165f60524", "3ff687b1bebd01ab", "3feb7806336842a3", "3fe7590c8322a4ba"]
+mean_state_bits = ["bfec493748a9ef2b", "3feb7116a648fdf5", "bfe5c619c6b7d0cb", "3fa4f1cecd8d1210", "3fced3b7968ed51c", "bfe01f29e8ba4c72", "3fea9e5979add4a7", "3fdff6862c3f8716"]
+channel_term_bits = "c002910a5605b594"
+parity_term_bits = "3fff31a6158951cc"
+binary_term_bits = "3fb66f0b12ff5528"
+clipped_llr_bits = ["c02d1db74c1c00ec", "4032d723c9982b44", "c034000000000000", "c03295cf5ba0ca82", "402d1dbc3f8733b0", "c034000000000000", "c02c508b7db9d4b0", "c02a36e499db935e"]

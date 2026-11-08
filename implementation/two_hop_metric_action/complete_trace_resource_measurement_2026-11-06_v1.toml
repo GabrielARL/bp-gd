@@ -1,0 +1,640 @@
+approaches_bp_result = false
+architecture = "x86_64"
+blas_threads_per_child = 1
+capsule_or_service_created = false
+case_provider_imported = false
+cell_count = 4
+check_degree = 6
+checks = 5100
+classification = "synthetic complete-trace resource measurement; not scientific evidence or a registered wall budget"
+comparison_receiver_loaded = false
+cosine_llr_sha256 = "788f969501419fd533eb507a6ac36e78068b867bc1285857bca9029d4300b80a"
+cpu_name = "haswell"
+created_utc = "2026-11-06T08:25:24.814"
+edges = 30600
+experiment_id = "RQ2-TWO-HOP-POSITIVE-METRIC-001"
+graph_layer_attempt_counts = [1, 5, 53]
+graph_sha256 = "900ead13c4c5972bc1ed5cb99a6abf3a19a8f5d574f2ce4592007a8206c46bf0"
+group_count = 305952
+julia_threads_per_child = 1
+julia_version = "1.12.6"
+kernel = "Linux"
+omp_threads_per_child = 1
+path_count = 306000
+random_seed_uint64 = "8392298924965123905"
+registered_frames_opened = false
+repetition_count_per_cell = 3
+retained_or_fresh_data_opened = false
+schema_version = "rq2-two-hop-positive-metric-001/stage-c-complete-trace-resource-v1"
+scientific_result = false
+stage_c_activated = false
+synthetic_only = true
+truth_or_performance_scoring = false
+variable_degree = 3
+variables = 10200
+zero_llr_sha256 = "6d01559ce98858866c76c40b7f2415cd338142b7a4937f53e9f7094c79a1945e"
+
+[candidate_coefficients]
+beta = [-0.0989697111589398, -0.19129556359240465, -0.7058447635888634, -0.003689981657792354]
+role = "literal retained Stage-A provenance transcription; not a governance seal"
+theta_0 = 0.0
+
+[[cells]]
+arm = "candidate"
+cell = "candidate__cosine_update_cap"
+checker_schema_version = "rq2-two-hop-positive-metric-001/stage-c-trace-integrity-v1"
+child_peak_rss_bytes = 899579904
+child_process_seconds = 58.842292867
+coefficient_role = "literal retained Stage-A provenance transcription; not a governance seal"
+comparison_receiver_loaded = false
+decoder_schema_version = "rq2-two-hop-positive-metric-001/stage-c-decoder-source-preparation-v1"
+expected_accepted_updates = 30
+expected_attempted_updates = 30
+expected_raw_vector_payload_bytes = 69768000
+expected_state_record_count = 31
+expected_status = "update_cap_reached"
+expected_trial_record_count = 30
+fixture = "cosine_update_cap"
+graph_build_seconds = 0.23454365
+graph_layer_attempt_counts = [1, 5, 53]
+graph_sha256 = "900ead13c4c5972bc1ed5cb99a6abf3a19a8f5d574f2ce4592007a8206c46bf0"
+group_count = 305952
+llr_sha256 = "788f969501419fd533eb507a6ac36e78068b867bc1285857bca9029d4300b80a"
+path_count = 306000
+registered_frames_opened = false
+repetition_count = 3
+retained_or_fresh_data_opened = false
+trace_limit_bytes = 100663296
+truth_or_performance_scoring = false
+
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 1
+    serialization_sha256 = "1b67248cfaf4aed65e06cf9454a62a450193c53a10e6a1102401bfe04c364132"
+    serialized_bytes = 69832711
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "707dcada4c2f0169db013085cad2cf1dbff6e6f4b19d53257dacb641dc52007d"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755795480
+        compile_seconds = 0.0
+        gc_seconds = 0.55226451
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.636535694
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938124672
+        compile_seconds = 0.0
+        gc_seconds = 1.167424566
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 6.343178884
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215385528
+        compile_seconds = 0.0
+        gc_seconds = 0.004293468
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.131214192
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 2
+    serialization_sha256 = "256273cc0d1a558237d07457b01d6f1da612d5e498d682395ead87fe0f36d6e8"
+    serialized_bytes = 69832723
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "707dcada4c2f0169db013085cad2cf1dbff6e6f4b19d53257dacb641dc52007d"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755757928
+        compile_seconds = 0.0
+        gc_seconds = 0.51609776
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.525186509
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938061224
+        compile_seconds = 0.0
+        gc_seconds = 0.754331831
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.812285221
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215385576
+        compile_seconds = 0.0
+        gc_seconds = 0.003230007
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.127563021
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 3
+    serialization_sha256 = "a791a1b79aec0476aae617d170b6408f692969bc81891700b52c0f0569613b3d"
+    serialized_bytes = 69832735
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "707dcada4c2f0169db013085cad2cf1dbff6e6f4b19d53257dacb641dc52007d"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755759400
+        compile_seconds = 0.0
+        gc_seconds = 0.555124077
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.665282132
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938060768
+        compile_seconds = 0.0
+        gc_seconds = 0.714333829
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.901579432
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215451200
+        compile_seconds = 0.0
+        gc_seconds = 0.003206259
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.118875157
+
+    [cells.source_sha256]
+    "benchmark_complete_trace_resources.jl" = "25240c32ea017fbce89f20c84400a2b9d83e2101f1115de2fb719be13d9f38a7"
+    "compound_objective_jc.jl" = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+    "stage_c_decoder_source.jl" = "93b9de632ce25b60de67e39d213a24deb0b63a8c725beb6d4b8ef315838dc06f"
+    "stage_c_trace_integrity.jl" = "99bab477b0ecae05fc61306c89bf3077aa20dbb2c39527355934c76b6e99dc26"
+    "two_hop_positive_metric.jl" = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+[[cells]]
+arm = "exact_zero_lower_endpoint"
+cell = "lower_endpoint__cosine_update_cap"
+checker_schema_version = "rq2-two-hop-positive-metric-001/stage-c-trace-integrity-v1"
+child_peak_rss_bytes = 894263296
+child_process_seconds = 59.704967455
+coefficient_role = "exact-zero registered lower endpoint"
+comparison_receiver_loaded = false
+decoder_schema_version = "rq2-two-hop-positive-metric-001/stage-c-decoder-source-preparation-v1"
+expected_accepted_updates = 30
+expected_attempted_updates = 30
+expected_raw_vector_payload_bytes = 69768000
+expected_state_record_count = 31
+expected_status = "update_cap_reached"
+expected_trial_record_count = 30
+fixture = "cosine_update_cap"
+graph_build_seconds = 0.202053651
+graph_layer_attempt_counts = [1, 5, 53]
+graph_sha256 = "900ead13c4c5972bc1ed5cb99a6abf3a19a8f5d574f2ce4592007a8206c46bf0"
+group_count = 305952
+llr_sha256 = "788f969501419fd533eb507a6ac36e78068b867bc1285857bca9029d4300b80a"
+path_count = 306000
+registered_frames_opened = false
+repetition_count = 3
+retained_or_fresh_data_opened = false
+trace_limit_bytes = 100663296
+truth_or_performance_scoring = false
+
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 1
+    serialization_sha256 = "21ad4fe261c034929a913dcfb7f3eba9732b387b1aba04d2ba27654d70341398"
+    serialized_bytes = 69832739
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "e31bf4091785af29baf83dff1792bee478d872b93821dde24daade91371d4371"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755754840
+        compile_seconds = 0.0
+        gc_seconds = 0.558752466
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.655900948
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938061408
+        compile_seconds = 0.0
+        gc_seconds = 1.160626086
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 6.449928393
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215385368
+        compile_seconds = 0.0
+        gc_seconds = 0.004565911
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.138874787
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 2
+    serialization_sha256 = "c57adc7007d4dd9fd69c0aaa58952f5983a32c954850287fa7ec3eec03dac644"
+    serialized_bytes = 69832731
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "e31bf4091785af29baf83dff1792bee478d872b93821dde24daade91371d4371"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755755400
+        compile_seconds = 0.0
+        gc_seconds = 0.551499358
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.617806449
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938057864
+        compile_seconds = 0.0
+        gc_seconds = 0.705619993
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.777806571
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215385400
+        compile_seconds = 0.0
+        gc_seconds = 0.003018572
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.117726604
+    [[cells.repetitions]]
+    accepted_updates = 30
+    attempted_updates = 30
+    first_parity_valid_update = -1
+    raw_vector_payload_bytes = 69768000
+    repetition = 3
+    serialization_sha256 = "b6296f9e74596706cb1bea5241975563691e09e27602473d0e1608e6f393214d"
+    serialized_bytes = 69832723
+    state_record_count = 31
+    status = "update_cap_reached"
+    terminal_state_sha256 = "e31bf4091785af29baf83dff1792bee478d872b93821dde24daade91371d4371"
+    trace_summary_bytes = 69861148
+    trial_record_count = 30
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 1755755752
+        compile_seconds = 0.0
+        gc_seconds = 0.552442918
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 5.762043653
+
+        [cells.repetitions.decode]
+        allocated_bytes = 1938057960
+        compile_seconds = 0.0
+        gc_seconds = 0.728929848
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 6.057405069
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 215385416
+        compile_seconds = 0.0
+        gc_seconds = 0.005077793
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.208732212
+
+    [cells.source_sha256]
+    "benchmark_complete_trace_resources.jl" = "25240c32ea017fbce89f20c84400a2b9d83e2101f1115de2fb719be13d9f38a7"
+    "compound_objective_jc.jl" = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+    "stage_c_decoder_source.jl" = "93b9de632ce25b60de67e39d213a24deb0b63a8c725beb6d4b8ef315838dc06f"
+    "stage_c_trace_integrity.jl" = "99bab477b0ecae05fc61306c89bf3077aa20dbb2c39527355934c76b6e99dc26"
+    "two_hop_positive_metric.jl" = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+[[cells]]
+arm = "candidate"
+cell = "candidate__zero_immediate_stall"
+checker_schema_version = "rq2-two-hop-positive-metric-001/stage-c-trace-integrity-v1"
+child_peak_rss_bytes = 716857344
+child_process_seconds = 25.618448277
+coefficient_role = "literal retained Stage-A provenance transcription; not a governance seal"
+comparison_receiver_loaded = false
+decoder_schema_version = "rq2-two-hop-positive-metric-001/stage-c-decoder-source-preparation-v1"
+expected_accepted_updates = 0
+expected_attempted_updates = 1
+expected_raw_vector_payload_bytes = 11750400
+expected_state_record_count = 1
+expected_status = "line_search_stalled"
+expected_trial_record_count = 13
+fixture = "zero_immediate_stall"
+graph_build_seconds = 0.209979872
+graph_layer_attempt_counts = [1, 5, 53]
+graph_sha256 = "900ead13c4c5972bc1ed5cb99a6abf3a19a8f5d574f2ce4592007a8206c46bf0"
+group_count = 305952
+llr_sha256 = "6d01559ce98858866c76c40b7f2415cd338142b7a4937f53e9f7094c79a1945e"
+path_count = 306000
+registered_frames_opened = false
+repetition_count = 3
+retained_or_fresh_data_opened = false
+trace_limit_bytes = 16777216
+truth_or_performance_scoring = false
+
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 1
+    serialization_sha256 = "167ec896637609147145198e26541f7af28e2c9c489a3eeadacae3dba7024348"
+    serialized_bytes = 11758594
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253232736
+        compile_seconds = 0.0
+        gc_seconds = 0.074010265
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.498626413
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277440744
+        compile_seconds = 0.0
+        gc_seconds = 0.264102618
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.702837493
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658528
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.020047976
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 2
+    serialization_sha256 = "6040237d90332a657717b61318e0a4e13ae42a3e9728943d6a8be4a7de91a599"
+    serialized_bytes = 11758578
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253231048
+        compile_seconds = 0.0
+        gc_seconds = 0.080690572
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.485125395
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277437488
+        compile_seconds = 0.0
+        gc_seconds = 0.071352773
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.492143384
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658496
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.004140829
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 3
+    serialization_sha256 = "5b91e4274b3241edacd58c47c7750d7bcbac97f89b553a8d92ed9d55f931a606"
+    serialized_bytes = 11758570
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253230728
+        compile_seconds = 0.0
+        gc_seconds = 0.082611902
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.474527414
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277437488
+        compile_seconds = 0.0
+        gc_seconds = 0.070472879
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.462858662
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658400
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.004348261
+
+    [cells.source_sha256]
+    "benchmark_complete_trace_resources.jl" = "25240c32ea017fbce89f20c84400a2b9d83e2101f1115de2fb719be13d9f38a7"
+    "compound_objective_jc.jl" = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+    "stage_c_decoder_source.jl" = "93b9de632ce25b60de67e39d213a24deb0b63a8c725beb6d4b8ef315838dc06f"
+    "stage_c_trace_integrity.jl" = "99bab477b0ecae05fc61306c89bf3077aa20dbb2c39527355934c76b6e99dc26"
+    "two_hop_positive_metric.jl" = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+[[cells]]
+arm = "exact_zero_lower_endpoint"
+cell = "lower_endpoint__zero_immediate_stall"
+checker_schema_version = "rq2-two-hop-positive-metric-001/stage-c-trace-integrity-v1"
+child_peak_rss_bytes = 719220736
+child_process_seconds = 24.966817307
+coefficient_role = "exact-zero registered lower endpoint"
+comparison_receiver_loaded = false
+decoder_schema_version = "rq2-two-hop-positive-metric-001/stage-c-decoder-source-preparation-v1"
+expected_accepted_updates = 0
+expected_attempted_updates = 1
+expected_raw_vector_payload_bytes = 11750400
+expected_state_record_count = 1
+expected_status = "line_search_stalled"
+expected_trial_record_count = 13
+fixture = "zero_immediate_stall"
+graph_build_seconds = 0.20212363
+graph_layer_attempt_counts = [1, 5, 53]
+graph_sha256 = "900ead13c4c5972bc1ed5cb99a6abf3a19a8f5d574f2ce4592007a8206c46bf0"
+group_count = 305952
+llr_sha256 = "6d01559ce98858866c76c40b7f2415cd338142b7a4937f53e9f7094c79a1945e"
+path_count = 306000
+registered_frames_opened = false
+repetition_count = 3
+retained_or_fresh_data_opened = false
+trace_limit_bytes = 16777216
+truth_or_performance_scoring = false
+
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 1
+    serialization_sha256 = "0c69e8244e846c08e2630433d66f62501b3b44fc4c73b29b2ccd8bdaead64db3"
+    serialized_bytes = 11758586
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253232544
+        compile_seconds = 0.0
+        gc_seconds = 0.06715789
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.496997389
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277441032
+        compile_seconds = 0.0
+        gc_seconds = 0.25020098
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.686601828
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658512
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.019389671
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 2
+    serialization_sha256 = "7c226f38621e54b298e9547cdea89321012175aee044aa4c5980ee3437279dd8"
+    serialized_bytes = 11758582
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253227816
+        compile_seconds = 0.0
+        gc_seconds = 0.079635009
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.485375211
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277432944
+        compile_seconds = 0.0
+        gc_seconds = 0.068922843
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.475297887
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658512
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.004158692
+    [[cells.repetitions]]
+    accepted_updates = 0
+    attempted_updates = 1
+    first_parity_valid_update = 0
+    raw_vector_payload_bytes = 11750400
+    repetition = 3
+    serialization_sha256 = "4e813a880747b7cd130d28016c3494bdaeb549de76acf65f0721aa5cfb3e3020"
+    serialized_bytes = 11758578
+    state_record_count = 1
+    status = "line_search_stalled"
+    terminal_state_sha256 = "ded7839ab26a2332c537f051ba5ca507b56b469c788a6bcb4c07a4a5f7b36915"
+    trace_summary_bytes = 11763554
+    trial_record_count = 13
+
+        [cells.repetitions.complete_trace_check]
+        allocated_bytes = 253227944
+        compile_seconds = 0.0
+        gc_seconds = 0.079257009
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.46804623
+
+        [cells.repetitions.decode]
+        allocated_bytes = 277432976
+        compile_seconds = 0.0
+        gc_seconds = 0.066607986
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.45590544
+
+        [cells.repetitions.serialization]
+        allocated_bytes = 34658496
+        compile_seconds = 0.0
+        gc_seconds = 0.0
+        lock_conflicts = 0
+        recompile_seconds = 0.0
+        seconds = 0.004200261
+
+    [cells.source_sha256]
+    "benchmark_complete_trace_resources.jl" = "25240c32ea017fbce89f20c84400a2b9d83e2101f1115de2fb719be13d9f38a7"
+    "compound_objective_jc.jl" = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+    "stage_c_decoder_source.jl" = "93b9de632ce25b60de67e39d213a24deb0b63a8c725beb6d4b8ef315838dc06f"
+    "stage_c_trace_integrity.jl" = "99bab477b0ecae05fc61306c89bf3077aa20dbb2c39527355934c76b6e99dc26"
+    "two_hop_positive_metric.jl" = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+
+[resource_limits]
+boundary = "trace and serialization engineering limits only; not peak-RSS, allocation, scientific-run, or late-stall caps"
+cosine_update_cap_trace_bytes = 100663296
+current_schema_engineering_bytes = 402653184
+current_schema_max_raw_vector_payload_bytes = 334152000
+zero_immediate_stall_trace_bytes = 16777216
+
+[source_sha256]
+"benchmark_complete_trace_resources.jl" = "25240c32ea017fbce89f20c84400a2b9d83e2101f1115de2fb719be13d9f38a7"
+"compound_objective_jc.jl" = "6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0"
+"stage_c_decoder_source.jl" = "93b9de632ce25b60de67e39d213a24deb0b63a8c725beb6d4b8ef315838dc06f"
+"stage_c_trace_integrity.jl" = "99bab477b0ecae05fc61306c89bf3077aa20dbb2c39527355934c76b6e99dc26"
+"two_hop_positive_metric.jl" = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+

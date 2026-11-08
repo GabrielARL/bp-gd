@@ -1,0 +1,43 @@
+schema_version = "two-hop-metric-action-extract/retained-stage-a-provenance-v1"
+classification = "retained Stage-A provenance transcription; not a governance seal"
+experiment_id = "RQ2-TWO-HOP-POSITIVE-METRIC-001"
+stage = "retained_fit"
+status = "complete_valid"
+terminal_classification = "retained_fit_complete_nonzero_two_hop"
+governance_seal = false
+fresh_inputs_opened = false
+fresh_direction_screen_launched = false
+candidate_decoder_run = false
+recovery_scored = false
+ber_or_fer_scored = false
+
+[source]
+original_absolute_path = "/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001/two_hop_positive_metric.jl"
+sha256 = "8f5edffbd6a1e817422da857fc4c78d095e682b42c6cebfdc429437de7e71efb"
+
+[historical_test]
+original_absolute_path = "/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001/test_two_hop_positive_metric.jl"
+sha256 = "fd916d8d553bef1e172112981eff704f3e30fd6bd8655e62c2ec39fe166bc66c"
+
+[retained_population]
+six_db_frames = "70721:70920"
+one_point_five_db_frames = "70921:71120"
+use = "teacher-labelled retained development fit only"
+
+[coefficients]
+order = ["theta_0", "beta_0", "beta_1", "beta_2", "beta_3"]
+values = [0.0, -0.098969711158939794, -0.19129556359240465, -0.70584476358886339, -0.0036899816577923542]
+active_set_mask = 33
+all_beta_zero = false
+retained_development_objective = 648.0300474414139
+identity_only_objective = 2301.243959672738
+
+[historical_result]
+absolute_root = "/home/gabiel/Documents/GitHub/sp_gd_admm-rq2-common-coordinate-state-update-20261104/experiments/rq2_two_hop_positive_metric_001_runtime/results/2026-11-06_v5"
+completion_sha256 = "1dbfb449a6963da2d6d409f86d79a758ce4bb0a62914c446f4810a6eedf73772"
+science_file_sha256 = "95c56e447953154b136f2b0ed95055d0f868198c58e7303d3bb28f44ef4552c7"
+scientific_sha256 = "b14d0afb76235ef43d524c3a93c56c2d064ce40db69666cc57314ecc1c3f52c5"
+coefficients_file_sha256 = "8759155b97945a6e3e7c91c16fc5263355b2f1333772816f4d809449ec00d373"
+fit_table_file_sha256 = "6fba4f88463f9dad3402a90022914208b8cf37da0b0a8ae44b70a88c2b2fe22a"
+job_gate_file_sha256 = "b6f960f92e7dc56f2ae47fc5f3957d7bafab98138bbe9411b1665f8dce8d83ef"
+replay_comparison_file_sha256 = "6868df0afd4022ed82426a26168aaef91f11d25a33cb31bd9f458ea2b97e9639"

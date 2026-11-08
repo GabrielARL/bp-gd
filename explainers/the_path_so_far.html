@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Path So Far</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="data:text/css,">
+<style>
+/* Layout: the campaign's path as a strip across the top of the stage; the current stop's mechanism drawn under it; the storyteller's paragraph below. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --fg:#161b22; --muted:#5a6572; --line:#d6dde6; --grid:#e8edf3;
+  --ref:#2a78d6; --free:#eb6834; --bp:#1baf7a; --good:#0ca30c; --bad:#d03b3b;
+  --ref-wash:rgba(42,120,214,.12); --free-wash:rgba(235,104,52,.12); --bad-wash:rgba(208,59,59,.12); --bp-wash:rgba(27,175,122,.14);
+  --serif:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121519; --surface:#1a1f26; --fg:#e9ecf0; --muted:#a4aeb9; --line:#303944; --grid:#242c35;
+    --ref:#3987e5; --free:#d95926; --bp:#199e70; --good:#0ca30c; --bad:#d03b3b;
+    --ref-wash:rgba(57,135,229,.18); --free-wash:rgba(217,89,38,.18); --bad-wash:rgba(208,59,59,.2); --bp-wash:rgba(25,158,112,.2);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121519; --surface:#1a1f26; --fg:#e9ecf0; --muted:#a4aeb9; --line:#303944; --grid:#242c35;
+  --ref:#3987e5; --free:#d95926; --bp:#199e70; --good:#0ca30c; --bad:#d03b3b;
+  --ref-wash:rgba(57,135,229,.18); --free-wash:rgba(217,89,38,.18); --bad-wash:rgba(208,59,59,.2); --bp-wash:rgba(25,158,112,.2);
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--serif);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.wrap.wide-scene{max-width:1280px}
+header{padding-block:28px 4px;display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:34px;font-weight:600;line-height:1.15;margin:0;text-wrap:balance}
+.stand{color:var(--muted);max-width:65ch;margin:0}
+.scene-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.scene-head h2{font-size:24px;font-weight:600;margin:0;text-wrap:balance}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow-x:auto;position:relative}
+.stage svg{display:block;width:100%;min-width:640px;height:auto;font-family:var(--mono);font-size:13px}
+.stage text{fill:var(--fg)}
+.stage .m{fill:var(--muted)}
+.stage .hair{stroke:var(--line);stroke-width:1}
+.stage .lbl{font-size:12px}
+.stage .sm{font-size:11px}
+.stage .stop{font-size:8px}
+.stage .big{font-size:20px;font-weight:500}
+.fade{opacity:0;transition:opacity .45s ease}
+.fade.on{opacity:1}
+.reduce .fade{transition:none}
+.narr{max-width:65ch;display:flex;flex-direction:column;gap:12px}
+.narr p{margin:0}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-block:14px 0}
+button{font-family:var(--mono);font-size:13px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible{outline:2px solid var(--ref);outline-offset:2px}
+button[disabled]{opacity:.45;cursor:default}
+.dots{display:flex;gap:6px;margin-inline:auto}
+.dots button{width:12px;height:12px;padding:0;border-radius:50%;background:var(--line);border:none}
+.dots button.cur{background:var(--ref)}
+.dots button:hover{background:var(--muted)}
+footer{color:var(--muted);font-size:14px;max-width:65ch;border-top:1px solid var(--line);padding-top:16px}
+.route-intro{padding:0 22px 14px;margin:0;font:14px/1.5 var(--mono);color:var(--muted)}
+.route-columns{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;padding:0 22px 22px}
+.route-panel{min-width:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.route-panel h3{margin:0;padding:14px 16px 4px;font:600 19px/1.3 var(--serif)}
+.route-panel .panel-note{margin:0;padding:0 16px 12px;font:12px/1.5 var(--mono);color:var(--muted)}
+.historical-head,.historical-rung{display:grid;grid-template-columns:30px minmax(0,1fr) 44px 44px;gap:8px;align-items:center}
+.historical-head{padding:7px 14px;background:var(--grid);font:11px/1.5 var(--mono);color:var(--muted)}
+.historical-head span:nth-last-child(-n+2),.historical-rung .recovery{text-align:right}
+.historical-list,.controlled-list{list-style:none;padding:0;margin:0}
+.historical-rung{position:relative;min-height:42px;padding:8px 14px;border-bottom:1px solid var(--line);font:13px/1.4 var(--mono)}
+.historical-rung::before{content:'';position:absolute;left:27px;top:0;bottom:0;width:1px;background:var(--muted)}
+.historical-rung .rung-number{position:relative;display:grid;place-items:center;width:26px;height:26px;border:1px solid var(--muted);border-radius:4px;background:var(--surface)}
+.historical-rung.endpoint{background:var(--ref-wash)}
+.historical-jump{padding:11px 14px;border-left:4px solid var(--bad);background:var(--bad-wash);font:13px/1.5 var(--mono)}
+.historical-jump strong,.historical-effect strong{display:block}
+.historical-effect{padding:10px 14px;border-left:4px solid var(--bp);background:var(--bp-wash);font:12px/1.5 var(--mono)}
+.route-legend{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 12px;font:11px/1.5 var(--mono)}
+.route-tag{display:inline-block;padding:2px 6px;border-radius:4px;border:1px solid var(--line);font:10px/1.5 var(--mono);letter-spacing:.02em}
+.route-tag.identity{background:var(--ref-wash);border-color:var(--ref)}
+.route-tag.measured{background:var(--bp-wash);border-color:var(--bp)}
+.route-tag.pending{border-color:var(--free);border-style:dashed;background:var(--free-wash)}
+.controlled-list{padding:0 14px 14px}
+.controlled-step{position:relative;margin:0 0 18px 14px;padding:9px 12px 10px 32px;border:1px solid var(--bp);border-radius:6px;background:var(--bp-wash);font:12px/1.45 var(--mono)}
+.controlled-step::after{content:'↑';position:absolute;bottom:-20px;left:10px;font-size:17px;color:var(--muted)}
+.controlled-step:last-child{margin-bottom:0}
+.controlled-step:last-child::after{display:none}
+.controlled-step.identity,.controlled-step.reference{border-color:var(--ref);background:var(--ref-wash)}
+.controlled-step.pending{border-style:dashed;border-color:var(--free);background:var(--surface)}
+.controlled-step .level{position:absolute;left:-14px;top:11px;display:grid;place-items:center;width:27px;height:27px;border:1px solid currentColor;border-radius:50%;background:var(--surface);font-weight:500}
+.controlled-step h4{margin:0 0 3px;font:500 13px/1.4 var(--mono)}
+.controlled-step p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.route-boundary{margin:0 22px 16px;padding:12px 16px;border:1px solid var(--line);border-radius:6px;font:13px/1.55 var(--mono);background:var(--grid)}
+.route-boundary strong{display:block}
+.route-boundary.pending{border-style:dashed;border-color:var(--free);background:var(--free-wash)}
+.route-next{margin:0 22px 22px;font:14px/1.5 var(--mono)}
+.route-next a{color:var(--ref)}
+.diagnosis{padding:0 22px 22px;display:grid;gap:16px}
+.diagnosis-intro{margin:0;font:14px/1.6 var(--mono);color:var(--muted)}
+.diagnosis-source{padding:14px 18px;border:1px solid var(--ref);border-radius:8px;background:var(--ref-wash)}
+.diagnosis-source h3,.hypothesis h3,.ber-objective h3{margin:0 0 8px;font:600 19px/1.3 var(--serif)}
+.diagnosis-source p,.hypothesis p,.ber-objective p{margin:6px 0 0;font-size:15px;line-height:1.5}
+.diagnosis-arrow{margin:-8px 0;text-align:center;font:25px/1 var(--mono);color:var(--muted)}
+.hypotheses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hypothesis{padding:16px;border:1px dashed var(--free);border-radius:8px;background:var(--free-wash)}
+.hypothesis-number{display:inline-grid;place-items:center;width:28px;height:28px;border:1px solid var(--free);border-radius:50%;margin-bottom:10px;font:14px var(--mono)}
+.diagnosis-caution{margin:0;padding:12px 16px;border-left:4px solid var(--free);background:var(--grid);font-size:14px;line-height:1.55}
+.ber-objective{padding:16px 18px;border:1px solid var(--bp);border-radius:8px;background:var(--bp-wash)}
+.diagnosis-link{color:var(--ref)}
+@media (max-width:920px){.route-columns{grid-template-columns:1fr}.route-intro,.route-columns{padding-left:14px;padding-right:14px}.route-boundary,.route-next{margin-left:14px;margin-right:14px}}
+@media (max-width:680px){.hypotheses{grid-template-columns:1fr}.diagnosis{padding-left:14px;padding-right:14px}.dots{flex-wrap:wrap;justify-content:center}}
+@media (max-width:520px){h1{font-size:28px}.scene-head h2{font-size:20px}body{font-size:16px}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">BP versus projected GD · the campaign's path · updated 7 November 2026</div>
+  <h1>The Path So Far</h1>
+  <p class="stand"><strong>7 November 2026 operational update.</strong> The corrected v11 range-audit retry <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-ACTIVATION-002-PATH-CORRECTION-RETRY-001</code> was approved, materialized, and consumed exactly once. It completed all 17 filesystem roots and every registered Git ref without opening retained or fresh scientific input. The terminal result failed on two registered gates: one mutable route-ledger sentence repeated the already registered campaign interval, and a recorded coordinator field was 6,140,592 KiB against the unchanged 2,097,152-KiB cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands. All source, support, inventory, snapshot, and dormant-Stage-C gates passed with zero scan failures. No manifest, decoder run, or recovery evidence was produced, and every downstream step remains stopped.</p>
+  <p class="stand"><strong>Source-only remediation update.</strong> Remediation-002 was approved and completed on 7 November 2026. Its true-fork worker, exact <code>wait4()</code> accounting, fail-closed publisher, 79/79 synthetic tests, and 13/13 source checks passed. A no-result rehearsal reproduced the four inventories embedded in the failed v11 artifact while formal activation, live-provider traversal, and formal-result publication stayed false. Worker self and <code>wait4()</code> both measured 210,828 KiB against the unchanged 2,097,152-KiB cap; elapsed time was 6,923 ms against 1,800,000 ms. This is not a formal scan or scientific result. Activation-002 and closure-002 cannot be reused.</p>
+  <p class="stand"><strong>Active terminal target.</strong> At each of the untouched 6-dB and 1.5-dB levels, the frozen candidate and native exact sum-product BP process the same registered 200 cases, holding fixed the parity-check matrix, transmitted word, noise realization, and vector of channel LLRs. If <code>C_s</code> and <code>B_s</code> are their respective transmitted-word recovery counts, the requirement is <code>C_s &gt;= B_s - 30</code> within 30 candidate updates and the registered bounded-degree <em>O</em>(<em>E</em>) work envelope. Candidate recovery above BP is allowed; the candidate never calls BP at inference. Wrong valid codewords, exact-zero readout ties, or nondeterministic replay fail independently of that count. Solver development and selection must not use the reserved confirmation cases.</p>
+  <p class="stand"><strong>Solver-selection boundary.</strong> The registered noisy hard-bit and ten-start projected-gradient mechanisms are already closed at 1.5 dB, so those exact mechanisms will not be repeated. Because <em>J</em><sub>C</sub>(<em>z</em>) = <em>J</em>(<em>Cz</em>) is constant on ker <em>C</em>, any barrier must be certified in the quotient represented by the mean coordinates <em>u</em> = <em>Cz</em>. A deterministic perturbation of the continuous state becomes eligible only after development evidence certifies a wrong-readout region <em>W</em>, a positive boundary gap in <em>u</em>-space, and that the registered finite projected trials cannot jump across it to an accepted lower endpoint.</p>
+  <p class="stand">
+    One observation, two research questions, and two routes: a historical ladder with a confounded jump, and a controlled route with verified comparisons and visible gaps. The campaign diagnosed the failed finite-budget trajectories, established a fixed-matrix mathematical boundary, and independently closed a sealed 25-parameter scalar-energy family at its registered low-SNR direction gates. The selected successor changes the gradient geometry through a state-dependent symmetric positive-definite matrix while retaining the objective function, coordinates, initialization, projection, step rule, readout, and work limit.
+    Two complete-valid 6-dB factorials also close the earlier offset questions. The first isolates the gain to use of retained offsets in the parity calculation: 163/200 words recovered versus 107/200 without that use, while offset-induced projection bounds alone give 106/200 and add nothing to the 163/200 arm. The second transfers the role of check assignment: on fresh frames, the as-constructed assignment recovers 174/200 with the first adopted offsets frozen and 165/200 with later replacement, while a fixed within-bit derangement gives 61/200 and 70/200. The registered replacement-versus-freezing equivalence gate does not pass. These are scoped causal results for constructed projected-gradient variants, not evidence that the offsets are BP messages or that the construction approaches BP across signal-to-noise ratios.
+    Three historical launches stopped before fitting: v1-r1 on Julia world-age dispatch, v2 on sealed-graph adaptation, and v3 on Stage-A callable-provider dispatch. V4 crossed those boundaries and reproduced its retained fit in replay, but the production constructor rejected its tiny negative <code>theta_0</code>. V5 repaired only that active-face numerical representation, passed all 11 registered Stage-A source-only suites and an independent retained Stage-A immutable-capsule audit, and ran on the same 400 retained frames.
+    V5 replay ended at 02:17:14.030 CST on 6 November 2026 and terminal writing ended at 02:17:14.606 CST. The independent terminal verifier passed 3,797 checks with classification <code>retained_fit_complete_nonzero_two_hop</code>; primary and replay bytes agree and canonical science SHA-256 is <code>b14d0afb76235ef43d524c3a93c56c2d064ce40db69666cc57314ecc1c3f52c5</code>. This is a complete-valid teacher-labelled retained-development fit, not independent direction validation or decoder-performance evidence.
+    The reviewed coefficient-intake configuration and narrow intake authorization are now materialized, and the live intake contract returns the nonzero V5 coefficients while every Stage-B, fresh-input, decoder, scoring, update, and retuning permission remains false. The signed-zero repair is covered by 28 scaffold tests plus 23 source-only sealer tests: canonical <code>+0.0</code> passes and either split-field <code>-0.0</code> fails. The preserved v10 range-audit producer validator passed 10/10 source/provenance checks and 61/61 synthetic tests. Its ledger requires four ordered canonical JSONL streams, closed 175-field result and 23-field v2 activation keysets, complete inventories, and internal cross-consistency; the producer alone does not establish live truth for a fully coherent rewrite. It binds the exact 13-member support-source registration—twelve Stage-B support files plus the hard-pinned, TOML-parsed dormant Stage-C boundary. That closure is approved at identity <code>c2ef2d0f77d1fc441e532c78dbf7d4917c4ef8defb948f0315b1c659a71d4403</code>, and its registration record has raw SHA-256 <code>fb8bab4d00b08e88b34713c9eb77414d9cc0ef874e59b8d9712832a9db459c4e</code>. The approved first live scan failed closed: its internally consistent 175-field record has SHA-256 <code>46d38209d89a6bd0a51f1008fa68cbde26033ecf8954f3b2750c5e5e980c510f</code>, status <code>collision_or_audit_failure</code>, 31 collision records in six groups, and recorded RSS of 6,437,576 KiB against the 2,097,152-KiB cap. All source, support, inventory, and snapshot gates passed with zero scan failures; fresh inputs and Stage C remained closed. Review found no competing frame reservation or scientific frame consumption, but that diagnosis cannot convert the failed contract into a pass. The approved source-only remediation <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-REMEDIATION-001</code> is implemented: the prospective v11 preparation passes 11/11 source/provenance checks and 70/70 synthetic tests, closes the result to 183 fields, binds exact provenance for the 27 reviewed historical/test non-registration records, uses bounded streaming parsing for <code>.json</code> files; large structural <code>.txt</code> and suffixless documents remain isolated in helpers and component-gated rather than claimed as streaming; and it records coordinator and waited-child lifetime peaks separately from per-helper peaks; each helper peak is stabilized after parsing and response serialization, while the post-wait child observation is conservative through process exit. It did not rerun or alter the preserved v10 failure and does not claim simultaneous process-tree RSS. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-002</code> is approved and materialized at registration identity <code>7a796e142cd263e36c994854ea377841c6cddb262a1534690902d7c4b0681d66</code>, with registration-record raw SHA-256 <code>d3e8acb2b91aeb79788fb55d1134a4e653ee091cf2ec67a580fe4d69545d77c2</code>; all its live permissions are false. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-ACTIVATION-002</code> was materialized and consumed by the interrupted v11 scan after its pre-scan gates passed and it reached filesystem root 5 of 17. No range result was published and no scientific input opened. The path-correction retry was approved, materialized, and consumed exactly once. Its terminal result (SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>) failed on one documentary self-collision and a recorded coordinator field above the RSS cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands; no scientific input opened and no manifest was created. The final operational source preparation now contains the fail-closed provider, coefficient loader, direction-screen runner, writer, telemetry, preflight, and retained-only callback. A separate Stage-B execution-envelope preparation contains prospective source validation, wall benchmarking, capsule build and audit, authorization checking, supervision, and an inert service template. Its 21-member inert-source validator passes, and its pinned Python 3.11 suite passes 76/76 tests. The exact downstream range bundle remains three files. Builder and independent auditor use no-follow component walks, retain physical root identities, reject aliases, recompute containment, rerun the live worktree, ref, descriptor-retained filesystem, and Git-blob inventories, recompute hashes, object IDs, and fingerprints, compare all four regenerated canonical payloads byte for byte, and repeat repository-identity and post-Git-metadata checks. The scientific path remains disabled: no complete-valid later collision audit, retained-only wall measurement, built and independently audited Stage-B execution capsule, launch, or scientific screen has occurred. The earlier V1 coefficient-seal bundle remains governance-invalid and excluded from downstream use. The separately approved V2 replacement is complete-valid at authorization SHA-256 <code>06944b797b96c93ec136c41949d708eb1613caba0387871b256003155950803b</code>, manifest SHA-256 <code>a71ebef92cd1a998be9fda33ba2fadbda0680aa9da140b9941166a75c2db38c5</code>, and sealed-member SHA-256 <code>173a68f41e53d4e7b16a40d27271245ae9c83b0b5f4858c7f15d439f25fb3078</code>; it opened no frame and produced no scientific result. The wall-contract amendment is approved at exact SHA-256 <code>c76ba22c29bea8d0e25e31cf74057b1649347e44fc56d9f890368e9dcc372a63</code>. The local production path now calculates unchanged <em>J</em><sub>C</sub> and its partial derivatives from the Tanner graph, state, and vector of channel LLRs, constructs the fixed positive diagonal matrix, and applies the two-hop symmetric positive-definite matrix to produce a candidate direction. A dormant Stage-C source now recalculates that direction from every accepted current state, then applies the registered componentwise projection, 13-point Armijo search, 30-attempt/stall rule, centered incident-edge readout, and strict-negative decision. Its exported state-advancing entry points construct the direction internally, expose no arbitrary-direction step, and have no BP, teacher, truth, frame, SNR, population, scorer, loader, writer, or launcher interface; a first parity-valid syndrome is telemetry only. The local suite passes 5,636 synthetic assertions: 1,202 existing checks, 692 checks of a portable version-2 fixture, 262 checks of a pure population seam, 84 checks of a durable full synthetic chain, and 3,396 checks of the dormant decoder source. A separate pure checker recalculates every stored objective, partial-derivative vector, state-dependent direction, raw and projected trial, Armijo decision, accepted state, readout, syndrome, and cross-record link. The Stage-C suite also checks an accepted second trial, bit-exact replay of update-cap and stalled paths, 35 altered traces that fail closed, explicit coefficient-admissibility rechecks that close the raw-constructor bypass, and a parity-valid transition that continues through update 30, complete-path bit identity for the exact-zero control, and valid-codeword sign covariance. Seven full-chain checks preserve the prior supplied-arithmetic diagnostic at 0.9935439809818444° improvement; 77 validate graph/state/channel-LLR input through unchanged <em>J</em><sub>C</sub>, the candidate and lower endpoint, a separate offline comparison kernel, and the adapter/reducers. The full production-chain synthetic improvement is 0.6852959854888271°: target-specific gates pass, but the unchanged 15° paired-improvement gate fails while all other generic gates pass, leaving both the generic and combined decisions false. Its frozen comparison vector equals the candidate by construction, and its three rows repeat one diagnostic, so that chain is interface and fail-closed composition validation—not population diversity, agreement with BP, or Stage-B science. The executable Stage-C seam is likewise source readiness, not a registered decoder-anchor or performance result. No threshold changed and no registered frame was opened. All fresh cases remain closed: no independent two-hop direction screen, registered decoder anchor, transmitted-word recovery score, or coded-bit BER/FER comparison with native BP has run. The first range-audit activation was approved and consumed by a failed scan; the source-only remediation is approved and complete. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-002</code> is approved and materialized at registration identity <code>7a796e142cd263e36c994854ea377841c6cddb262a1534690902d7c4b0681d66</code>, with registration-record raw SHA-256 <code>d3e8acb2b91aeb79788fb55d1134a4e653ee091cf2ec67a580fe4d69545d77c2</code>; all its live permissions are false. On 7 November 2026 the user approved all five then-registered decisions. Activation-002 was materialized and consumed by the interrupted v11 scan; no range result was published. The path-correction retry was approved, materialized, and consumed exactly once. Its terminal result (SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>) failed on one documentary self-collision and a recorded coordinator field above the RSS cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands; no scientific input opened and no manifest was created. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-COEFFICIENT-SEAL-002</code> is approved and complete-valid at authorization SHA-256 <code>06944b797b96c93ec136c41949d708eb1613caba0387871b256003155950803b</code>, manifest SHA-256 <code>a71ebef92cd1a998be9fda33ba2fadbda0680aa9da140b9941166a75c2db38c5</code>, and sealed-member SHA-256 <code>173a68f41e53d4e7b16a40d27271245ae9c83b0b5f4858c7f15d439f25fb3078</code>; it opened no frame and produced no scientific result. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-WALL-CONTRACT-AMENDMENT-001</code> is approved at exact SHA-256 <code>c76ba22c29bea8d0e25e31cf74057b1649347e44fc56d9f890368e9dcc372a63</code>. The retained-wall benchmark and Stage-B execution scopes are prospectively approved but remain inoperative until their exact prerequisites pass and their one-use authorization artifacts can be materialized. The goal is active; no retained-wall run, fresh input, or Stage-B science has begun. The strip is a progress map, not a claim that adjacent stops perform equal work.
+    The failed audit's <code>scan_max_rss_kib</code> field sums the coordinator's lifetime peak RSS and the largest lifetime peak RSS reported for any waited child. Those peaks need not be simultaneous, so <code>6,437,576 KiB</code> is not a measured simultaneous process-tree peak; neither component nor per-helper RSS was retained. The registered cap comparison remains failed. Component/helper telemetry and bounded streaming parsing for <code>.json</code> files are implemented only in the prospective v11 source; they do not remeasure the old run or authorize a retry.
+  </p>
+</header>
+
+<div class="controls">
+  <button id="back">← Back</button>
+  <div class="dots" id="dots"></div>
+  <button id="replay">Replay</button>
+  <button id="next">Next →</button>
+</div>
+<div class="scene-head"><span class="count" id="count"></span><h2 id="title"></h2></div>
+<div class="stage" id="stage"></div>
+<div class="narr" id="narr"></div>
+
+<footer>
+  Counts come from manifest-bound results for the historical ladder, controlled BP/GD comparisons, the offset-use and assignment-by-replacement factorials, the state-by-direction-by-step factorial, retained trajectory and objective diagnostics, integrability and matrix studies, graph-factorized Stage A and its independent direction screen, the terminal two-hop V5 retained fit, and the 6-dB compound-box budget result. The best verified gradient-based recovery result is the assigned/frozen compound-box projected-GD construction at update 90: 200/200 transmitted words and 200/200 parity-valid outputs on frames 50025–50224 at 6 dB. That exact construction has no completed 1.5-dB transfer. A related native compound projected-GD diagnostic completed at 1.5 dB and remained 0/200 at both 30 and 90 updates. This does not show cross-SNR performance approaching BP. The offset-use and assignment results close their registered 6-dB operation splits but do not supply that missing low-SNR comparison. The best current two-SNR candidate applies a bounded state-dependent two-hop symmetric positive-definite matrix to the partial derivatives of the declared objective function. Its local source now carries the registered projected-gradient state update end to end on synthetic inputs without exact sum-product or a caller-supplied comparison direction, but its scientific evidence still stops at the teacher-labelled retained fit. The first Stage-B collision scan ran and failed closed. The separately approved source-only remediation is complete. A second collision scan at an unused output path, a retained-only wall measurement, execution-capsule build and independent audit, a fresh direction screen, a decoder anchor, the 200+200-case recovery proxy, and a direct native-BP recovery and coded-bit BER comparison remain unrun. The complete-valid V2 seal and approved wall contract opened no frame; the earlier V1 seal remains governance-invalid and unusable. A recovery count means the hard-decision estimate equals the transmitted word under the stated stopping rule and work limit. Direction diagnostics, retained fitting, and synthetic decoder-source validation are not decoder-performance results. This HTML remains a local explanatory draft.
+</footer>
+</div>
+
+<script>
+(function(){
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(RM) document.documentElement.classList.add('reduce');
+const stage = document.getElementById('stage'), narr = document.getElementById('narr'),
+      title = document.getElementById('title'), count = document.getElementById('count'), dots = document.getElementById('dots');
+let timers = [], rafs = [];
+function clearAnim(){ timers.forEach(clearTimeout); rafs.forEach(cancelAnimationFrame); timers=[]; rafs=[]; }
+function at(ms, fn){ if(RM){ fn(); return; } timers.push(setTimeout(fn, ms)); }
+function tween(ms, step, delay){
+  if(RM){ step(1); return; }
+  at(delay||0, ()=>{ const t0 = performance.now();
+    const f = now=>{ const u=Math.min(1,(now-t0)/ms); step(1-Math.pow(1-u,3)); if(u<1) rafs.push(requestAnimationFrame(f)); };
+    rafs.push(requestAnimationFrame(f)); });
+}
+const $ = sel=>stage.querySelector(sel), $$ = sel=>[...stage.querySelectorAll(sel)];
+function on(sel, delay){ at(delay||0, ()=>$$(sel).forEach(e=>e.classList.add('on'))); }
+function seq(sel, start, step){ $$(sel).forEach((e,k)=>at(start+k*step, ()=>e.classList.add('on'))); }
+function setAttr(sel, attr, v){ $$(sel).forEach(e=>e.setAttribute(attr, v)); }
+
+const STOPS = ['Start','RQ1','Bridge','BP','GD','Factors','Ladder','Split','Bounded','Coord.','Objective','Budget','State','Interaction','Now','Diagnose','Candidate'];
+function strip(cur){
+  let s = '';
+  const left=24, right=856, w=Math.min(52,(right-left)/STOPS.length-4), step=(right-left-w)/(STOPS.length-1);
+  STOPS.forEach((name,i)=>{
+    const x = left + i*step;
+    const cls = i===cur ? 'cur' : (i<cur ? 'done' : 'todo');
+    const fill = i===cur ? 'var(--ref)' : (i<cur ? 'var(--ref-wash)' : 'var(--surface)');
+    const stroke = i===cur ? 'var(--ref)' : 'var(--line)';
+    const tcol = i===cur ? '#ffffff' : (i<cur ? 'var(--fg)' : 'var(--muted)');
+    s += `<rect x="${x}" y="14" width="${w}" height="26" rx="4" fill="${fill}" stroke="${stroke}"/>
+          <text x="${x+w/2}" y="31" text-anchor="middle" class="stop" fill="${tcol}" style="fill:${tcol}">${name}</text>`;
+    if(i<STOPS.length-1) s += `<line x1="${x+w+1}" y1="27" x2="${x+step-1}" y2="27" class="hair"/><polygon points="${x+step-1},27 ${x+step-5},24.5 ${x+step-5},29.5" fill="var(--line)"/>`;
+  });
+  return s + `<line x1="24" y1="56" x2="856" y2="56" class="hair"/>`;
+}
+const bar = (x,y,v,max,w,color,cls)=>`<rect x="${x}" y="${y}" width="${w}" height="20" fill="var(--grid)"/><rect class="${cls||'b'}" data-w="${v/max*w}" x="${x}" y="${y}" width="0" height="20" fill="${color}"/>`;
+function growBars(delay, step){ $$('.b').forEach((b,i)=>tween(600, t=>b.setAttribute('width', (+b.dataset.w)*t), (delay||200)+i*(step||120))); }
+
+/* small graph fragment: a bit with three checks */
+function fragment(cx, cy, r, color, ids){
+  const ch = [[cx-r, cy-r*0.85],[cx+r, cy-r*0.85],[cx, cy+r]];
+  let g = '';
+  ch.forEach((c,k)=>{ g += `<line x1="${cx}" y1="${cy}" x2="${c[0]}" y2="${c[1]}" class="hair" stroke-width="1.5"/>`; });
+  ch.forEach((c,k)=>{ g += `<rect x="${c[0]-13}" y="${c[1]-13}" width="26" height="26" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/><text x="${c[0]}" y="${c[1]+4}" text-anchor="middle" class="sm">${ids[k]}</text>`; });
+  g += `<circle cx="${cx}" cy="${cy}" r="18" fill="${color}" stroke="var(--fg)" stroke-width="1.5"/><text x="${cx}" y="${cy+4}" text-anchor="middle" class="sm" style="fill:#fff">i</text>`;
+  return {g, ch};
+}
+
+/* ---------- 1 observation ---------- */
+const s1 = { title:'The observation: BP recovers more words',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="At 6 dB native projected GD recovers 112 of 200 fresh frames and exact BP 200; at 1.5 dB, 0 and 199.">${strip(0)}
+  <text x="24" y="92" class="lbl m">transmitted words recovered of 200 fresh frames · same graph, same channel LLRs, same frames for both methods</text>
+  <text x="24" y="126" class="lbl" font-weight="500">6 dB · frames 60025 to 60224</text>
+  <text x="24" y="156" class="lbl">native projected GD</text>${bar(250,142,112,200,400,'var(--ref)')}<text class="v fade lbl" x="${250+112/200*400+8}" y="156">112</text>
+  <text x="24" y="186" class="lbl">exact sum-product BP</text>${bar(250,172,200,200,400,'var(--bp)')}<text class="v fade lbl" x="${250+400+8}" y="186">200</text>
+  <text x="24" y="236" class="lbl" font-weight="500">1.5 dB · frames 60225 to 60424</text>
+  <text x="24" y="266" class="lbl">native projected GD</text>${bar(250,252,0,200,400,'var(--ref)')}<text class="v fade lbl" x="258" y="266">0</text>
+  <text x="24" y="296" class="lbl">exact sum-product BP</text>${bar(250,282,199,200,400,'var(--bp)')}<text class="v fade lbl" x="${250+199/200*400+8}" y="296">199</text>
+  <g id="gap" class="fade"><text x="24" y="350" class="lbl m">the gap to explain: 88 words at 6 dB, 199 words at 1.5 dB · native composition ledger, 1 November</text></g>
+ </svg>`,
+ text:`<p>Everything starts from one paired measurement. Take a regular (3,6) LDPC code of length 10,200, a complex AWGN channel, and the same fresh frames for both decoders. Exact sum-product BP recovers the transmitted word on every frame at 6 dB and on all but one at 1.5 dB. Native projected GD, descending a declared objective with a box projection and thirty updates, recovers just over half at 6 dB and nothing at 1.5 dB.</p>
+ <p>The two methods see the same channel LLRs and the same Tanner graph. So the gap is not in the evidence or in the graph. It is in what each method does with them, and the whole campaign is an attempt to say which operation carries how much of it.</p>`,
+ play(){ growBars(300, 200); on('.v', 1200); on('#gap', 1600); }};
+
+/* ---------- 2 RQ1 ---------- */
+const s2 = { title:'RQ1: same graph, different information',
+ svg:()=>{ const L = fragment(190, 240, 80, 'var(--surface)', ['a','b','c']); const R = fragment(630, 240, 80, 'var(--ref)', ['a','b','c']);
+  let s = `<svg viewBox="0 0 880 400" role="img" aria-label="BP sends values along edges and keeps one per edge; GD forms its parity terms at the bit, uses them, and keeps one value per bit.">${strip(1)}
+  <text x="40" y="92" class="lbl" font-weight="500">exact sum-product BP</text>
+  <text x="480" y="92" class="lbl" font-weight="500">projected GD</text>`;
+  s += L.g.replace(`<circle cx="190" cy="240" r="18" fill="var(--surface)"`, `<circle cx="190" cy="240" r="18" fill="var(--surface)"`);
+  s = s.replace(`<text x="190" y="244" text-anchor="middle" class="sm" style="fill:#fff">i</text>`, `<text x="190" y="244" text-anchor="middle" class="sm">i</text>`);
+  L.ch.forEach((c,k)=>{ const mx=190+(c[0]-190)*0.62, my=240+(c[1]-240)*0.62;
+    s += `<circle class="msg" data-k="${k}" cx="${c[0]+(190-c[0])*0.18}" cy="${c[1]+(240-c[1])*0.18}" r="6" fill="var(--bp)" stroke="var(--surface)" stroke-width="2"/>
+          <g class="fade ub"><rect x="${mx-14}" y="${my-9}" width="28" height="18" rx="3" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="${mx}" y="${my+4}" text-anchor="middle" class="sm">U</text></g>`; });
+  s += R.g;
+  R.ch.forEach((c,k)=>{ const mx=630+(c[0]-630)*0.55, my=240+(c[1]-240)*0.55;
+    s += `<text class="term sm" data-k="${k}" x="${mx}" y="${my+4}" text-anchor="middle" opacity="0" style="fill:var(--free)">∂ parity</text>`; });
+  s += `<text x="40" y="346" class="lbl m">U travels check → bit and persists, one per edge</text>
+        <text x="480" y="346" class="lbl m">terms form at the bit, are used, and are erased</text>
+        <g id="f1" class="fade"><rect x="40" y="362" width="380" height="26" rx="4" fill="var(--bp-wash)"/><text x="52" y="379" class="lbl">recipient-specific state: changes the trajectory</text></g>
+        <g id="f2" class="fade"><rect x="480" y="362" width="376" height="26" rx="4" fill="var(--free-wash)"/><text x="492" y="379" class="lbl">update operator: direct F vs gradient; interacts</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>The first question was the obvious one: does BP win because it walks the Tanner graph? No. Both methods walk it. The difference is what they keep and what they compute. Each check sends the bit a value U along its edge, and those check-to-variable values persist, one per directed edge. The next message-passing iteration forms each outgoing value Q toward a check from the channel LLR and the other checks' stored U, so every connection of the same bit reads a different number. GD forms its parity terms at the bit, applies the update, and erases them; the only thing it carries forward is one value per bit.</p>
+ <p>Two controlled mechanisms came out of RQ1 on small graphs. Removing recipient-specific state from BP changes its trajectory, and restoring it restores BP. Replacing direct application of the sum-product map by a gradient step on its residual changes the result too, and the two effects interact. Neither is yet an attribution of the native gap.</p>`,
+ play(){
+   $$('.msg').forEach((m,k)=>{ const c=[[110,172],[270,172],[190,320]][k]; const x0=c[0]+(190-c[0])*0.18, y0=c[1]+(240-c[1])*0.18, x1=190+(c[0]-190)*0.3, y1=240+(c[1]-240)*0.3; tween(900, t=>{ m.setAttribute('cx', x0+(x1-x0)*t); m.setAttribute('cy', y0+(y1-y0)*t); }, 300+k*150); });
+   on('.ub', 1300);
+   $$('.term').forEach((e,k)=>{ tween(500, t=>e.setAttribute('opacity', t), 400+k*150); tween(500, t=>e.setAttribute('opacity', RM?0.35:1-t), 1500+k*150); });
+   on('#f1', 2200); on('#f2', 2500);
+ }};
+
+/* ---------- 3 bridge ---------- */
+const ROWS = [['state','recipient-specific directed LLR messages','one scalar per bit'],
+ ['parity calculation','tanh–atanh, recipient excluded','product of all incident values'],
+ ['objective','none: a fixed-point map','channel + parity + binary terms'],
+ ['projection','none','box [−1, 1] after each step'],
+ ['update','direct replacement by F(u)','preconditioned step, line search'],
+ ['stopping','first zero syndrome, cap 80','fixed budget of 30 updates']];
+const s3 = { title:'The endpoint bridge: six operations differ at once',
+ svg:()=>{ let s=`<svg viewBox="0 0 880 400" role="img" aria-label="A table of six operations where native BP and native GD differ: state, parity calculation, objective, projection, update, stopping.">${strip(2)}
+  <text x="36" y="96" class="lbl m">operation</text><text x="300" y="96" class="lbl" font-weight="500">exact sum-product BP</text><text x="590" y="96" class="lbl" font-weight="500">projected GD</text>`;
+  ROWS.forEach((r,k)=>{ const y=112+k*40; s+=`<rect class="fade row" x="24" y="${y}" width="832" height="34" rx="4" fill="var(--ref-wash)"/>
+    <text x="36" y="${y+22}" class="lbl" font-weight="500">${r[0]}</text><text x="300" y="${y+22}" class="lbl">${r[1]}</text><text x="590" y="${y+22}" class="lbl">${r[2]}</text>`; });
+  s+=`<g id="cap" class="fade"><text x="24" y="380" class="lbl m">the bridge reproduces both native endpoints exactly; between them every one of these changes</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>Before intervening on the long code, Codex built a bridge that reproduces both native methods bit for bit from one harness. The bridge made the gap concrete and awkward: the two decoders differ in six operations at once. A comparison of native BP with native GD is a comparison of all six, and no count from it can be attributed to any one of them.</p>
+ <p>That is the whole reason for the long middle of the path. The campaign aims to hold the other operations fixed while moving one, or crosses a small registered factorial when an interaction must be measured. The historical ladder below did not achieve that at its central transition; the later common-coordinate experiments were built to split it.</p>`,
+ play(){ seq('.row', 300, 250); on('#cap', 2000); }};
+
+/* ---------- 4 BP side ---------- */
+const s4 = { title:'RQ2, BP side: tie the recipient-specific messages',
+ svg:()=>{ const cx=170, cy=250; const ch=[[80,170],[260,170],[170,335]]; const L=[0.9,0.4,0.7];
+  let s=`<svg viewBox="0 0 880 400" role="img" aria-label="Tying a bit's three outgoing messages to their mean destroys exact BP: 200 of 200 becomes 0 of 200.">${strip(3)}
+   <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--bp)"/></marker></defs>
+   <text x="40" y="92" class="lbl" font-weight="500">one bit, three recipients</text>`;
+  ch.forEach((c,k)=>{ s+=`<line x1="${cx}" y1="${cy}" x2="${c[0]}" y2="${c[1]}" class="hair" stroke-width="1.5"/>`; });
+  ch.forEach((c,k)=>{ s+=`<line class="q" data-k="${k}" x1="${cx}" y1="${cy}" x2="${cx+(c[0]-cx)*L[k]}" y2="${cy+(c[1]-cy)*L[k]}" stroke="var(--bp)" stroke-width="3" marker-end="url(#ah)"/>
+     <rect x="${c[0]-13}" y="${c[1]-13}" width="26" height="26" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/><text x="${c[0]}" y="${c[1]+4}" text-anchor="middle" class="sm">${'abc'[k]}</text>`; });
+  s+=`<circle cx="${cx}" cy="${cy}" r="18" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/><text x="${cx}" y="${cy+4}" text-anchor="middle" class="sm">i</text>
+      <text id="tl" x="40" y="380" class="lbl m">full: a different value to each recipient</text>
+      <text x="480" y="92" class="lbl" font-weight="500">200 frozen held-out frames at 1.5 dB</text>
+      <text x="480" y="134" class="lbl">full exact sum-product</text>${bar(480,146,200,200,320,'var(--bp)')}<text class="v fade lbl" x="${480+320+8}" y="160">200</text>
+      <text x="480" y="196" class="lbl">tied to the per-bit mean</text>${bar(480,208,0,200,320,'var(--bp)')}<text class="v fade lbl" x="488" y="222">0</text>
+      <g id="an" class="fade"><text x="480" y="270" class="lbl m">anchor, 24 fresh frames: 24 / 24 against 0 / 24</text>
+      <text x="480" y="292" class="lbl m">same counts for parity validity and word recovery</text>
+      <text x="480" y="314" class="lbl m">cross-platform byte-identical tables (Windows, Linux)</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>On the BP side the intervention is subtraction. Exact BP sends each bit a different value toward each of its checks, because the message toward a check leaves out what that check just said. Tying the three outgoing values to their mean keeps the average information and removes only the recipient-specific part. Nothing else changes: same map, same schedule, same frames.</p>
+ <p>The result is as sharp as the campaign gets. At 1.5 dB, full exact sum-product recovers all 200 held-out frames; the tied version recovers none, whether the endpoint is parity validity or transmitted-word recovery, and the 24-frame anchor says the same. Inside BP, recipient-specific state is necessary.</p>`,
+ play(){
+   growBars(300, 250); on('.v', 1100);
+   tween(800, t=>{ $$('.q').forEach((q,k)=>{ const c=[[80,170],[260,170],[170,335]][k]; const L0=[0.9,0.4,0.7][k], L1=0.67; const L=L0+(L1-L0)*t;
+     q.setAttribute('x2', 170+(c[0]-170)*L); q.setAttribute('y2', 250+(c[1]-250)*L); }); }, 1500);
+   at(1500, ()=>{ $('#tl').textContent = 'tied: the same mean value to every recipient'; });
+   on('#an', 2200);
+ }};
+
+/* ---------- 5 GD side ---------- */
+const s5 = { title:'RQ2, GD side: give the parity calculation a check-specific reading',
+ svg:()=>{ const F = fragment(150, 250, 80, 'var(--ref)', ['a','b','c']);
+  let s=`<svg viewBox="0 0 880 400" role="img" aria-label="The offset-use split raises recovery from 107 to 163 on the locked cases. The grid separately depicts the locked assigned-and-frozen attribution arm: 167 recovered, comprising 107 native-GD successes plus 60 recovered native-GD failures. On fresh cases the as-constructed check assignment recovers 174 with frozen offsets and 165 with refreshed offsets, versus 61 and 70 after a fixed within-bit derangement.">${strip(4)}
+   <text x="40" y="92" class="lbl" font-weight="500">one bit, one reading per check</text>` + F.g;
+  F.ch.forEach((c,k)=>{ const mx=150+(c[0]-150)*0.5, my=250+(c[1]-250)*0.5; s+=`<g class="fade dl"><rect x="${mx-30}" y="${my-9}" width="60" height="18" rx="3" fill="var(--free-wash)" stroke="var(--free)"/><text x="${mx}" y="${my+4}" text-anchor="middle" class="sm">+δ(${'abc'[k]},i)</text></g>`; });
+  s+=`<text x="40" y="366" class="lbl m">check c reads x(i) + δ(c,i)</text><text x="40" y="384" class="lbl m">δ assigned at update 1, then frozen</text>
+      <text x="430" y="92" class="lbl" font-weight="500">locked attribution: assigned/frozen 167 / 200</text>`;
+  for(let n=0;n<200;n++){ const r=Math.floor(n/20), c=n%20; const cls = n<107?'w1':(n<167?'w2':'w3');
+    s+=`<rect class="${cls} fade" x="${430+c*17}" y="${110+r*17}" width="14" height="14" fill="${n<107?'var(--ref)':(n<167?'var(--free)':'var(--grid)')}" ${n>=167?'stroke="var(--line)"':''}/>`; }
+  s+=`<g transform="translate(430 300)"><rect width="10" height="10" fill="var(--ref)"/><text x="16" y="10" class="lbl m">107 native GD</text>
+      <rect x="150" width="10" height="10" fill="var(--free)"/><text x="166" y="10" class="lbl m">+60 recovered</text>
+      <rect x="300" width="10" height="10" fill="var(--grid)" stroke="var(--line)"/><text x="316" y="10" class="lbl m">33 unresolved</text></g>
+      <g id="g5" class="fade"><text x="430" y="338" class="sm">locked split: parity use 163 · no parity use 107 · bounds only 106</text>
+      <text x="430" y="356" class="sm m">fresh 40001–40200, frozen: assigned 174 · deranged 61</text>
+      <text x="430" y="374" class="sm m">fresh, refreshed: assigned 165 · deranged 70</text>
+      <text x="430" y="392" class="sm m">locked attribution, assigned/frozen: 167 · +60 of 93 failures</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>On the GD side the intervention is addition. Native GD lets every check read the same value of a bit. The constructed arm assigns each check its own offset on that connection at the first update, freezes it, and has the parity calculation read the bit plus its offset from then on. The optimised state is still one scalar per bit, but the persistent state now also holds one frozen offset per edge, 30,600 values beside the 10,200 scalars, and the parity calculation reads them.</p>
+ <p>The first complete-valid factorial, <code>RQ2-GD-OFFSET-SPLIT-001</code>, separates where the offsets act. On locked frames 30001 to 30200, using them in the parity calculation with the native projection interval recovers 163/200 transmitted words versus 107/200 without that use. Changing only the projection interval gives 106/200; with parity use already active, it leaves recovery at 163/200. The observed gain therefore enters through the parity calculation on this registered sample, not through offset-induced projection bounds. Canonical science SHA-256 is <code>a42793a4e94485e3f91873c1bb1cdce943879447a982555275ccf13483445125</code>.</p>
+ <p>The second complete-valid factorial, <code>RQ2-GD-PARITY-ASSIGNMENT-REFRESH-001</code>, separates assignment from replacement. On prospective frames 40001 to 40200, the as-constructed assignment recovers 174/200 when the first adopted offsets are frozen and 165/200 when offsets are replaced after each accepted update; a fixed within-bit derangement gives 61/200 and 70/200. The assignment effect transfers under both replacement policies. The replacement-versus-freezing equivalence gate does not pass, and the interaction is negative, so replacement cannot be called equivalent or interpreted without its assignment path. On the informed locked attribution set, the assigned/frozen arm recovers sixty of the 93 native-GD failures and loses none of the 107 native-GD successes. Transfer science SHA-256 is <code>2556c01f170d0e3f42bdcca831df47278270ec13628e84a1541a7976668c5595</code>. These results concern the constructed projected-gradient variants at 6 dB; they neither make the offsets BP messages nor establish low-SNR performance approaching BP.</p>`,
+ play(){ on('.dl', 400); on('.w1', 900); seq('.w2', 1300, 18); on('.w3', 2500); on('#g5', 2800); }};
+
+/* ---------- 6 factorials ---------- */
+function grid(x, y, cols, rows, cells, w, h){
+  let s=''; cols.forEach((c,j)=>{ s+=`<text x="${x+110+j*w+w/2}" y="${y-6}" text-anchor="middle" class="sm m">${c}</text>`; });
+  rows.forEach((r,i)=>{ s+=`<text x="${x+104}" y="${y+i*h+h/2+4}" text-anchor="end" class="sm m">${r}</text>`;
+    cols.forEach((c,j)=>{ const v=cells[i][j]; const numeric = Number.parseInt(v,10); const hot = Number.isFinite(numeric) && numeric>0; s+=`<rect class="fade cell" x="${x+110+j*w+1}" y="${y+i*h+1}" width="${w-2}" height="${h-2}" fill="${hot?'var(--bp-wash)':'var(--grid)'}" stroke="${hot?'var(--bp)':'var(--line)'}"/><text class="fade cell lbl" x="${x+110+j*w+w/2}" y="${y+i*h+h/2+4}" text-anchor="middle" font-weight="500">${v}</text>`; }); });
+  return s;
+}
+const s6 = { title:'The factorials: what moves the count, and what interacts',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="Three factorial results: budget lifts the assigned/frozen compound-box construction from 177 to 200 at 6 dB; that exact construction has no completed 1.5-dB transfer, while a related native compound diagnostic remains zero of 200; direct application of the exact map gives 200 and a gradient step zero; only F(u)-u with a unit step recovers.">${strip(5)}
+  <text x="24" y="92" class="lbl" font-weight="500">objective × projection × budget</text>
+  <text x="24" y="110" class="sm m">compound-box · 6 dB · 50025–50224</text>
+  <text x="24" y="146" class="lbl">update 30</text>${bar(100,132,177,200,140,'var(--ref)')}<text class="v fade lbl" x="${100+177/200*140+6}" y="146">177</text>
+  <text x="24" y="184" class="lbl">update 90</text>${bar(100,170,200,200,140,'var(--ref)')}<text class="v fade lbl" x="${100+140+6}" y="184">200</text>
+  <g id="lo" class="fade"><text x="24" y="224" class="sm m">exact assigned/frozen arm: no completed 1.5-dB transfer</text><text x="24" y="240" class="sm m">related native compound diagnostic: 0 / 200 at updates 30 and 90</text></g>
+  <text x="300" y="92" class="lbl" font-weight="500">state × update, exact map</text>
+  <text x="300" y="110" class="sm m">fresh 6 dB transfer, 200 frames</text>
+  ${grid(300, 150, ['direct F(u)','gradient step'], ['recipient-specific','tied'], [['200','0'],['200','0']], 80, 40)}
+  <text x="596" y="92" class="lbl" font-weight="500">direction × step, exact map</text>
+  <text x="596" y="110" class="sm m">6 dB · 1.5 dB in brackets</text>
+  ${grid(596, 150, ['unit step','line search'], ['F(u) − u','residual gradient'], [['200 (198)','0'],['0','0']], 80, 40)}
+  <g id="c6" class="fade"><text x="24" y="300" class="lbl">within this registered exact-map factorial, how the map is applied changes every outcome:</text>
+  <text x="24" y="322" class="lbl">replace u by F(u), or step the full displacement F(u) − u, and the word is recovered;</text>
+  <text x="24" y="344" class="lbl">descend the residual, or shorten the step by line search, and nothing is.</text>
+  <text x="24" y="376" class="lbl m">the direction-by-step interaction is registered as material: neither factor alone closes the gap</text></g>
+ </svg>`,
+ text:`<p>Three registered factorials sharpen the picture. Inside the GD family, the strongest verified construction, a compound parity objective with a box and assigned/frozen check-specific offsets, climbs from 177 to 200 of 200 at 6 dB when it is given 90 updates instead of 30. That exact construction has no completed 1.5-dB transfer. A separate completed diagnostic of native compound projected GD remained at 0 of 200 at both 30 and 90 updates at 1.5 dB. Budget closes the easy regime for the selected construction, but no evidence shows that it closes the hard regime.</p>
+ <p>With the exact sum-product map fixed in this factorial, the update operator changes every registered outcome. Applying the map directly recovers 200 of 200 whether the state is recipient-specific or tied; taking a gradient step on the map's residual recovers 0 either way. Only the full displacement F(u) − u with a unit step works on these cases and budgets: shorten it with a line search, or replace it with the residual gradient, and the count is zero at both SNRs.</p>`,
+ play(){ growBars(300, 250); on('.v', 1000); on('#lo', 1300); seq('.cell', 1400, 60); on('#c6', 2600); }};
+
+/* ---------- 7 ladder ---------- */
+const RUNGS = [
+ ['native projected GD', 112, 0], ['inactive edge shadow added', 112, 0], ['assigned, frozen offsets · compound · box', 172, 0],
+ ['product-only objective', 150, 0], ['box removed', 177, 0], ['edge state · residual gradient · tied', 0, 0],
+ ['exact sum-product map', 0, 0], ['recipient-specific state restored', 0, 0], ['direct map, fixed 30', 200, 194],
+ ['stop at first zero syndrome', 200, 194], ['native exact sum-product, cap 80', 200, 199]];
+// Levels describe an alternative bounded route, not new names for historical rungs.
+const CONTROLLED_ROUTE = [
+ {level:0, state:'reference', title:'Native projected GD', label:'REFERENCE',
+  detail:'One scalar per bit; native compound objective; box; 30 updates.'},
+ {level:1, state:'identity', title:'Reproduce GD in tied edge coordinates', label:'IDENTITY VERIFIED',
+  detail:'24/24 retained cases, bit for bit. Representation changes; the GD calculation does not.'},
+ {level:2, state:'measured', title:'Change only the objective to the full recurrence residual', label:'MEASURED · OBJECTIVE STUDY',
+  detail:'6 dB: 113 → 0 / 200. 1.5 dB: 0 → 0 / 200. Tied state and descent protocol retained.'},
+ {level:3, state:'measured', title:'Let edge values persist independently', label:'MEASURED · STATE STUDY',
+  detail:'0 → 0 / 200 at both SNRs under residual-gradient descent with backtracking. This is one side of the factorial.'},
+ {level:4, state:'measured', title:'Change direction: residual gradient → Φ(z) − z', label:'MEASURED · 2×2×2 FACTORIAL',
+  detail:'At 6 dB with backtracking: constrained 164/200, free 200/200; every true-gradient cell is 0/200.'},
+ {level:5, state:'measured', title:'Change step: backtracking → unit step', label:'MEASURED · 2×2×2 FACTORIAL',
+  detail:'At 1.5 dB only free state + Φ(z) − z + unit step recovers: 196/200. The other seven cells recover 0/200.'},
+ {level:6, state:'pending', title:'Form final bits from BP’s a-posteriori LLRs', label:'PENDING',
+  detail:'Replace the incident-edge mean decision. Keep 30 updates and terminal scoring.'},
+ {level:7, state:'pending', title:'Stop at the first zero syndrome', label:'PENDING',
+  detail:'Keep the cap at 30; change only when the decoder stops.'},
+ {level:8, state:'pending', title:'Raise the cap to 80; verify native BP exactly', label:'FINAL ENDPOINT GATE PENDING',
+  detail:'Require the actual hard decisions and stopping outcome to reproduce native exact sum-product.'}
+];
+function controlledRoute(){
+ const old = RUNGS.map((r,k)=>({r,k})).reverse().map(({r,k})=>{
+   let row=`<li class="historical-rung${k===0||k===10?' endpoint':''}" data-historical-rung="${k+1}"><span class="rung-number">${k+1}</span><span>${r[0]}</span><span class="recovery">${r[1]}</span><span class="recovery">${r[2]}</span></li>`;
+   if(k===8) row+='<li class="historical-effect"><strong>8 → 9: gradient → direct map</strong>+200 at 6 dB; +194 at 1.5 dB on this path.</li>';
+   if(k===5) row+='<li class="historical-jump"><strong>5 → 6: state + objective + update together</strong>The historical 177 → 0 transition remains confounded.</li>';
+   return row;
+ }).join('');
+ const route=CONTROLLED_ROUTE.slice().reverse().map(r=>`<li class="controlled-step ${r.state}" data-route-step="${r.level}" data-evidence-state="${r.state}"><span class="level">${r.level}</span><span class="route-tag ${r.state}">${r.label}</span><h4>${r.title}</h4><p>${r.detail}</p></li>`).join('');
+ return `<svg viewBox="0 0 880 64" role="img" aria-label="Campaign navigation, historical ladder stop">${strip(6)}</svg>
+ <p class="route-intro">Read upward ↑ in each column. The right-hand levels are a new bounded route, not corresponding historical rungs.</p>
+ <div class="route-columns">
+  <section class="route-panel" aria-labelledby="historical-title"><h3 id="historical-title">Historical ladder · observed counts</h3>
+   <p class="panel-note">Words recovered / 200. Frames 60025–60224 at 6 dB; 60225–60424 at 1.5 dB.</p>
+   <div class="historical-head"><span>#</span><span>Method at this rung</span><span>6 dB</span><span>1.5 dB</span></div>
+   <ol class="historical-list" reversed start="11">${old}</ol>
+   <p class="panel-note" style="padding-top:14px">The unstable, unboxed product-only rung is preserved as history. The controlled route begins from bounded native GD instead.</p>
+  </section>
+  <section class="route-panel" aria-labelledby="controlled-title"><h3 id="controlled-title">Controlled route · verified links + remaining gaps</h3>
+   <p class="panel-note">A route to native BP; the complete chain has not yet been evaluated.</p>
+   <div class="route-legend"><span class="route-tag identity">identity check</span><span class="route-tag measured">measured comparison</span><span class="route-tag pending">pending comparison</span></div>
+   <ol class="controlled-list" reversed start="8">${route}</ol>
+  </section>
+ </div>
+ <div class="route-boundary" id="factorial-status"><strong>Completed interaction block: state × direction × step — all 8 combinations.</strong>
+  Tied / free state × residual gradient / Φ(z) − z × backtracking / unit step.<br>
+  Levels 3–5 are a visual route through one completed factorial, not three additive or sequential attributions. All eight combinations measure how each effect depends on the other two choices.
+  V2 completed valid at 5/5 jobs; correctness, input-identity, replay, factor-activity, and transformed-BP-trajectory gates passed. Attempt v1 remains preserved as an input-sealing failure.</div>
+ <div class="route-boundary pending" id="cohort-boundary"><strong>Final join: evaluate the entire controlled route on one frozen set of frames at both SNRs.</strong>
+  Do not add counts across different frame sets. The objective study and the state study used different frames, and neither uses the historical ladder’s frames.
+  Require the same parity-check graph, transmitted bits, received samples and channel LLRs for every arm; verify both native endpoints and report per-frame gains, losses and interactions.</div>
+ <p class="route-next"><a href="#factorial-3way">Completed interaction result →</a> · <a href="#next-math">Next mathematical task: diagnose the failed trajectories →</a></p>`;
+}
+const s7 = { title:'Historical ladder and the controlled route', svg:controlledRoute,
+ text:`<p>The left column retains the eleven measured historical rungs. Its red 5 → 6 transition combines several changes, so its 177 → 0 drop has no single-operation attribution. The right column shows the alternative bounded route: first reproduce native GD, then change the objective, then test state freedom, update direction and step separately and together. Solid measured links and dashed pending links have different evidential status.</p>
+ <p>The completed state-only comparison recovered zero words in both arms at both SNRs. The completed eight-cell factorial then shows why that null result cannot be generalized: state matters conditionally on the direction and step. At 1.5 dB, only free state together with the map displacement and a unit step recovers words. Changing the final bit decisions, stopping rule and cap in separate steps is still necessary to reach native BP.</p>
+ <p>The count 113 → 0 belongs to the objective study; 0 → 0 belongs to the separate state study. A final evaluation of the whole route on one frozen cohort is required for case-by-case attribution. Completing that route would explain effects along this controlled path, not uniquely split the historical red jump or prove a universal BP advantage.</p>`,
+ play(){} };
+
+/* ---------- 8 the split ---------- */
+const JL = [0.73,0.96,1.54,3.44,12.18,58.79,298.63];
+const s8 = { title:'First split attempt: one gate passed, one run failed',
+ svg:()=>{ const x0=104, x1=400, y0=372, y1=262; const xs=u=>x0+(u-2)/6*(x1-x0), ys=v=>y0-(v/300)*(y0-y1);
+  const pts = JL.map((v,i)=>[xs(i+2), ys(v)]); const path = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  let s=`<svg viewBox="0 0 880 400" role="img" aria-label="Left: the tied scalar-to-edge gate passed 24 of 24 bit for bit, but its reference objective diverges to 1e298. Right: the equality-release experiment failed its 5e-12 gate at update 6 before any fresh frame.">${strip(7)}
+   <text x="40" y="92" class="lbl" font-weight="500">tied scalar-to-edge reproduction · passed</text>
+   <text x="40" y="112" class="sm m">one value per connection, all copies forced equal, read actively</text>`;
+  [[90,150],[170,150],[250,150]].forEach((p,k)=>{ s+=`<rect x="${p[0]-24}" y="${p[1]-10}" width="48" height="20" rx="3" fill="var(--ref)"/><text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" class="sm" style="fill:#fff">0.620</text>`; });
+  s+=`<path d="M66 172 L66 180 L274 180 L274 172" fill="none" stroke="var(--fg)"/><text x="170" y="196" text-anchor="middle" class="sm m">= scalar x(i), bit for bit</text>
+      <g id="ok8" class="fade"><rect x="40" y="208" width="300" height="24" rx="4" fill="var(--bp-wash)"/><text x="52" y="224" class="lbl">✓ 24 / 24 retained cases · sealed 10ca9a2</text></g>
+      <text x="40" y="252" class="sm m">but the reference it reproduces, rung 5, diverges:</text>
+      <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}" class="hair"/>
+      <text x="${x0-6}" y="${y0+4}" text-anchor="end" class="sm m">10^0</text><text x="${x0-6}" y="${y1+4}" text-anchor="end" class="sm m">10^300</text>
+      <path id="jl8" d="${path}" fill="none" stroke="var(--ref)" stroke-width="2" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <text x="${x0}" y="${y0+18}" class="sm m">update 2</text><text x="${x1}" y="${y0+18}" text-anchor="end" class="sm m">update 8</text>
+      <text id="dv" class="fade sm" x="${xs(5)}" y="${ys(150)}" style="fill:var(--bad)">|J| reaches 10^298</text>
+      <text x="470" y="92" class="lbl" font-weight="500">release equality between copies · failed</text>
+      <text x="470" y="112" class="sm m">constrained arm, compatibility frame 20001, every update</text>
+      <text x="470" y="150" class="lbl">Σ (h/3 + g_c) = h + Σ g_c</text><text x="470" y="170" class="sm m">to within 5e-12, as an absolute number</text>
+      <g id="p8" class="fade"><text x="470" y="206" class="lbl">updates 2 to 5</text><text x="640" y="206" class="lbl" style="fill:var(--good)">✓ pass</text></g>
+      <g id="f8" class="fade"><text x="470" y="232" class="lbl">update 6</text><text x="640" y="232" class="lbl" style="fill:var(--bad)">✕ fail · queue stops</text>
+      <rect x="470" y="248" width="386" height="68" rx="4" fill="var(--bad-wash)"/>
+      <text x="482" y="268" class="sm">partial derivatives near 1e9 at update 6</text>
+      <text x="482" y="286" class="sm">rounding of three copies of h/3 ≈ 1e-7</text>
+      <text x="482" y="304" class="sm">the gate measured floating point, not freedom</text></g>
+      <g id="z8" class="fade"><text x="470" y="344" class="lbl">fresh frames evaluated: 0</text><text x="470" y="364" class="sm m">registered frames 61497 to 61720 remain unconsumed</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>The tied gate took the first piece of the jump. It stores one value on every connection, forces all copies of a bit to stay equal, makes the parity calculation read the copies, and asks whether that reproduces the scalar rung bit for bit. It does, on all 24 retained cases, so for this one lower endpoint the change of representation changes nothing. But the rung it reproduces is the product-only objective with the box removed, and that objective has no floor: on the compatibility frames it runs to 10^298 by update 8 while the signs of the channel LLRs keep the hard-decision estimate correct.</p>
+ <p>That historical edge-freedom attempt then released the tie and never reached a fresh frame. Its gate demanded that three split partial derivatives of the objective function add back to the scalar one within 5e-12, an absolute number. At update 6 the derivatives are near 10^9 and the rounding alone is near 10^-7. The gate failed on arithmetic. It is a failed construction, not evidence about whether independently persistent edge coordinates help or hurt.</p>`,
+ play(){ on('#ok8', 500); tween(1400, t=>setAttr('#jl8','stroke-dashoffset', 1-t), 900); on('#dv', 2000); on('#p8', 1200); on('#f8', 1900); on('#z8', 2700); }};
+
+/* ---------- 9 bounded edge freedom ---------- */
+const s9 = { title:'Under compound-box, releasing equality is harmful',
+ svg:()=>{ const F = fragment(150, 236, 72, 'var(--ref)', ['a','b','c']);
+  let s=`<svg viewBox="0 0 880 400" role="img" aria-label="Under the registered compound-box construction with frozen offsets, releasing equality between a bit's edge copies changes 164 of 200 recoveries to zero; this is not a general result about edge coordinates.">${strip(8)}
+   <text x="40" y="92" class="lbl" font-weight="500">from compound-box: copies z(c,i) in [−1, 1]</text>
+   <text x="40" y="110" class="sm m">compound parity term · frozen offsets · 30 updates · 6 dB</text>` + F.g;
+  F.ch.forEach((c,k)=>{ const mx=150+(c[0]-150)*0.5, my=236+(c[1]-236)*0.5; s+=`<g class="cp" transform="translate(${mx} ${my})"><rect class="cr" x="-26" y="-10" width="52" height="20" rx="3" fill="var(--ref)"/><text class="cv sm" x="0" y="4" text-anchor="middle" style="fill:#fff">+0.62</text></g>`; });
+  s+=`<text id="c9" x="40" y="352" class="sm m">constrained: all copies equal, compound-box bit for bit</text>
+      <text id="d9" class="fade sm" x="40" y="370" style="fill:var(--free)">relaxed: copies of one bit take different signs</text>
+      <text x="40" y="388" class="sm m">the mean sign decides the hard-decision estimate</text>
+      <text x="470" y="92" class="lbl" font-weight="500">fresh frames 61521 to 61720 · complete-valid 21:20 CST</text>
+      <text x="470" y="128" class="lbl">equality-constrained</text>${bar(470,138,164,200,300,'var(--ref)')}<text class="v fade lbl" x="${470+164/200*300+8}" y="152">164</text>
+      <text x="470" y="184" class="lbl">equality-relaxed</text>${bar(470,194,0,200,300,'var(--free)')}<text class="v fade lbl" x="478" y="208">0</text>
+      <g id="st9" class="fade"><text x="470" y="244" class="sm">anchor: 22 / 24 against 0 / 24</text>
+      <text x="470" y="262" class="sm">164 discordant pairs, all favour the constrained arm</text>
+      <text x="470" y="280" class="sm">paired difference −0.82 · 95 % interval [−0.867, −0.758]</text>
+      <text x="470" y="306" class="sm m">relaxed arm, per frame, of 5,100 checks:</text>
+      <text x="470" y="324" class="sm m">5,098 satisfied in private readings · 5,031 by the mean word</text>
+      <text x="470" y="342" class="sm m">68 checks disagree · 127 edge signs against the bit's mean</text>
+      <text x="470" y="360" class="sm m">28 bit errors, syndrome weight 69, every copy inside the box</text>
+      <text x="470" y="384" class="sm m">constrained = compound-box bit for bit on 24 compat. frames</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>This completed experiment starts from the stable compound-box endpoint: one copy of each bit on every edge, every copy held inside the box, the compound parity term, frozen offsets, and thirty updates. The constrained arm, with all copies forced equal, reproduced compound-box bit for bit on 24 compatibility frames. The relaxed arm differs in exactly one thing: the copies may drift apart. Primary and replay hashes agree.</p>
+ <p>On 200 fresh frames at 6 dB the constrained arm recovers 164 and the relaxed arm 0. Every one of the 164 discordant pairs goes the same way. The registered diagnostics show the mechanism I had asked the card to watch for: the relaxed copies satisfy almost every check in their private readings, 5,098 of 5,100, while the mean word satisfies only 5,031, and about 127 edge signs per frame contradict their own bit's mean. Different checks optimise incompatible versions of the same bit. So independently evolving edge coordinates are not the missing BP mechanism; under this bounded construction they are harmful. That is a causal conclusion about edge-copy equality in this construction, not about BP equivalence or the whole native gap.</p>`,
+ play(){ growBars(300, 250); on('.v', 1100);
+   at(1500, ()=>{ const v=['+0.62','−0.57','+0.44']; $$('.cp').forEach((g,k)=>{ g.querySelector('.cv').textContent=v[k]; g.querySelector('.cr').setAttribute('fill','var(--free)'); }); });
+   on('#d9', 1600); on('#st9', 2000); }};
+
+/* ---------- 10 common coordinate ---------- */
+const s10 = { title:'One bounded coordinate interface, two different meanings',
+ svg:()=>{ let s=`<svg viewBox="0 0 880 400" role="img" aria-label="A validated common-coordinate interface reproduces native projected GD and native exact sum-product on 24 retained cases, but the edge slots have different meanings in the two methods.">${strip(9)}
+   <text x="40" y="90" class="lbl" font-weight="500">projected GD lane</text>
+   <text x="40" y="110" class="sm m">one scalar x(i), broadcast to its three edge slots</text>
+   <text x="480" y="90" class="lbl" font-weight="500">exact sum-product BP lane</text>
+   <text x="480" y="110" class="sm m">transformed recipient-specific variable-to-check messages</text>`;
+  [[90,174],[170,174],[250,174]].forEach((p)=>{ s+=`<g class="fade cc"><rect x="${p[0]-28}" y="${p[1]-12}" width="56" height="24" rx="4" fill="var(--ref)"/><text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" class="sm" style="fill:#fff">+0.620</text></g>`; });
+  [[530,174,'+0.710'],[610,174,'−0.240'],[690,174,'+0.430']].forEach((p)=>{ s+=`<g class="fade cc"><rect x="${p[0]-28}" y="${p[1]-12}" width="56" height="24" rx="4" fill="var(--bp)"/><text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" class="sm" style="fill:#fff">${p[2]}</text></g>`; });
+  s+=`<path d="M62 202 L62 214 L278 214 L278 202" fill="none" stroke="var(--ref)" stroke-width="2"/>
+      <text x="170" y="234" text-anchor="middle" class="sm m">tied by construction: z(i→c)=x(i)</text>
+      <path d="M502 202 L502 214 L718 214 L718 202" fill="none" stroke="var(--bp)" stroke-width="2"/>
+      <text x="610" y="234" text-anchor="middle" class="sm m">recipient-specific values remain distinct</text>
+      <g id="cg" class="fade"><rect x="40" y="266" width="340" height="42" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/><text x="210" y="284" text-anchor="middle" class="lbl">native projected-GD trajectory reproduced</text><text x="210" y="300" text-anchor="middle" class="sm">24 / 24 retained cases · primary = replay</text>
+      <rect x="500" y="266" width="340" height="42" rx="5" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="670" y="284" text-anchor="middle" class="lbl">native exact-SP trajectory reproduced</text><text x="670" y="300" text-anchor="middle" class="sm">24 / 24 retained cases · primary = replay</text></g>
+      <g id="cb" class="fade"><rect x="170" y="334" width="540" height="34" rx="5" fill="var(--grid)" stroke="var(--line)"/><text x="440" y="355" text-anchor="middle" class="lbl">same bounded slots ≠ same state meaning, objective, or update</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>The next bridge first solves a representation problem without claiming a mechanism result. It exposes both native decoders through bounded values attached to the Tanner-graph edge slots. For projected GD, every incident slot is a broadcast of the one scalar retained for that bit. For exact sum-product BP, a slot carries a transformed recipient-specific variable-to-check message. On 24 retained cases, both lanes reproduce their native trajectories exactly and replay deterministically.</p>
+ <p>This is a validated numerical interface, not an equivalence claim. The slots have different meanings, and the native objectives and updates still differ. Its value is experimental: it lets the next comparison change the objective calculation while the projected-GD state remains tied.</p>`,
+ play(){ seq('.cc', 250, 120); on('#cg', 1300); on('#cb', 2000); }};
+
+/* ---------- 11 objective calculation ---------- */
+const s11 = { title:'Atomic objective result: tied state, different calculation',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="With tied state and the projected-descent protocol fixed, native compound projected GD recovers 113 of 200 at 6 dB while projected descent on the full recurrence residual recovers zero; both recover zero at 1.5 dB.">${strip(10)}
+  <text x="24" y="84" class="sm m">entry gate: both native trajectories reproduce exactly in the bounded interface on retained frames 20001–20024</text>
+  <rect x="24" y="98" width="832" height="34" rx="5" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="440" y="119" text-anchor="middle" class="sm">held fixed: initialization · tied z=Bx · inherited metric · box · line search · 30 updates · stopping and readout</text>
+  <text x="40" y="158" class="lbl" font-weight="500">control: native compound objective</text>
+  <text x="470" y="158" class="lbl" font-weight="500">treatment: H(Bx), the full recurrence residual</text>
+  <rect x="40" y="174" width="360" height="46" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/>
+  <text x="220" y="194" text-anchor="middle" class="sm">parity and binary terms → their partial derivatives</text><text x="220" y="211" text-anchor="middle" class="sm m">one scalar per bit remains tied</text>
+  <rect x="470" y="174" width="370" height="46" rx="5" fill="var(--free-wash)" stroke="var(--free)"/>
+  <text x="655" y="194" text-anchor="middle" class="sm">H(Bx)=||Bx−Φ(Bx)||²_W /(2n)</text><text x="655" y="211" text-anchor="middle" class="sm m">its full partial-derivative calculation</text>
+  <text x="40" y="254" class="lbl">6 dB · 200 frames</text>
+  ${bar(210,240,113,200,190,'var(--ref)')}<text class="v fade lbl" x="410" y="254">113 / 200</text>
+  ${bar(570,240,0,200,190,'var(--free)')}<text class="v fade lbl" x="578" y="254">0 / 200</text>
+  <text x="40" y="298" class="lbl">1.5 dB · 200 frames</text>
+  ${bar(210,284,0,200,190,'var(--ref)')}<text class="v fade lbl" x="218" y="298">0 / 200</text>
+  ${bar(570,284,0,200,190,'var(--free)')}<text class="v fade lbl" x="578" y="298">0 / 200</text>
+  <g id="or" class="fade"><rect x="40" y="330" width="800" height="44" rx="5" fill="var(--bad-wash)" stroke="var(--bad)"/>
+  <text x="440" y="348" text-anchor="middle" class="lbl">complete-valid objective-calculation effect under tied projected descent</text>
+  <text x="440" y="365" text-anchor="middle" class="sm">113 control-only pairs at 6 dB · not a native-BP attribution</text></g>
+ </svg>`,
+ text:`<p>The common-coordinate target changes one registered operation. Both arms retain one scalar per bit, broadcast it to tied edge slots, start from the same initialization, and use the same metric construction, box, strict-decrease line search, 30-update limit, stopping rule, and hard-decision readout. The control calculates the native compound objective. The treatment instead calculates the weighted squared residual of the full recurrence and its partial derivatives.</p>
+ <p>On fresh frames 61745–61944 at 6 dB, the control's terminal hard-decision estimate equals the transmitted word in 113 of 200 cases; the residual-objective treatment does so in none. On frames 61969–62168 at 1.5 dB, both counts are zero. This isolates an objective-calculation effect under this tied projected-descent protocol. It neither turns the treatment into BP nor explains the complete native BP advantage.</p>`,
+ play(){ growBars(350, 180); on('.v', 1100); on('#or', 1700); }};
+
+/* ---------- 12 budget diagnostic ---------- */
+const s12 = { title:'Budget diagnostic: more updates rescue one arm, not the other',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="On the completed target cases, extending the work limit from 30 to 90 updates changes the 6 dB control from 113 to 193 of 200 and the residual treatment from zero to zero; all low-SNR counts remain zero.">${strip(11)}
+  <text x="24" y="86" class="sm m">exploratory post-outcome diagnostic · exact update-30 prefixes · every case reaches update 90</text>
+  <text x="42" y="124" class="lbl" font-weight="500">6 dB · control</text>
+  <rect x="42" y="142" width="120" height="50" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/><text x="102" y="163" text-anchor="middle" class="sm m">update 30</text><text x="102" y="183" text-anchor="middle" class="big">113</text>
+  <path d="M174 167 L264 167" stroke="var(--ref)" stroke-width="3"/><polygon points="264,167 254,161 254,173" fill="var(--ref)"/>
+  <text x="219" y="154" text-anchor="middle" class="sm" style="fill:var(--ref)">+80</text>
+  <rect x="276" y="142" width="120" height="50" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/><text x="336" y="163" text-anchor="middle" class="sm m">update 90</text><text x="336" y="183" text-anchor="middle" class="big">193</text>
+  <text x="474" y="124" class="lbl" font-weight="500">6 dB · tied residual treatment</text>
+  <rect x="474" y="142" width="120" height="50" rx="5" fill="var(--free-wash)" stroke="var(--free)"/><text x="534" y="163" text-anchor="middle" class="sm m">update 30</text><text x="534" y="183" text-anchor="middle" class="big">0</text>
+  <path d="M606 167 L696 167" stroke="var(--free)" stroke-width="3"/><polygon points="696,167 686,161 686,173" fill="var(--free)"/>
+  <text x="651" y="154" text-anchor="middle" class="sm" style="fill:var(--free)">+0</text>
+  <rect x="708" y="142" width="120" height="50" rx="5" fill="var(--free-wash)" stroke="var(--free)"/><text x="768" y="163" text-anchor="middle" class="sm m">update 90</text><text x="768" y="183" text-anchor="middle" class="big">0</text>
+  <g id="bd" class="fade"><rect x="42" y="226" width="786" height="46" rx="5" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="435" y="245" text-anchor="middle" class="lbl">1.5 dB: control 0 → 0 · tied residual treatment 0 → 0</text>
+  <text x="435" y="263" text-anchor="middle" class="sm m">200 cases per arm; parity-valid counts are the same as the recovery counts</text>
+  <rect x="42" y="300" width="786" height="58" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/>
+  <text x="435" y="321" text-anchor="middle" class="lbl">What the diagnostic closes</text>
+  <text x="435" y="340" text-anchor="middle" class="sm">the update-30 limit explains many control failures at 6 dB, but not the treatment's zero count</text>
+  <text x="435" y="354" text-anchor="middle" class="sm m">no further cap increase; this is not a new causal rung</text></g>
+ </svg>`,
+ text:`<p>The objective comparison raised an immediate alternative explanation: perhaps thirty updates were simply too few. The registered diagnostic resumes the exact completed trajectories and reads both arms again at update 90. At 6 dB, the native compound control rises from 113 to 193 of 200: 80 cases are gained, none are lost, and seven remain unrecovered. The tied residual-objective treatment stays at zero. At 1.5 dB both arms remain at zero.</p>
+ <p>This closes the budget branch for this construction. The update-30 limit matters greatly for the 6 dB control, but it does not explain the residual treatment's zero count on these cases. Because the diagnostic was designed after seeing the update-30 results, it is exploratory and does not become another causal rung.</p>`,
+ play(){ on('#bd', 900); }};
+
+/* ---------- 13 state ablation ---------- */
+const s13 = { title:'State result: freeing edge values alone recovers no words',
+ svg:()=>{ let s=`<svg viewBox="0 0 880 400" role="img" aria-label="The completed state-only comparison recovers zero of 200 words in each arm at both SNRs. Equality release changes all terminal hard decisions but rescues no transmitted words under the residual-gradient and backtracking protocol.">${strip(12)}
+   <text x="24" y="84" class="sm m">held fixed: H(z) · Φ · initialization · metric construction · box · line search · 30 updates · readout</text>
+   <text x="54" y="116" class="lbl" font-weight="500">equality-constrained control</text>
+   <text x="488" y="116" class="lbl" font-weight="500">equality-relaxed treatment</text>`;
+  [[100,164],[180,164],[260,164]].forEach((p)=>{ s+=`<rect x="${p[0]-30}" y="${p[1]-12}" width="60" height="24" rx="4" fill="var(--ref)"/><text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" class="sm" style="fill:#fff">+0.620</text>`; });
+  [[534,164],[614,164],[694,164]].forEach((p)=>{ s+=`<g class="sc"><rect class="sr" x="${p[0]-30}" y="${p[1]-12}" width="60" height="24" rx="4" fill="var(--free)"/><text class="sv sm" x="${p[0]}" y="${p[1]+4}" text-anchor="middle" style="fill:#fff">+0.620</text></g>`; });
+  s+=`<path d="M70 194 L70 204 L290 204 L290 194" fill="none" stroke="var(--ref)" stroke-width="2"/><text x="180" y="224" text-anchor="middle" class="sm">z(i→a)=z(i→b)=z(i→c)</text>
+      <path d="M504 194 L504 204 L724 204 L724 194" fill="none" stroke="var(--free)" stroke-width="2"/><text x="614" y="224" text-anchor="middle" class="sm">copies may persist independently</text>
+      <text x="180" y="244" text-anchor="middle" class="sm m">10,200 persistent scalars; broadcast to 30,600 slots</text>
+      <text x="614" y="244" text-anchor="middle" class="sm m">30,600 persistent bounded coordinates</text>
+      <g id="ss" class="fade"><rect x="24" y="272" width="150" height="28" rx="4" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="99" y="290" text-anchor="middle" class="sm">retained 24 · PASS</text>
+      <rect x="184" y="272" width="150" height="28" rx="4" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="259" y="290" text-anchor="middle" class="sm">anchor 48 · PASS</text>
+      <rect x="344" y="272" width="150" height="28" rx="4" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="419" y="290" text-anchor="middle" class="sm">transfers · PASS</text>
+      <rect x="504" y="272" width="150" height="28" rx="4" fill="var(--grid)" stroke="var(--line)"/><text x="579" y="290" text-anchor="middle" class="sm">6 dB → 1.5 dB</text>
+      <rect x="664" y="272" width="192" height="28" rx="4" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="760" y="290" text-anchor="middle" class="sm">joint inference · PASS</text>
+      <text x="24" y="326" class="sm">completed transfers: 6 dB 0/200 vs 0/200 · 1.5 dB 0/200 vs 0/200</text>
+      <text x="24" y="346" class="sm m">hard-decision estimates differ in all 400 pairs, so the intervention is active</text>
+      <rect x="24" y="364" width="832" height="26" rx="4" fill="var(--bad-wash)" stroke="var(--bad)"/>
+      <text x="440" y="381" text-anchor="middle" class="lbl">COMPLETE-VALID — no observed word-recovery gain under this update rule</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>This completed experiment begins from the tied residual-objective endpoint that recovered zero words. Its control retains one scalar per bit and broadcasts it to the bit's edge slots. Its treatment removes only the equality constraint, so 30,600 bounded edge-associated optimization variables persist independently. They are optimization variables, not BP messages. The objective H(z), recurrence Φ, initialization, metric construction, box, line search, 30-update limit, stopping rule, and mean readout are fixed.</p>
+ <p>Both transfers and joint inference are complete-valid, with primary and replay agreement. On frames 70273–70472 at 6 dB and 70473–70672 at 1.5 dB, each arm recovers 0/200 transmitted words. Their terminal hard-decision estimates differ in all 400 pairs. Releasing equality changes the calculation, but it rescues no words on these cases under this descent rule. The earlier descriptive anchor was also zero in each arm: 6 dB 0/24 vs 0/24 · 1.5 dB 0/24 vs 0/24.</p>
+ <p>This is not proof that independently persistent state never matters. The next factorial tests whether its effect changes with the update direction or step. The state-only result completes one comparison, not the native BP–GD decomposition.</p>`,
+ play(){ at(900, ()=>{ const v=['+0.620','−0.570','+0.440']; $$('.sc').forEach((g,k)=>{ g.querySelector('.sv').textContent=v[k]; }); }); on('#ss', 1400); }};
+
+/* ---------- 14 completed state-direction-step interaction ---------- */
+const s14 = { title:'Completed 2×2×2 result: the effects interact',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="Completed two by two by two factorial. Every true-gradient cell recovers zero of 200 at both SNRs. At 6 dB the four map-displacement cells recover 164, 200, 200 and 200. At 1.5 dB only free state with map displacement and a unit step recovers, at 196 of 200.">${strip(13)}
+  <rect x="24" y="76" width="832" height="42" rx="5" fill="var(--bad-wash)" stroke="var(--bad)"/>
+  <text x="440" y="94" text-anchor="middle" class="lbl" font-weight="500">true residual-gradient direction: 0 / 200 in every state × step cell</text>
+  <text x="440" y="110" text-anchor="middle" class="sm m">the result is the same at 6 dB and 1.5 dB</text>
+  <text x="24" y="146" class="lbl" font-weight="500">map displacement Φ(z) − z · 6 dB</text>
+  ${grid(20, 174, ['backtracking','unit'], ['constrained','free'], [['164','200'],['200','200']], 100, 42)}
+  <text x="454" y="146" class="lbl" font-weight="500">map displacement Φ(z) − z · 1.5 dB</text>
+  ${grid(450, 174, ['backtracking','unit'], ['constrained','free'], [['0','0'],['0','196']], 100, 42)}
+  <g id="fi" class="fade"><rect x="24" y="286" width="392" height="62" rx="5" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="220" y="307" text-anchor="middle" class="lbl">registered three-factor interaction</text>
+  <text x="220" y="329" text-anchor="middle" class="big">−0.18 <tspan class="sm">at 6 dB</tspan></text>
+  <rect x="440" y="286" width="416" height="62" rx="5" fill="var(--bp-wash)" stroke="var(--bp)"/>
+  <text x="648" y="307" text-anchor="middle" class="lbl">registered three-factor interaction</text>
+  <text x="648" y="329" text-anchor="middle" class="big">+0.98 <tspan class="sm">at 1.5 dB</tspan></text>
+  <text x="440" y="380" text-anchor="middle" class="sm m">free + Φ(z) − z + unit step applies z(next)=Φ(z) directly; that cell is not GD</text></g>
+ </svg>`,
+ text:`<p>The immutable v2 queue completed valid at 5/5 jobs on frames 70721–70920 at 6 dB and frames 70921–71120 at 1.5 dB, with 200 transfer cases per SNR. The correctness, input-identity, primary/replay, factor-activity and transformed-BP-trajectory gates passed. The three factors are equality-constrained versus free edge-associated state, the true residual-gradient direction versus the map displacement Φ(z) − z, and strict-decrease backtracking versus a unit step.</p>
+ <p>Every true-gradient cell recovers 0/200 at both SNRs. Releasing the equality constraint or replacing backtracking by a unit step therefore does not rescue that gradient. At 6 dB, the map-displacement cells recover 164/200 with constrained state and backtracking, and 200/200 in the other three state-by-step cells. At 1.5 dB, seven cells recover 0/200; only free state + map displacement + unit step recovers, at 196/200.</p>
+ <p>The registered three-way interaction is −0.18 at 6 dB and +0.98 at 1.5 dB. This is an interaction result, not an additive allocation of cases to three independent causes. With a unit step, Φ(z) − z applies the recurrence directly as z(next)=Φ(z); it is not a gradient step. The result estimates conditional effects inside this frozen bounded recurrence-residual construction. It is not a complete native BP endpoint decomposition.</p>`,
+ play(){ seq('.cell', 300, 70); on('#fi', 1700); }};
+
+/* ---------- 15 current boundary ---------- */
+const MILES_NOW = [['Offset-use, assignment and state-update factorials','complete-valid'],
+ ['Finite-budget trajectory diagnosis','complete-valid'],['Objective-path and direction tests','complete-valid'],
+ ['Fixed-metric integrability boundary','complete-valid'],['Registered one-hop matrix family','closed'],
+ ['Pointwise positive-matrix existence','complete-valid'],['Factorized scalar energy · Stage A','development only'],
+ ['Factorized scalar energy · Stage B','scientific fail'],['Two-hop positive matrix · v4','handoff invalid'],
+ ['Two-hop positive matrix · v5','Stage A complete-valid'],['Live coefficient intake','verified · execution false'],
+ ['Operational source + envelope','prepared · disabled'],['Stage-C source / fresh screen','ready / unopened']];
+const s15 = { title:'Where the causal explanation stands now',
+ svg:()=>{ let s=`<svg viewBox="0 0 880 590" role="img" aria-label="The trajectory, objective-path, integrability, and metric studies are complete. The factorized scalar energy failed its independent low-SNR direction screen. V5 completed a replay-identical nonzero two-hop retained fit. Its signed-zero repair and live coefficient intake pass while every execution permission remains false. The Stage-B operational source and execution-envelope code are prepared and fail-closed; their exact one-use launch artifacts have not been materialized. A dormant Stage-C projected-gradient source passes synthetic mechanics checks but has no case loader or scientific authorization. The approved first repository-wide collision scan failed closed on lexical/parser collisions and the cap on its registered RSS accounting field. The source-only v11 remediation and closure-002 are complete. Activation-002 was consumed by the interrupted v11 scan. The corrected retry was then consumed and failed on one documentary self-collision plus a recorded coordinator field of 6,140,592 KiB against the 2,097,152-KiB cap. Fresh-child reproduction proved that field inherited a pre-existing process-lifetime peak across execve; it is not scanner-allocation evidence. No complete-valid later collision audit, retained-only wall measurement, built and audited Stage-B execution capsule, launch, or scientific run exists. The replacement V2 seal is complete-valid and the wall-contract amendment is approved; neither opened a case. The earlier V1 coefficient seal remains governance-invalid; the separately approved V2 seal is complete-valid and opened no frame. No fresh direction screen, registered decoder anchor, recovery score, or BER or FER comparison has run.">${strip(14)}
+   <text x="24" y="78" class="lbl m">current evidence boundary · scientific results separated from development diagnostics</text>`;
+  MILES_NOW.forEach((m,k)=>{ const y=86+k*30, st=m[1]; const failed=st==='closed'||st==='scientific fail'||st==='handoff invalid'; const fill=st==='complete-valid'?'var(--bp-wash)':(failed?'var(--bad-wash)':(st==='development only'?'var(--ref-wash)':'var(--free-wash)')); const stroke=st==='complete-valid'?'var(--bp)':(failed?'var(--bad)':(st==='development only'?'var(--ref)':'var(--free)'));
+    s+=`<g class="fade ml"><text x="24" y="${y+17}" class="lbl">${m[0]}</text><rect x="690" y="${y}" width="166" height="25" rx="13" fill="${fill}" stroke="${stroke}"/><text x="773" y="${y+16}" text-anchor="middle" class="sm">${st}</text></g>`; });
+  s+=`<g id="nx" class="fade"><rect x="24" y="488" width="832" height="82" rx="5" fill="var(--free-wash)" stroke="var(--free)"/><text x="440" y="506" text-anchor="middle" class="sm">V5 retained Stage A: COMPLETE-VALID · live coefficient intake: VERIFIED</text><text x="440" y="526" text-anchor="middle" class="sm">signed-zero repair: 51/51 tests · v10 range audit: FAILED · 31 rows / 6 groups · registered RSS field &gt; cap</text><text x="440" y="546" text-anchor="middle" class="sm">corrected v11 retry: FAILED · remediation-002: SOURCE-ONLY COMPLETE</text><text x="440" y="564" text-anchor="middle" class="sm">seal-v2 complete-valid · wall amendment approved · no fresh input or Stage-B science</text></g>`;
+  return s+'</svg>'; },
+ text:`<p>The completed factorials first isolated two historical offset mechanisms at 6 dB: the recovery gain enters through use of retained offsets in the parity calculation, correct check assignment transfers strongly, offset-induced projection bounds add no observed recovery, and repeated replacement does not improve the correctly assigned arm on the fresh sample. The preregistered replacement-equivalence gate failed, so freezing and replacement cannot be declared equivalent. A separate state-by-direction-by-step factorial then showed that the recurrence-to-update conversion matters: the true residual-gradient direction recovered 0/200 in every state-by-step condition, while direct application of the recurrence recovered at low SNR only when state, direction and step occurred together. The later diagnostics now explain what those findings do and do not permit.</p>
+ <p>The finite-budget diagnosis classified 1,599 of 1,600 tested arm–case trajectories as budget-limited progress candidates at update 30, but the successful exact-recurrence path was not generated by the partial derivatives of any registered objective function under the fixed scaling. The integrability study then ruled out an exact smooth potential for that vector field under the retained coordinates and fixed diagonal matrix. This is a mathematical boundary on one representation, not a proof that every gradient construction must fail.</p>
+ <p>A registered one-hop graph-local matrix did not improve the direction. A later 25-parameter scalar-energy family did improve alignment at 6 dB, but its independent Stage B result failed the registered median-angle and relative-error gates at 1.5 dB. That exact sealed family is closed; its decoder stages did not run. <a class="diagnosis-link" href="#stage-b-screen">See the independent result →</a></p>
+ <p>Pointwise calculations still show that a suitable symmetric positive-definite matrix can exist at almost every sampled active state. The selected successor therefore keeps the declared objective function and changes the matrix applied to its partial derivatives. The v1-r1 attempt stopped on a Julia world-age adapter error before fitting began and supplied no scientific result. The repaired source passes all 11 registered suites, including a Julia 1.12 dynamic binding, load, and replay regression with <code>--depwarn=error</code>; its new immutable Stage-A v2 capsule passed an independent read-only audit.</p>
+ <p>V2 launched at 22:02:00 CST, crossed the v1 failure point, and stopped at 22:03:22 CST in <code>_make_graph_adapter</code>. The sealed <code>GraphView</code> exposes <code>n</code>, <code>checks</code>, <code>check_edges</code>, <code>variable_edges</code>, and <code>edge_variable</code>; the adapter incorrectly requested <code>edge_check</code>. This was a second operational pre-fit failure, not a scientific result.</p>
+ <p>After the graph-adapter repair and a new immutable v3 capsule, v3 launched at 22:15:53 CST and cleared both earlier failure points. It stopped at 22:17:14 CST while dispatching <code>StageA.run_stage_a</code>: the method required <code>batch_provider::Function</code>, but <code>RetainedFrameProvider</code> is a callable struct. This third failure was also operational and pre-fit.</p>
+ <p>V4 generalized the callable interface, reran the synthetic wall measurement, passed all 11 registered source suites, and passed an independent read-only audit of its new immutable Stage-A capsule. It launched at 22:30:56 CST and crossed all earlier failure points. The earlier independently audited 22:58:50.773 CST snapshot recorded the primary frame loop at 334/400 and 1.5-dB frame 71054. V4 then completed at 23:46:08 CST. Its primary and replay scientific hashes match, and the science, coefficient, and fit-table bytes match.</p>
+ <p>The retained fit cannot pass into the matrix calculation. Its <code>active_set_mask</code> field is 33: the <code>theta_0=0</code> lower bound and the registered coefficient constraint are both declared active. Yet the serialized full fit reports <code>theta_0=-1.2968027309710387e-15</code>. The exact <code>MetricCoefficients</code> constructor rejects any negative <code>theta_0</code>. The runner's replay is reproducible, but the production constructor check fails; v4 therefore supplies no scientific Stage-A result. This operational rejection does not show that the matrix family failed.</p>
+ <p>V5 now implements the registered operational repair. It retains the v4 KKT systems, rank gate, residual tolerances, objective tie band, and canonical tie order, but constructs every constraint selected by the solver exactly: selected lower bounds are stored as exact <code>+0.0</code>, and the signed-L1 boundary closes exactly. On the retained v4 normal equations, it preserves sign mask 0 and active-set mask 33, keeps the coefficient and objective changes inside the prospectively registered bounds, and passes the production <code>MetricCoefficients</code> check before any science artifact can be serialized.</p>
+ <p>All 11 registered V5 Stage-A source-only suites pass. The final corrected-runner synthetic measurement has SHA-256 <code>c7db370b11ed9cd07df4daf6425c93a8646d2d939e6ded23e62babb62bdcc2a6</code>, opened no retained or fresh trajectory, and seals a 22,736-second wall cap. The earlier v5 measurement remains immutable but is explicitly superseded and capsule-ineligible. An independent no-duplicate recheck binds the final source snapshot, and the V5 Stage-A source closure is complete-valid. The immutable V5 retained Stage-A capsule then passed an independent exact-closure and immutability audit.</p>
+ <p>Unit <code>sp-gd-rq2-two-hop-positive-metric-v5.service</code> launched from that capsule at 01:01:01 CST on 6 November 2026. It used only retained frames 70721–70920 at 6 dB and 70921–71120 at 1.5 dB. The primary frame loop ended at 01:40:05.127 CST, the manifest-verified checkpoint closed at 01:40:06.352 CST, replay ended at 02:17:14.030 CST, and terminal writing ended at 02:17:14.606 CST. The independent terminal verifier passed 3,797 checks with classification <code>retained_fit_complete_nonzero_two_hop</code>. Primary and replay scientific hashes and retained artifact bytes agree; canonical science SHA-256 is <code>b14d0afb76235ef43d524c3a93c56c2d064ce40db69666cc57314ecc1c3f52c5</code>.</p>
+ <p>The retained full fit is <code>[0, −0.0989697112, −0.1912955636, −0.7058447636, −0.00368998166]</code>, with active-set mask 33 and registered development objective 648.030; the identity-only vector is all zero, with active-set mask 1 and objective 2301.244. This is a complete-valid teacher-labelled retained-development fit, not independent direction validation and not decoder-performance evidence.</p>
+ <p>The terminal verifier output is preserved in a controls-side exact-inventory bundle whose manifest is <code>b271d917308793a25b40af23c6712777c5ce303e4bb11c9a6e29dadaa2553090</code>. Its receipt records the nonzero-fit classification, <code>fresh_inputs_opened=false</code>, and <code>stage_b_launched=false</code>. The signed-zero repair changed only the intake representation check: explicit sign branches now agree with the frozen Julia constructor, canonical <code>+0.0</code> passes, and <code>-0.0</code> in either split field fails. The 28 scaffold tests and 23 source-only sealer tests all pass.</p>
+ <p>The reviewed coefficient-intake configuration and narrow intake authorization are now materialized. Their SHA-256 values are <code>8d2a350cf8abec0b75fd16f19fcd062b40d4a62e23b321245d25b49db86e730b</code> and <code>524bc8c5c27f9d1ba5569798af12083db59ea6855c30a303b962e4b39abf19ab</code>. The live contract returns <code>[0, −0.0989697112, −0.1912955636, −0.7058447636, −0.00368998166]</code>, confirms all four two-hop fields are nonzero, and leaves every Stage-B, launch, fresh-input, decoder, scoring, update, and retuning permission false. Intake verification is a provenance gate, not direction or decoding evidence.</p>
+ <p>The preserved v10 range-audit producer validator passed 10/10 source/provenance checks and 61/61 synthetic tests. Its ledger requires four ordered canonical JSONL streams, closed 175-field result and 23-field v2 activation keysets, complete inventories, and internal cross-consistency; the producer alone does not establish live truth for a fully coherent rewrite. It binds the exact 13-member support-source registration: twelve Stage-B support files plus the hard-pinned, TOML-parsed dormant Stage-C boundary. Approval <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-001</code> is recorded at identity <code>c2ef2d0f77d1fc441e532c78dbf7d4917c4ef8defb948f0315b1c659a71d4403</code>, with registration-record raw SHA-256 <code>fb8bab4d00b08e88b34713c9eb77414d9cc0ef874e59b8d9712832a9db459c4e</code>; it supplied the frozen support closure for the approved first scan. That scan produced an internally consistent failure record at SHA-256 <code>46d38209d89a6bd0a51f1008fa68cbde26033ecf8954f3b2750c5e5e980c510f</code>, with status <code>collision_or_audit_failure</code>, 31 collision records in six groups, and recorded RSS of 6,437,576 KiB against the 2,097,152-KiB cap. Every source, support, inventory, and snapshot-stability gate passed, with zero scan failures and no fresh input or Stage-C access. Independent review found no competing frame reservation or scientific frame consumption: the rows came from quoted prior-audit evidence, synthetic parser fixtures, and current-campaign explainer text. That diagnosis does not make the registered audit pass. The approved source-only remediation <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-REMEDIATION-001</code> is implemented: the prospective v11 preparation passes 11/11 source/provenance checks and 70/70 synthetic tests, closes the result to 183 fields, binds exact provenance for the 27 reviewed historical/test non-registration records, uses bounded streaming parsing for <code>.json</code> files; large structural <code>.txt</code> and suffixless documents remain isolated in helpers and component-gated rather than claimed as streaming; and it records coordinator and waited-child lifetime peaks separately from per-helper peaks; each helper peak is stabilized after parsing and response serialization, while the post-wait child observation is conservative through process exit. It did not rerun or alter the preserved v10 failure and does not claim simultaneous process-tree RSS. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-002</code> is approved and materialized at registration identity <code>7a796e142cd263e36c994854ea377841c6cddb262a1534690902d7c4b0681d66</code>, with registration-record raw SHA-256 <code>d3e8acb2b91aeb79788fb55d1134a4e653ee091cf2ec67a580fe4d69545d77c2</code>; all its live permissions are false. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-ACTIVATION-002</code> was materialized and consumed by the interrupted v11 scan after its pre-scan gates passed and it reached filesystem root 5 of 17. No range result was published and no scientific input opened. The path-correction retry was approved, materialized, and consumed exactly once. Its terminal result (SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>) failed on one documentary self-collision and a recorded coordinator field above the RSS cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands; no scientific input opened and no manifest was created. The first remediation authorized neither scientific execution nor reuse of activation-002. The corrected retry is also consumed and cannot be reused. The final operational source preparation now contains the fail-closed input provider, coefficient loader, direction-screen runner, writer, telemetry, preflight, and retained-only callback. Its 26-file inventory validator, five Python tests, and 240 Julia assertions pass. The Julia counts are pinned per suite at 12 coefficient-seal-loader, 34 provider, 165 operational-runtime, and 29 retained-callback assertions. Three provider assertions independently pin a bit-exact golden vector for the retained <em>J</em><sub>C</sub> arithmetic. Eight provider assertions change only the supplied offline comparison direction: the comparison diagnostics change, while both calculated directions, the candidate condition values, and the local gate remain unchanged. Seven further assertions bind the byte-identical pure <em>J</em><sub>C</sub> source, whose SHA-256 is <code>6565b88e3974f7efbfac1dbdd8446ace79752779d5a40bf8e53bb47f7db53bb0</code>: the provider calculates the partial derivatives and fixed diagonal locally, uses those local values for the candidate action, and rejects a self-consistently hashed but incorrect supplied gradient, an incorrect supplied diagonal, or a mismatched gradient hash before candidate evaluation. The separate Stage-B execution-envelope preparation contains prospective source validation, wall benchmarking, capsule build and audit, authorization checking, supervision, and an inert service template. Its 21-member inert-source validator passes, and its pinned Python 3.11 suite passes 76/76 tests. The exact downstream range bundle remains three files. Builder and independent auditor use no-follow component walks, retain physical root identities, reject aliases, recompute containment, rerun the live worktree, ref, descriptor-retained filesystem, and Git-blob inventories, recompute hashes, object IDs, and fingerprints, compare all four regenerated canonical payloads byte for byte, and repeat repository-identity and post-Git-metadata checks. No production program or scientific rule changed. An end-to-end temporary run generated and independently validated the actual 26-member source closure with all 245 source checks passing, source identity <code>401aafec73839021d3f3c9dd3708f0f88b5ca614ea045b9bc736e84f3358abb9</code>, <code>fresh_inputs_opened=false</code>, and <code>scientific_runner_started=false</code>. No persistent final source-validation bundle was published before the audit because the protocol placed that audit first. Both preparations remain fail-closed. The corrected retry produced a terminal operational failure, and no complete-valid range result exists; the complete-valid V2 seal and approved wall-contract amendment open no case. The prospectively approved <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RETAINED-WALL-BENCHMARK-001</code> and <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-EXECUTION-001</code> remain inoperative until their exact prerequisites pass and their one-use authorization artifacts can be materialized. No retained-wall run, fresh input, or science has begun.</p>
+ <p><strong>RSS attribution:</strong> the frozen v10 <code>scan_max_rss_kib</code> field stores 6,437,576 KiB against its 2,097,152-KiB cap. The scanner calculated that field by adding the coordinator's lifetime peak RSS to the largest lifetime peak RSS reported for any waited child. Those peaks need not be simultaneous, so this is not a measured simultaneous process-tree peak; the frozen output retained neither component nor per-helper RSS. The registered cap comparison remains failed. The frozen v10 large-document JSON path materialized the complete byte buffer, decoded text, and JSON tree, but the frozen telemetry cannot identify which child set the maximum. The prospective v11 source now uses bounded streaming parsing for <code>.json</code> files and records coordinator and waited-child lifetime peaks separately from per-helper peaks; each helper peak is stabilized after parsing and response serialization, while the post-wait child observation is conservative through process exit. It does not remeasure the v10 run, claim simultaneous process-tree RSS, or authorize a retry.</p>
+ <p><strong>Fresh-worker remediation complete:</strong> ordinary Python subprocess creation is not a valid reset on this host because its <code>vfork</code> path can repeat the launcher's process-image peak. Approved source-only remediation-002 now places traversal behind a true <code>fork()</code> before any corpus read or sizable allocation, followed by pinned <code>execve()</code>. After complete result serialization, the final <code>wait4()</code>-checked process-tree peak must equal <code>max(worker self, worker waited child)</code>. Version-3 document helpers apply the same self-versus-waited-child maximum. The launcher's inherited peak is diagnostic only. The generator at SHA-256 <code>a3e40cc9d31f5853894a5cfff218bf70ab8f20fbccceb0f6565614ff477fa9e0</code> passes 79/79 synthetic tests and 13/13 source checks. The canonical no-result rehearsal receipt at SHA-256 <code>e2f33286897e7d56c07401274f2c19b865670e8c59c27dd235faa017dc0f494c</code> records worker self = <code>wait4()</code> = 210,828 KiB, zero waited-child and helper peaks, and 6,923 ms elapsed against unchanged caps of 2,097,152 KiB and 1,800,000 ms; the inherited parent peak of 6,140,592 KiB remained diagnostic only. All four embedded inventories were reproduced. Formal activation, live-provider traversal, and formal-result publication remained false. The prospective publisher performs every check and <code>fsync</code> before an exclusive link makes the result visible; no post-link crash-durability acknowledgement is claimed. The failed v11 result remains failed and byte-unchanged at SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>, with no manifest. This completion authorizes no formal scan or scientific input.</p>
+ <p>The earlier V1 coefficient-seal authorization and four-member directory remain governance-invalid because they were created without the distinct seal approval, and they remain excluded from every later gate. On 7 November 2026 the user separately approved coefficient-seal-002; its complete-valid V2 replacement is materialized at authorization SHA-256 <code>06944b797b96c93ec136c41949d708eb1613caba0387871b256003155950803b</code>, manifest SHA-256 <code>a71ebef92cd1a998be9fda33ba2fadbda0680aa9da140b9941166a75c2db38c5</code>, and sealed-member SHA-256 <code>173a68f41e53d4e7b16a40d27271245ae9c83b0b5f4858c7f15d439f25fb3078</code>. V2 opened no frame and is a provenance gate, not a scientific result or permission to open data.</p>
+ <p>The already registered Stage-C update is now implemented as a dormant synthetic-only source seam. It calculates the graph-only fixed positive diagonal once; at every attempted update it recalculates unchanged <em>J</em><sub>C</sub>, its partial derivatives, and the state-dependent two-hop matrix action from the accepted current state before applying the registered projection and Armijo search. It keeps the 30-attempt/stall rule, centered incident-edge readout, and strict-negative decision; the first parity-valid syndrome is telemetry only. Its exported state-advancing entry points construct the direction internally, expose no arbitrary-direction step, and have no BP, teacher, truth, frame, SNR, population, scoring, case-loading, writing, or launching interface. Its ten-file worktree source-and-resource preparation passes 135 capability, inventory, and artifact checks, seven validator tests, and 3,396 Julia assertions. A separate pure checker recalculates every stored objective, partial-derivative vector, matrix direction, trial, Armijo decision, accepted state, readout, syndrome, and cross-record link. The suite covers an accepted second trial, bit-exact deterministic reruns with the synthetic graph, channel-LLR vector, coefficients, and decoder settings held fixed on update-cap and stalled paths, 35 altered traces that fail closed, and a parity-valid transition at update 16 that still continues through update 30. It retains the exact-zero complete-path identity and valid-codeword sign-covariance gates. An exhaustive fingerprint audit found no previously run duplicate: the closest two-hop predecessor changed the scalar energy and failed before its decoder stage, while the closest state-dependent matrix used one-hop support and selected identity behavior. This is source readiness, not an activated decoder anchor or performance evidence.</p>
+ <p>A test-only dense path now enumerates graph incidence directly and reimplements the full matrix and projected Armijo loop without the production path pattern or sparse action. It reproduces the 30-update and late-stall candidate paths within <code>3e-13</code>. A nondegenerate six-variable fixture proves that the recipient-excluded operation creates zero-mean differences among edge values incident on a bit: collapsing those differences preserves unchanged <em>J</em><sub>C</sub> and its partial derivatives, but changes the next matrix direction; the exact-zero control stays edge-tied. The late-stall fixture also exposes a limitation. Its raw positive-definite matrix direction has <code>gᵀd&lt;0</code>, but componentwise projection removes the descent-producing boundary components and all 13 projected displacements have <code>gᵀδ&gt;0</code>. The registered fixed-diagonal projected-gradient mapping remains nonzero and gives a feasible lower-objective point, so this candidate stall is not box-stationary. The exact-zero control has a zero mapping at its stall. No update, coefficient, threshold, or gate changed; this is a projection/action compatibility diagnosis, not performance evidence.</p>
+ <p>The production-size synthetic resource receipt adds four cells and three one-thread repetitions per cell. Candidate and exact-zero update-cap traces each occupy 69,861,148 bytes; decoder time is 5.7778–6.4499 seconds, complete-trace checking is 5.5252–5.7620 seconds, and measured child-process peak RSS is 894,263,296–899,579,904 bytes. The immediate-stall traces occupy 11,763,554 bytes. No registered frame, case provider, comparison receiver, truth, or scorer is opened. The receipt is engineering feasibility only, not the separately gated Stage-B wall benchmark, a sealed RSS cap, or scientific decoder evidence.</p>
+ <p>The causal gate ladder is now explicit: retained teacher-labelled fit → verified coefficient intake → approved support-source registration → collision audit and final source identity → separately approved admissible seal → approved wall-contract amendment → separately authorized retained-only wall measurement → execution-capsule build and independent audit → untouched direction screen → separately authorized decoder anchor → 200-case recovery proxy at each SNR → native-BP transmitted-word recovery and coded-bit BER comparison. The first three listed gates are complete for this candidate; the fourth was attempted and failed closed, so the now-complete source-only remediation and approved closure-002 were followed by the interrupted activation-002 scan. The next gate is a newly registered source-only fresh-worker telemetry remediation, followed by a separately proposed, approved, and materialized exact support closure and then a separately approved one-use range-scan authorization. No fresh direction screen, registered decoder-anchor run, transmitted-word recovery score, or coded-bit BER/FER measurement has run.</p>
+ <p>Ordinary projected GD and the tested fixed-matrix families fail under their registered conditions. That is not a universal impossibility result. A gradient-based decoder approaching BP is not ruled out and remains mathematically plausible, but it is unproven. Complete native BP-versus-projected-GD attribution and BER matching remain unresolved.</p>`,
+ play(){ seq('.ml', 150, 120); on('#nx', 1300); }};
+
+/* ---------- 16 completed trajectory diagnosis ---------- */
+const s16 = { title:'Diagnosis result: most paths met the progress-candidate condition',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="Finite-budget diagnosis classified 799 of 800 true-gradient arm-case trajectories at 6 dB and all 800 at 1.5 dB as budget-limited progress candidates. One 6 dB trajectory was a nonstationary stall or cycle.">${strip(15)}
+  <text x="24" y="84" class="sm m">four true-gradient arms × 200 cases per SNR · retained trajectories only</text>
+  <text x="42" y="124" class="lbl" font-weight="500">6 dB</text>
+  <rect x="42" y="144" width="760" height="42" rx="5" fill="var(--grid)" stroke="var(--line)"/>
+  <rect class="b" data-w="759.05" x="42" y="144" width="0" height="42" rx="5" fill="var(--bp)"/>
+  <text x="422" y="170" text-anchor="middle" class="lbl" style="fill:#fff">799 / 800 budget-limited progress candidates</text>
+  <rect x="806" y="144" width="32" height="42" rx="5" fill="var(--bad-wash)" stroke="var(--bad)"/><text x="822" y="170" text-anchor="middle" class="sm">1</text>
+  <text x="42" y="226" class="lbl" font-weight="500">1.5 dB</text>
+  <rect x="42" y="246" width="796" height="42" rx="5" fill="var(--bp)"/>
+  <text x="440" y="272" text-anchor="middle" class="lbl" style="fill:#fff">800 / 800 budget-limited progress candidates</text>
+  <g id="dc" class="fade"><rect x="42" y="322" width="796" height="48" rx="5" fill="var(--free-wash)" stroke="var(--free)"/>
+  <text x="440" y="342" text-anchor="middle" class="lbl">finite-budget diagnosis, not a recovery guarantee</text>
+  <text x="440" y="360" text-anchor="middle" class="sm">the registered classification does not prove that more updates reach the transmitted word</text></g>
+ </svg>`,
+ text:`<p>The retained diagnosis examined the four true-gradient state-by-step arms separately. At 6 dB, 799 of 800 arm-case trajectories were classified as budget-limited progress candidates; the remaining constrained-state, unit-step case was classified as a nonstationary stall or cycle. At 1.5 dB, all 800 were classified as budget-limited progress candidates.</p>
+ <p>This rules against the simple claim that most failures had already settled at an incorrect stationary point within 30 updates. It does not show that a larger budget would recover the transmitted word: a trajectory can meet this finite-budget condition yet remain slow, approach an unhelpful limit, or cycle later. The classification is a finite-budget diagnostic, not a convergence proof or decoder-performance result.</p>
+ <p>The result redirected the goal from merely extending the budget to asking whether the successful exact-recurrence trajectory is descent on a usable objective function. <a class="diagnosis-link" href="#objective-path">Continue to the objective-path test →</a></p>`,
+ play(){ growBars(300,100); on('#dc', 1100); }};
+
+/* ---------- 17 objective path ---------- */
+const s17 = { title:'No registered objective supplied both path descent and direction',
+ svg:()=>`<svg viewBox="0 0 880 400" role="img" aria-label="At 1.5 dB H increases on 22.1 percent of exact-recurrence updates and the plug-in Bethe functional on 44 percent. J C increases on 2 percent, but its negative gradient has median angle 83.4 degrees from the recurrence displacement. In 2,156 cases the recurrence displacement is zero while the J C gradient-based candidate direction remains nonzero.">${strip(16)}
+  <text x="24" y="82" class="sm m">successful free-state exact recurrence · 1.5 dB · 6,000 requested transitions</text>
+  <text x="42" y="123" class="lbl">H</text>${bar(142,106,22.1167,50,520,'var(--bad)','b')}<text x="678" y="123" class="lbl">22.1% increase</text>
+  <text x="42" y="175" class="lbl">plug-in Bethe</text>${bar(142,158,44,50,520,'var(--bad)','b')}<text x="678" y="175" class="lbl">44.0% increase</text>
+  <text x="42" y="227" class="lbl">J<tspan baseline-shift="sub">C</tspan></text>${bar(142,210,2,50,520,'var(--bp)','b')}<text x="678" y="227" class="lbl">2.0% increase</text>
+  <g id="oa" class="fade"><path d="M190 292 L330 292" stroke="var(--bp)" stroke-width="4"/><polygon points="330,292 318,285 318,299" fill="var(--bp)"/>
+  <path d="M190 292 L205 212" stroke="var(--free)" stroke-width="4"/><polygon points="205,212 198,224 211,226" fill="var(--free)"/>
+  <text x="356" y="298" class="sm">exact-recurrence displacement</text><text x="82" y="206" class="sm">negative J<tspan baseline-shift="sub">C</tspan> direction</text>
+  <text x="210" y="272" class="big">83.4°</text>
+  <rect x="42" y="330" width="796" height="42" rx="5" fill="var(--free-wash)" stroke="var(--free)"/>
+  <text x="440" y="348" text-anchor="middle" class="lbl">J<tspan baseline-shift="sub">C</tspan> passes the 5% path test, then fails the direction test</text>
+  <text x="440" y="365" text-anchor="middle" class="sm">2,156 transitions: recurrence displacement zero; candidate direction nonzero</text></g>
+ </svg>`,
+ text:`<p>The objective-path replay did not change the decoder. It evaluated three candidate objective functions along the already successful free-state, exact-recurrence, unit-step trajectory. At 1.5 dB, H increased on 1,327 of 6,000 updates (22.1%), and the plug-in Bethe functional increased on 2,640 of 6,000 (44.0%). Both exceeded the prospectively fixed 5% disqualification threshold.</p>
+ <p>The native compound objective J<sub>C</sub> increased on only 120 of 6,000 updates (2.0%), so it survived the path test. It then failed as a direction source: the median angle between the recurrence displacement and its negative fixed-matrix gradient was 83.4°. In the 2,156 <code>map_zero_only</code> updates, the direct recurrence displacement was zero while the J<sub>C</sub> gradient-based candidate direction remained nonzero.</p>
+ <p>A direct post-outcome cross-tabulation of the complete-valid tables gives an important limit on the interpretation. All 196 terminal-success frames reached their first centered-readout zero-syndrome state before any positive J<sub>C</sub> endpoint change; 96 of those 196 trajectories had no positive endpoint change anywhere in all 30 updates. The recorded increases therefore cannot explain why this recurrence proxy first reaches a valid word while strict descent fails. The iteration table does not retain per-update transmitted-word equality, so this derived diagnostic does not prove that the first valid word was already the transmitted word. A finite unit update can also cross an internal rise while ending lower, whereas the registered Armijo rule additionally requires a locally descending displacement and sufficient decrease. Because J<sub>C</sub>(<em>z</em>) = J(<em>Cz</em>) is constant on ker <em>C</em>, establishing that inability to increase J<sub>C</sub> is binding requires a feasible wrong-readout region <em>W</em> in the quotient represented by <em>u</em> = <em>Cz</em>, a certified gap min<sub><em>u</em> in boundary(<em>W</em>)</sub> J(<em>u</em>) &gt; J(<em>u</em><sub>*</sub>), and a separate proof that every registered finite projected trial remains in the lifted region or fails acceptance. This cross-tabulation is not a prospectively registered decision and not a native-BP result.</p>
+ <p>No registered candidate survived both tests. This closes these three candidates under the registered coordinates and fixed matrix; it does not prove that every possible objective function is impossible. <a class="diagnosis-link" href="#integrability-boundary">Continue to the mathematical boundary →</a></p>`,
+ play(){ growBars(250,130); on('#oa', 1100); }};
+
+/* ---------- 18 integrability and metric boundary ---------- */
+const s18 = { title:'The fixed-metric boundary is exact; alternative geometry remains possible',
+ svg:()=>`<svg viewBox="0 0 880 430" role="img" aria-label="All 400 registered LLR-specific transformed exact-recurrence fields have a mixed-partial witness, ruling out an exact C2 potential in the retained coordinates with the fixed diagonal matrix. Pointwise positive-definite matrix feasibility holds on every active state, while the registered one-hop constructive family fails.">${strip(16)}
+  <rect x="24" y="78" width="400" height="160" rx="7" fill="var(--bad-wash)" stroke="var(--bad)"/>
+  <text x="224" y="102" text-anchor="middle" class="lbl" font-weight="500">what is ruled out</text>
+  <text x="224" y="137" text-anchor="middle" class="big">v(z)=M[Φ<tspan baseline-shift="sub">L</tspan>(z)−z]</text>
+  <text x="224" y="169" text-anchor="middle" class="lbl">∂v<tspan baseline-shift="sub">p</tspan>/∂z<tspan baseline-shift="sub">q</tspan> ≠ ∂v<tspan baseline-shift="sub">q</tspan>/∂z<tspan baseline-shift="sub">p</tspan></text>
+  <text x="224" y="198" text-anchor="middle" class="big">400 / 400</text>
+  <text x="224" y="220" text-anchor="middle" class="sm">LLR-specific fields have a certified witness</text>
+  <rect x="456" y="78" width="400" height="160" rx="7" fill="var(--bp-wash)" stroke="var(--bp)"/>
+  <text x="656" y="102" text-anchor="middle" class="lbl" font-weight="500">what remains geometrically possible</text>
+  <text x="656" y="135" text-anchor="middle" class="lbl">some state-dependent symmetric positive-definite matrix</text>
+  <text x="656" y="166" text-anchor="middle" class="big">464 / 464 <tspan class="sm">6 dB</tspan></text>
+  <text x="656" y="194" text-anchor="middle" class="big">3,564 / 3,564 <tspan class="sm">1.5 dB</tspan></text>
+  <text x="656" y="220" text-anchor="middle" class="sm">strict pointwise feasibility · existence only</text>
+  <g id="mb" class="fade"><rect x="24" y="270" width="832" height="66" rx="7" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="440" y="291" text-anchor="middle" class="lbl">registered one-hop constructive family: complete-valid scientific failure</text>
+  <text x="440" y="313" text-anchor="middle" class="sm">selected identity scaling only · validation median angles 83.48° at 6 dB and 82.95° at 1.5 dB</text>
+  <rect x="24" y="356" width="832" height="50" rx="7" fill="var(--ref-wash)" stroke="var(--ref)"/>
+  <text x="440" y="376" text-anchor="middle" class="lbl">conclusion: change the objective-function dependencies before changing coordinates</text>
+  <text x="440" y="395" text-anchor="middle" class="sm">the pointwise existence result is not a constructed decoder and has no BER claim</text></g>
+ </svg>`,
+ text:`<p>The integrability test considered the exact transformed sum-product displacement after the registered fixed diagonal matrix. For every one of the 400 registered LLR vectors, a one-way mixed-partial witness certifies that the Jacobian is not symmetric. Therefore no exact C² objective-function potential generates that field under these coordinates and this fixed matrix.</p>
+ <p>The scope matters. The result does not rule out another coordinate system or a matrix whose entries depend on the current state. A separate pointwise calculation found strict symmetric positive-definite feasibility for all 464 active 6 dB states and all 3,564 active 1.5 dB states; 461 and 3,561 respectively also met the registered condition-number bound. This is existence evidence, not a usable construction.</p>
+ <p>The first constructive attempt—the registered one-hop graph-local matrix family—selected identity behavior and left held-frame median angles near 83°. That family is closed. The next nonduplicate intervention changed the objective-function dependency support while retaining the coordinates and fixed matrix; its completed development and independent results follow. <a class="diagnosis-link" href="#factorized-energy">See the factorized family →</a></p>`,
+ play(){ on('#mb', 750); }};
+
+/* ---------- 19 factorized objective family ---------- */
+const s19 = { title:'Historical candidate: factorized scalar energy',
+ svg:()=>`<svg viewBox="0 0 880 430" role="img" aria-label="The graph-factorized objective uses one bounded optimization variable per directed variable-to-check edge, check-local and recipient-excluded dependencies, and 54 registered coefficient slots of which 25 are fitted and 29 are exactly zero. Stage A development median angles are 39.74 degrees at 6 dB and 65.75 degrees at 1.5 dB.">${strip(16)}
+  <text x="24" y="82" class="sm m">candidate inference uses partial derivatives of one registered objective function · it does not perform message passing</text>
+  <circle cx="124" cy="178" r="28" fill="var(--ref-wash)" stroke="var(--ref)" stroke-width="2"/><text x="124" y="183" text-anchor="middle" class="lbl">bit i</text>
+  <rect x="282" y="113" width="58" height="42" rx="5" fill="var(--surface)" stroke="var(--fg)"/><text x="311" y="139" text-anchor="middle" class="lbl">check a</text>
+  <rect x="282" y="205" width="58" height="42" rx="5" fill="var(--surface)" stroke="var(--fg)"/><text x="311" y="231" text-anchor="middle" class="lbl">check b</text>
+  <path d="M151 167 L282 138" stroke="var(--ref)" stroke-width="4"/><path d="M151 189 L282 222" stroke="var(--ref)" stroke-width="4"/>
+  <text x="213" y="139" text-anchor="middle" class="sm">z(i→a)</text><text x="213" y="230" text-anchor="middle" class="sm">z(i→b)</text>
+  <text x="124" y="232" text-anchor="middle" class="sm m">channel LLR L<tspan baseline-shift="sub">i</tspan></text>
+  <path d="M360 178 L470 178" stroke="var(--free)" stroke-width="4"/><polygon points="470,178 458,171 458,185" fill="var(--free)"/>
+  <text x="414" y="153" text-anchor="middle" class="sm">check-local +</text><text x="414" y="169" text-anchor="middle" class="sm">recipient-excluded</text>
+  <rect x="486" y="116" width="166" height="124" rx="7" fill="var(--free-wash)" stroke="var(--free)"/>
+  <text x="569" y="145" text-anchor="middle" class="lbl" font-weight="500">E<tspan baseline-shift="sub">θ</tspan>(z;L)</text>
+  <text x="569" y="177" text-anchor="middle" class="big">54</text><text x="569" y="197" text-anchor="middle" class="sm">registered slots</text>
+  <text x="526" y="224" text-anchor="middle" class="sm">25 fitted</text><text x="614" y="224" text-anchor="middle" class="sm">29 zero</text>
+  <path d="M652 178 L740 178" stroke="var(--bp)" stroke-width="4"/><polygon points="740,178 728,171 728,185" fill="var(--bp)"/>
+  <text x="696" y="153" text-anchor="middle" class="sm">−M⁻¹∇E<tspan baseline-shift="sub">θ</tspan></text>
+  <circle cx="790" cy="178" r="38" fill="var(--bp-wash)" stroke="var(--bp)" stroke-width="2"/><text x="790" y="174" text-anchor="middle" class="sm">candidate</text><text x="790" y="192" text-anchor="middle" class="sm">direction</text>
+  <g id="fe" class="fade"><text x="24" y="286" class="lbl" font-weight="500">Stage A · reused development trajectories only</text>
+  <rect x="24" y="304" width="832" height="72" rx="6" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="42" y="326" class="sm m">SNR</text><text x="180" y="326" class="sm m">native J<tspan baseline-shift="sub">C</tspan> median</text><text x="374" y="326" class="sm m">candidate median</text><text x="566" y="326" class="sm m">candidate p90</text><text x="730" y="326" class="sm m">relative error</text>
+  <text x="42" y="348" class="lbl">6 dB</text><text x="220" y="348" text-anchor="middle" class="lbl">83.46°</text><text x="420" y="348" text-anchor="middle" class="lbl">39.74°</text><text x="610" y="348" text-anchor="middle" class="lbl">41.72°</text><text x="770" y="348" text-anchor="middle" class="lbl">0.658</text>
+  <text x="42" y="369" class="lbl">1.5 dB</text><text x="220" y="369" text-anchor="middle" class="lbl">82.99°</text><text x="420" y="369" text-anchor="middle" class="lbl">65.75°</text><text x="610" y="369" text-anchor="middle" class="lbl">72.94°</text><text x="770" y="369" text-anchor="middle" class="lbl">0.927</text>
+  <rect x="24" y="392" width="832" height="26" rx="5" fill="var(--ref-wash)" stroke="var(--ref)"/><text x="440" y="409" text-anchor="middle" class="sm">DEVELOPMENT ONLY · 400 reused frames · no fresh screen · no decoder · no performance claim</text></g>
+ </svg>`,
+ text:`<p>This branch retains the bounded edge coordinates, fixed diagonal matrix, initialization, centered incident-edge mean readout, and 30-update protocol. It changes one mechanism: the objective function can depend on check-local and recipient-excluded graph neighborhoods. It keeps one bounded optimization variable for each directed variable-to-check edge slot. Those variables are not BP messages, and this construction does not perform message passing.</p>
+ <p>The family has 54 symmetry-registered coefficient slots: 25 are fitted and 29 are fixed exactly to zero. Exact sum-product supplies offline teacher displacements during development only; the candidate is forbidden from calling the BP recurrence during inference. Candidate inference evaluates the objective function and its partial derivatives.</p>
+ <p>Stage A is complete-valid as a teacher-labelled development fit on the 400 previously seen frames, comprising 4,028 active states. The median direction angle improved from 83.46° to 39.74° at 6 dB and from 82.99° to 65.75° at 1.5 dB. These are development diagnostics, not independent validation. Stage A used no fresh frame, ran no decoder, and permits no recovery or BER claim. The 54 coefficients were then sealed before the independent screen. <a class="diagnosis-link" href="#stage-b-screen">See how the family generalized →</a></p>`,
+ play(){ on('#fe', 800); }};
+
+/* ---------- 20 independent Stage B result ---------- */
+const s20 = { title:'Independent result: the factorized energy fails at low SNR',
+ svg:()=>`<svg viewBox="0 0 880 430" role="img" aria-label="The sealed factorized scalar energy passed every registered direction gate on 24 fresh 6 dB frames. On 24 fresh 1.5 dB frames it failed the median-angle and relative-direction-error gates. The execution was complete-valid, no decoder ran, and no recovery or BER conclusion follows.">${strip(16)}
+  <text x="24" y="82" class="sm m">48 fresh frames · sealed coefficients · direction screen only · no decoder</text>
+  <rect x="42" y="104" width="360" height="194" rx="8" fill="var(--bp-wash)" stroke="var(--bp)" stroke-width="2"/>
+  <text x="222" y="130" text-anchor="middle" class="lbl" font-weight="500">6 dB · PASS</text>
+  <text x="222" y="151" text-anchor="middle" class="sm">24 frames · 53 active states</text>
+  <text x="62" y="178" class="lbl">median angle</text><text x="382" y="178" text-anchor="end" class="lbl">39.5865° ≤ 60°</text>
+  <text x="62" y="200" class="lbl">p90 angle</text><text x="382" y="200" text-anchor="end" class="lbl">41.3811° ≤ 85°</text>
+  <text x="62" y="222" class="lbl">relative error</text><text x="382" y="222" text-anchor="end" class="lbl">0.658664 ≤ 0.9</text>
+  <text x="62" y="244" class="lbl">paired improvement</text><text x="382" y="244" text-anchor="end" class="lbl">42.1256° ≥ 15°</text>
+  <text x="62" y="266" class="lbl">raw descent</text><text x="382" y="266" text-anchor="end" class="lbl">53 / 53</text>
+  <text x="222" y="288" text-anchor="middle" class="sm" style="fill:var(--bp)">all registered gates passed</text>
+  <rect x="478" y="104" width="360" height="194" rx="8" fill="var(--bad-wash)" stroke="var(--bad)" stroke-width="2"/>
+  <text x="658" y="130" text-anchor="middle" class="lbl" font-weight="500">1.5 dB · SCIENTIFIC FAIL</text>
+  <text x="658" y="151" text-anchor="middle" class="sm">24 frames · 453 active states</text>
+  <text x="498" y="178" class="lbl">median angle</text><text x="818" y="178" text-anchor="end" class="lbl" style="fill:var(--bad)">66.1646° &gt; 60°</text>
+  <text x="498" y="200" class="lbl">relative error</text><text x="818" y="200" text-anchor="end" class="lbl" style="fill:var(--bad)">0.937741 &gt; 0.9</text>
+  <text x="498" y="222" class="lbl">p90 angle</text><text x="818" y="222" text-anchor="end" class="lbl">74.0099° ≤ 85°</text>
+  <text x="498" y="244" class="lbl">paired improvement</text><text x="818" y="244" text-anchor="end" class="lbl">15.5361° ≥ 15°</text>
+  <text x="498" y="266" class="lbl">raw descent</text><text x="818" y="266" text-anchor="end" class="lbl">453 / 453</text>
+  <text x="658" y="288" text-anchor="middle" class="sm" style="fill:var(--bad)">two registered gates failed</text>
+  <g id="sb" class="fade"><rect x="42" y="326" width="796" height="70" rx="7" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="440" y="350" text-anchor="middle" class="lbl" font-weight="500">execution: complete-valid · scientific result: direction-screen failure</text>
+  <text x="440" y="373" text-anchor="middle" class="lbl">the exact sealed 25-parameter family is closed</text>
+  <text x="440" y="390" text-anchor="middle" class="sm">no decoder ran · no transmitted-word recovery or BER conclusion follows</text></g>
+ </svg>`,
+ text:`<p>Stage B opened the 24 registered fresh frames at 6 dB and the 24 registered fresh frames at 1.5 dB after the coefficients were sealed. The primary and replay results agree. Stage B is operationally complete-valid and scientifically a direction-screen failure.</p>
+ <p>At 6 dB, every registered gate passed: median angle 39.5865°, p90 angle 41.3811°, median relative direction error 0.658664, paired median improvement 42.1256°, full evaluable coverage, and raw, unprojected strict descent on 53/53 states. The construction therefore generalized at the easier level.</p>
+ <p>At 1.5 dB, the median angle was 66.1646°, above the 60° limit, and the median relative direction error was 0.937741, above the 0.9 limit. The other gates passed, including p90 angle 74.0099°, paired improvement 15.5361°, full coverage, and raw, unprojected strict descent on 453/453 states. The failure is specific: the direction remained a raw, unprojected descent direction for its own objective function, but it was not close enough to the teacher displacement under the registered low-SNR criteria.</p>
+ <p>No decoder ran, so no transmitted-word recovery or BER conclusion follows. The result closes this exact sealed scalar-energy family without claiming that all objective functions or all gradient-based decoders fail. <a class="diagnosis-link" href="#near-bp-route">See the selected successor →</a></p>`,
+ play(){ on('#sb', 700); }};
+
+/* ---------- 21 best current candidate and causal gate ladder ---------- */
+const s21 = { title:'Best result versus best candidate: what is known now',
+ svg:()=>`<svg viewBox="0 0 880 820" role="img" aria-label="The best verified gradient-based recovery result is the assigned/frozen compound-box projected-gradient construction at 6 dB and update 90, with 200 of 200 transmitted words recovered. That exact construction has no completed 1.5-dB transfer; a related native compound projected-GD diagnostic remained zero of 200 at both 30 and 90 updates. The best current two-SNR candidate applies a bounded state-dependent two-hop symmetric positive-definite matrix to the partial derivatives of J C. A dormant source now calculates unchanged J C and its partial derivatives from the accepted current state, applies the state-dependent matrix, and executes the registered projected Armijo update without exact sum-product or a caller-supplied comparison direction. The local suite passes 5,636 synthetic assertions, including 3,396 decoder-source mechanics checks. Those checks are source readiness, not a fresh direction screen or registered decoder-anchor result. No threshold changed and no registered frame was opened. The fresh direction screen and decoder performance remain untested. The earlier V1 coefficient seal remains governance-invalid; the separately approved V2 seal is complete-valid and opened no frame.">${strip(16)}
+  <g id="best" class="fade"><rect x="28" y="76" width="396" height="154" rx="8" fill="var(--bp-wash)" stroke="var(--bp)" stroke-width="2"/>
+  <text x="226" y="101" text-anchor="middle" class="lbl" font-weight="500">BEST VERIFIED GRADIENT RESULT</text>
+  <text x="226" y="128" text-anchor="middle" class="lbl">compound-box projected GD · 6 dB only</text>
+  <text x="226" y="155" text-anchor="middle" class="sm">frames 50025–50224 · 200 cases</text>
+  <text x="226" y="180" text-anchor="middle" class="big">177/200 → 200/200</text>
+  <text x="226" y="202" text-anchor="middle" class="sm">update 30 → update 90 · transmitted word and parity</text>
+  <text x="226" y="220" text-anchor="middle" class="sm m">no exact 1.5-dB transfer · related native diagnostic 0/200</text>
+  <rect x="456" y="76" width="396" height="154" rx="8" fill="var(--free-wash)" stroke="var(--free)" stroke-width="2"/>
+  <text x="654" y="101" text-anchor="middle" class="lbl" font-weight="500">BEST CURRENT TWO-SNR CANDIDATE</text>
+  <text x="654" y="130" text-anchor="middle" class="big">d = −P<tspan baseline-shift="sub">θ</tspan>(z,L) ∇J<tspan baseline-shift="sub">C</tspan>(z)</text>
+  <text x="654" y="157" text-anchor="middle" class="sm">state-dependent · symmetric positive-definite · two-hop</text>
+  <text x="654" y="181" text-anchor="middle" class="sm">retained fit complete-valid · intake verified</text>
+  <text x="654" y="203" text-anchor="middle" class="sm">local source paths: 5,636 synthetic checks</text>
+  <text x="654" y="220" text-anchor="middle" class="sm m">state-update source ready · fresh screen and anchor unrun</text></g>
+  <rect x="54" y="254" width="772" height="82" rx="7" fill="var(--grid)" stroke="var(--line)"/>
+  <text x="440" y="276" text-anchor="middle" class="lbl" font-weight="500">why this is the next nonduplicate gradient construction</text>
+  <text x="440" y="299" text-anchor="middle" class="sm">keep J<tspan baseline-shift="sub">C</tspan>, directed-edge coordinates, initialization, box, backtracking, readout, and 30-update limit</text>
+  <text x="440" y="320" text-anchor="middle" class="sm">change one operation: fixed diagonal matrix → bounded state-dependent two-hop SPD matrix</text>
+  <text x="440" y="365" text-anchor="middle" class="lbl" font-weight="500">causal gate ladder for this candidate</text>
+  <g class="fade gate"><rect x="20" y="382" width="190" height="62" rx="6" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="115" y="404" text-anchor="middle" class="sm">1 · retained fit</text><text x="115" y="424" text-anchor="middle" class="sm">PASS</text><text x="115" y="440" text-anchor="middle" class="sm m">teacher-labelled</text></g>
+  <path d="M210 413 L224 413" stroke="var(--line)" stroke-width="2"/><polygon points="230,413 220,408 220,418" fill="var(--line)"/>
+  <g class="fade gate"><rect x="230" y="382" width="190" height="62" rx="6" fill="var(--bp-wash)" stroke="var(--bp)"/><text x="325" y="404" text-anchor="middle" class="sm">2 · live intake</text><text x="325" y="424" text-anchor="middle" class="sm">PASS</text><text x="325" y="440" text-anchor="middle" class="sm m">execution false</text></g>
+  <path d="M420 413 L434 413" stroke="var(--line)" stroke-width="2"/><polygon points="440,413 430,408 430,418" fill="var(--line)"/>
+  <g class="fade gate"><rect x="440" y="382" width="190" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="535" y="404" text-anchor="middle" class="sm">3 · range + source</text><text x="535" y="424" text-anchor="middle" class="sm">FAILED</text><text x="535" y="440" text-anchor="middle" class="sm m">31 rows + RSS field &gt; cap</text></g>
+  <path d="M630 413 L644 413" stroke="var(--line)" stroke-width="2"/><polygon points="650,413 640,408 640,418" fill="var(--line)"/>
+  <g class="fade gate"><rect x="650" y="382" width="210" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="755" y="402" text-anchor="middle" class="sm">4 · seal PASS; retained wall</text><text x="755" y="422" text-anchor="middle" class="sm">+ capsule audit</text><text x="755" y="440" text-anchor="middle" class="sm m">PENDING PREREQUISITES</text></g>
+  <path d="M755 444 L755 468 L20 468 L20 482" fill="none" stroke="var(--line)" stroke-width="2"/><polygon points="20,488 15,478 25,478" fill="var(--line)"/>
+  <g class="fade gate"><rect x="20" y="488" width="190" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="115" y="510" text-anchor="middle" class="sm">5 · fresh direction</text><text x="115" y="530" text-anchor="middle" class="sm">NOT RUN</text><text x="115" y="546" text-anchor="middle" class="sm m">48 cases closed</text></g>
+  <path d="M210 519 L224 519" stroke="var(--line)" stroke-width="2"/><polygon points="230,519 220,514 220,524" fill="var(--line)"/>
+  <g class="fade gate"><rect x="230" y="488" width="190" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="325" y="510" text-anchor="middle" class="sm">6 · decoder anchor</text><text x="325" y="530" text-anchor="middle" class="sm">NOT RUN</text><text x="325" y="546" text-anchor="middle" class="sm m">separate authorization</text></g>
+  <path d="M420 519 L434 519" stroke="var(--line)" stroke-width="2"/><polygon points="440,519 430,514 430,524" fill="var(--line)"/>
+  <g class="fade gate"><rect x="440" y="488" width="190" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="535" y="510" text-anchor="middle" class="sm">7 · recovery proxy</text><text x="535" y="530" text-anchor="middle" class="sm">NOT RUN</text><text x="535" y="546" text-anchor="middle" class="sm m">200 + 200 cases</text></g>
+  <path d="M630 519 L644 519" stroke="var(--line)" stroke-width="2"/><polygon points="650,519 640,514 640,524" fill="var(--line)"/>
+  <g class="fade gate"><rect x="650" y="488" width="210" height="62" rx="6" fill="var(--surface)" stroke="var(--free)" stroke-dasharray="5 4"/><text x="755" y="510" text-anchor="middle" class="sm">8 · native BP comparison</text><text x="755" y="530" text-anchor="middle" class="sm">NOT RUN</text><text x="755" y="546" text-anchor="middle" class="sm m">recovery + coded-bit BER</text></g>
+  <g id="gov" class="fade"><rect x="54" y="582" width="772" height="76" rx="7" fill="var(--bad-wash)" stroke="var(--bad)"/>
+  <text x="440" y="605" text-anchor="middle" class="lbl" font-weight="500">GOVERNANCE BOUNDARY — V1 INVALID; V2 COMPLETE-VALID</text>
+  <text x="440" y="628" text-anchor="middle" class="sm">V2 seal and wall amendment approved · no case opened</text>
+  <text x="440" y="648" text-anchor="middle" class="sm">approval ≠ activation ≠ scientific evidence</text></g>
+  <rect x="54" y="680" width="772" height="98" rx="7" fill="var(--ref-wash)" stroke="var(--ref)"/>
+  <text x="440" y="704" text-anchor="middle" class="sm">Stage-B source + envelope prepared · one-use execution artifact not materialized</text>
+  <text x="440" y="727" text-anchor="middle" class="sm">registered untouched screen: 6 dB block · 1.5 dB block</text>
+  <text x="440" y="750" text-anchor="middle" class="sm m">24 per level · direction diagnostics only · no decoder-anchor run</text>
+  <text x="440" y="770" text-anchor="middle" class="sm m">source is synthetic-ready; anchor, recovery, and native-BP comparison need later gates</text>
+ </svg>`,
+ text:`<p><strong>The best verified gradient-based recovery result is the assigned/frozen compound-box projected-GD construction at 6 dB.</strong> On fresh frames 50025–50224, it recovered 177/200 transmitted words at update 30 and 200/200 at update 90; parity validity was also 200/200. Primary and replay science hashes agree at <code>13559a02fda0383588a2bc0faeaa1647119d33ee126df2425a6ae523c07b50f4</code>. That exact construction has no completed 1.5-dB transfer. A related native compound projected-GD diagnostic completed on 200 low-SNR cases and remained at 0/200 at both 30 and 90 updates. This does not establish low-SNR robustness or performance approaching BP across SNR.</p>
+ <p><strong>The best current candidate for a two-SNR test applies a bounded state-dependent two-hop symmetric positive-definite matrix</strong>: <code>d = −Pθ(z,L)∇J_C(z)</code>. It is selected because the fixed-matrix integrability boundary rules out the earlier representation, pointwise positive-matrix feasibility exists, the one-hop family selected identity behavior, and the factorized scalar energy failed its fresh low-SNR direction gates. The candidate keeps the declared objective function J<sub>C</sub>, directed-edge coordinates, initialization, projection, registered backtracking step, readout, and 30-update work limit; only the matrix applied to the partial derivatives changes. It does not reopen the already completed offset-use, projection-bound, check-assignment, or replacement factorials.</p>
+ <p>The V5 teacher-labelled retained fit is complete-valid on 200 frames at 6 dB and 200 at 1.5 dB. Primary and replay agree, the production constructor accepts the coefficients, and the independent verifier classified it as <code>retained_fit_complete_nonzero_two_hop</code>. The full fit is <code>[0, −0.0989697112, −0.1912955636, −0.7058447636, −0.00368998166]</code>, with development objective 648.030 versus 2301.244 for the identity-only fit. This is retained direction-fitting evidence, not independent direction validation and not decoder-performance evidence.</p>
+ <p>The live coefficient intake is now verified, with every Stage-B and execution permission false. The signed-zero repair passes 51/51 tests, and the preserved v10 range-audit producer validator passed 10/10 source/provenance checks and its core suite passed 61/61 synthetic tests; the prospective v11 remediation passes 11/11 source/provenance checks and 70/70 synthetic tests. The preserved v10 source bound the approved exact 13-member support-source registration at identity <code>c2ef2d0f77d1fc441e532c78dbf7d4917c4ef8defb948f0315b1c659a71d4403</code> with registration-record raw SHA-256 <code>fb8bab4d00b08e88b34713c9eb77414d9cc0ef874e59b8d9712832a9db459c4e</code>. The full local two-hop extraction now passes <strong>5,636 synthetic assertions</strong>: 1,202 existing checks, 692 checks of the <a class="diagnosis-link" href="../implementation/two_hop_metric_action/test/authoritative_jc_fixture.toml">portable version-2 fixture</a>, 262 checks of the pure population seam, 84 checks of the <a class="diagnosis-link" href="../implementation/two_hop_metric_action/test/local_full_synthetic_population_chain.jl">durable full synthetic chain</a>, and 3,396 checks of the <a class="diagnosis-link" href="../implementation/two_hop_metric_action/stage_c_decoder_source.jl">dormant Stage-C decoder source</a>. Starting from the Tanner graph, accepted current state, vector of channel LLRs, and caller-supplied coefficients, the source calculates the graph-only fixed positive diagonal once, then recalculates unchanged <em>J</em><sub>C</sub>, its partial derivatives, and the state-dependent recipient-excluded two-hop matrix direction at every attempted update. It then applies the registered projection and Armijo search, 30-attempt/stall rule, centered incident-edge readout, and strict-negative decision. Its exported state-advancing entry points construct the direction internally and expose no arbitrary-direction step; they do not call exact sum-product or accept a caller-supplied comparison direction.</p>
+ <p>The fixture is a new frozen 40-case input corpus, not a replay of registered frames. It uses an eight-variable, 24-edge graph with check degrees two through six and nonuniform variable degrees. Its cases deliberately cover tied and untied incident-edge state, positive and negative zero, state at both box boundaries, and channel LLRs inside, exactly at, and beyond both clipping boundaries. Expected <em>J</em><sub>C</sub> objective fields and the fixed diagonal are stored as exact binary64 bit patterns. The ordinary suite therefore verifies the portable implementation against frozen authoritative outputs without including or loading the historical evaluator. The fixture contributes arithmetic reproduction only; it does not calculate or assess the two-hop candidate direction.</p>
+ <p>The pure population path is <a class="diagnosis-link" href="../implementation/two_hop_metric_action/origin_row_adapter.jl">per-origin adapter</a> → <a class="diagnosis-link" href="../implementation/two_hop_metric_action/retained_direction_population_summary.jl">retained generic summary</a> plus <a class="diagnosis-link" href="../implementation/two_hop_metric_action/target_specific_gates.jl">target-specific reducer</a> → combined level decision. The combination is allowed only after the adapter proves one candidate and one identity row per origin, common thresholds, and equal denominators. Tests exercise this seam only on synthetic, already-materialized offline comparison diagnostics. The seam cannot load a case, calculate a direction, invoke exact sum-product, advance or project state, run a line search, read out a word, score recovery, or write a scientific result. Its passing synthetic gates are therefore not a registered Stage-B population result.</p>
+ <p>The 84-check full-chain test adds a durable end-to-end synthetic interface check. Seven assertions preserve the earlier supplied-derivative and supplied-diagonal diagnostic, including its 0.9935439809818444° paired improvement. The other 77 traverse graph/state/channel-LLR input → unchanged <em>J</em><sub>C</sub> → two-hop candidate and exact-zero lower endpoint → separate offline comparison kernel → adapter and both reducers. Production and diagnostic candidate/lower-endpoint vectors agree bit for bit. The full-chain paired improvement is 0.6852959854888271°: the target-specific gate and every generic gate except paired improvement pass, but 0.6852959854888271° remains below the unchanged 15° threshold, so the generic direction screen and combined level gate correctly remain false.</p>
+ <p>The frozen synthetic comparison vector equals the candidate by construction, and the three rows repeat that one diagnostic. The result therefore verifies interfaces, equality of denominators, and fail-closed composition; it does not supply population diversity, independent agreement with BP, Stage-B science, decoder evidence, or performance evidence. No threshold changed, and the registered fresh Stage-B frames remain closed.</p>
+ <p>The 3,396 Stage-C source assertions exercise only synthetic literal graphs and LLRs. A separate pure checker recalculates every stored objective, partial-derivative vector, state-dependent direction, raw and projected trial, Armijo decision, accepted state, readout, syndrome, and update--trial--state link. Thirty-five deliberately altered traces fail closed. Both the decoder and checker revalidate coefficient admissibility, closing the raw-constructor bypass. The tests also cover an accepted second trial, bit-exact deterministic reruns with the synthetic graph, channel-LLR vector, coefficients, and decoder settings held fixed for an update-cap path and a stalled path, the exact 13-trial stall, complete-path bit identity between the exact-zero generic matrix action and a test-only direct fixed-diagonal reference, and valid-codeword sign covariance through every state, trial, and direction. A synthetic path first becomes parity-valid at update 16 and still runs all 30 attempted updates. The exported candidate interface constructs the direction internally, exposes no arbitrary-direction step, and contains no BP, teacher, truth, frame, SNR, population, scorer, case loader, writer, or launcher. The first parity-valid syndrome is retained as telemetry and does not stop the decoder. An exhaustive fingerprint search found no previously run duplicate: the closest two-hop branch altered the scalar energy and failed before its decoder stage, while the closest state-dependent matrix branch had one-hop support and selected identity scaling. This makes the seam a nonduplicate source successor, not measured decoder evidence. The registered Stage-C block remains unopened.</p>
+ <p>The new independent dense path directly enumerates graph incidence and reimplements the full matrix and projected Armijo loop without the production path pattern or sparse action. It reproduces both the 30-update and late-stall candidate paths within <code>3e-13</code>. A nondegenerate six-variable fixture proves that the recipient-excluded matrix creates zero-mean differences among the edge values incident on a bit; collapsing them preserves unchanged <em>J</em><sub>C</sub> and its partial derivatives but changes the next matrix direction, while the exact-zero control remains tied. The late-stall case also separates raw descent from projected descent. The raw positive-definite direction has <code>gᵀd&lt;0</code>, yet clipping removes the helpful outward boundary components and every projected trial has <code>gᵀδ&gt;0</code>. The registered fixed-diagonal projected-gradient mapping remains nonzero and reaches a feasible lower objective, so the candidate stall is not box-stationary; the exact-zero control has a zero mapping at its stall. This is a source-only projection/action compatibility diagnosis. It changes no registered update and is not evidence that the decoder approaches BP. A Stage-B direction-screen pass would not resolve this projection/action incompatibility or validate the unchanged projected update for a decoder anchor. A prospective source-only successor would test the projected two-hop displacement and use the registered fixed-diagonal projected-gradient trial only when that displacement is not strict descent. It would declare stationarity only when the fixed-diagonal projected mapping is zero, record how often the fallback is used, and be rejected if it merely degenerates into the already tested fixed-diagonal decoder. It is distinct from dormant <code>RQ2-GRADIENT-GEOMETRY-001</code>, which screens a raw L-BFGS direction before projection. It has not been implemented, registered, or run. Under the frozen branch policy, a Stage-B pass admits the unchanged Stage-C update; this safeguard becomes eligible only after a Stage-C failure, unless a prospective amendment is approved before any Stage-C case opens.</p>
+ <p>A <a class="diagnosis-link" href="../implementation/two_hop_metric_action/benchmark_complete_trace_resources.jl">production-size synthetic resource harness</a> now exercises candidate and exact-zero arms on the deterministic regular degree-(3,6) graph with 10,200 variables, 5,100 checks, and 30,600 directed edge slots. The <a class="diagnosis-link" href="../implementation/two_hop_metric_action/complete_trace_resource_measurement_2026-11-06_v1.toml">scalar-only canonical receipt</a> contains three one-thread repetitions per cell. Both cosine-input arms reach the 30-update cap: each complete trace occupies 69,861,148 bytes, decoder time is 5.7778–6.4499 seconds, complete-trace checking is 5.5252–5.7620 seconds, and measured child-process peak RSS is 894,263,296–899,579,904 bytes. Both zero-input arms stall after all 13 trials of the first attempt and retain 11,763,554-byte traces. The 96 MiB, 16 MiB, and 384 MiB values are trace/serialization engineering limits, not RSS, late-stall, or scientific-run caps; Julia serialization is only a size proxy. The harness imports no case provider or comparison receiver and opens no registered frame, truth, or scorer. This is source/resource feasibility, not the separately gated Stage-B wall benchmark or evidence of approaching BP.</p>
+ <p>The source-identical per-origin comparison kernel remains an offline diagnostic: it accepts already-materialized quantities and a caller-supplied reference direction, and changing that reference from aligned to opposed changes the angle diagnostics but leaves both calculated directions, the candidate condition values, and the local gate unchanged. The kernel code argument named <code>sealed_coefficients</code> validates neither an admissible seal nor permission to execute. This is inference-side source validation, not a fresh scientific direction, registered decoder-anchor, recovery, or coded-bit BER result. The operational source preparation contains the fail-closed input provider, coefficient loader, direction-screen runner, writer, telemetry, preflight, and retained-only callback. Its 26-file inventory validator, five Python tests, and 240 Julia assertions pass, with the Julia suites pinned at 12 coefficient-seal-loader, 34 provider, 165 operational-runtime, and 29 retained-callback assertions. Three provider assertions independently pin a bit-exact golden vector for the retained <em>J</em><sub>C</sub> arithmetic. The provider now calculates unchanged-<em>J</em><sub>C</sub> partial derivatives and the fixed diagonal locally from the Tanner graph, state, and vector of channel LLRs using the byte-identical hash-pinned pure source; it rejects bitwise disagreement with the offline evaluator before applying the candidate matrix. The separate execution-envelope preparation contains prospective source validation, wall benchmarking, capsule build and audit, authorization checking, supervision, and an inert service template. Its 21-member inert-source validator passes, and its pinned Python 3.11 suite passes 76/76 tests; no production program or scientific rule changed. An end-to-end temporary run independently validated the actual 26-member source closure with all 245 source checks passing, source identity <code>401aafec73839021d3f3c9dd3708f0f88b5ca614ea045b9bc736e84f3358abb9</code>, <code>fresh_inputs_opened=false</code>, and <code>scientific_runner_started=false</code>. No persistent final source-validation bundle was published before the audit because the protocol placed that audit first. A complete attempt-ledger audit classifies this work as a cross-repository BP–GD mechanism study rather than a new Jade/Jcade receiver route. <strong>No registered frame was opened.</strong> The approved first repository-wide collision scan failed closed. No complete-valid later collision audit, retained-only wall measurement, Stage-B execution-capsule build or audit, launch, or fresh input exists. The replacement V2 seal is complete-valid and the wall-contract amendment is approved, but neither is scientific evidence or permission to open a case. No Stage-B population result has been produced or passed, and no registered decoder anchor or performance measurement has run. The first range-audit activation was approved and consumed by a failed scan; the source-only remediation is approved and complete. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-RANGE-AUDIT-SUPPORT-SOURCE-CLOSURE-002</code> is approved and materialized at registration identity <code>7a796e142cd263e36c994854ea377841c6cddb262a1534690902d7c4b0681d66</code>, with registration-record raw SHA-256 <code>d3e8acb2b91aeb79788fb55d1134a4e653ee091cf2ec67a580fe4d69545d77c2</code>; all its live permissions are false. On 7 November 2026 the user approved all five then-registered decisions. Activation-002 was materialized and consumed by the interrupted v11 scan after it reached filesystem root 5 of 17; no range result was published. The path-correction retry was approved, materialized, and consumed exactly once. Its terminal result (SHA-256 <code>10618db46e510ed1c3260f553f8ee72d2ebddaf52b59c0ef7675e043eaa9f5ff</code>) failed on one documentary self-collision and a recorded coordinator field above the RSS cap. Fresh-child reproduction later proved that field inherited a pre-existing process-lifetime peak across <code>execve</code>; it is not evidence that the scanner allocated 5.86 GiB. The registered failure stands; no scientific input opened and no manifest was created. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-COEFFICIENT-SEAL-002</code> is approved and complete-valid at authorization SHA-256 <code>06944b797b96c93ec136c41949d708eb1613caba0387871b256003155950803b</code>, manifest SHA-256 <code>a71ebef92cd1a998be9fda33ba2fadbda0680aa9da140b9941166a75c2db38c5</code>, and sealed-member SHA-256 <code>173a68f41e53d4e7b16a40d27271245ae9c83b0b5f4858c7f15d439f25fb3078</code>; it opened no frame and produced no scientific result. <code>RQ2-TWO-HOP-POSITIVE-METRIC-001-STAGE-B-WALL-CONTRACT-AMENDMENT-001</code> is approved at exact SHA-256 <code>c76ba22c29bea8d0e25e31cf74057b1649347e44fc56d9f890368e9dcc372a63</code>. The retained-wall benchmark and Stage-B execution scopes are prospectively approved but remain inoperative until their exact prerequisites pass and their one-use authorization artifacts can be materialized. The goal is active; no retained-wall run, fresh input, or Stage-B science has begun.</p>
+ <p>The accidentally materialized V1 coefficient seal remains outside the evidence ladder: it lacked the separately required approval and remains governance-invalid and unusable. The separately approved complete-valid V2 seal is the only replacement eligible for later prerequisite checks. Its materialization opened no frame and cannot by itself authorize a capsule, fresh input, direction screen, decoder, or claim.</p>
+ <p>The remaining causal sequence is: remediation-002 is source-only complete; separately review, approve, and materialize a new source rebind and exact support-source closure; separately approve a new one-use version-12 range scan; complete that audit; if it passes, bind its exact artifact with the approved V2 seal and approved wall-contract amendment; materialize the prospectively approved one-use retained-wall authorization and run that retained-only measurement; build and independently audit the execution capsule; materialize the prospectively approved one-use Stage-B execution authorization and run the untouched 48-case direction screen; if and only if that passes, separately authorize and run the decoder anchor using the prepared source; then compare the candidate and native exact sum-product BP on the same registered 200 cases at each SNR, holding fixed the parity-check matrix, transmitted word, noise realization, and vector of channel LLRs, and require <code>C_s &gt;= B_s - 30</code> at both levels. Activation-002 and closure-002 are consumed and cannot be reused, and no new approval ID has been introduced. Native BP stops at its first zero syndrome or 80 message-passing iterations; the candidate has 30 attempted updates. Candidate recovery above BP is allowed. A claim that performance approaches BP still requires the direct native-BP recovery and coded-bit BER comparison. No fresh direction screen, registered decoder-anchor run, transmitted-word recovery score, or coded-bit BER/FER measurement has run. A gradient-based decoder approaching BP remains plausible but unproven, and the research objective remains active and incomplete.</p>`,
+ play(){ on('#best', 450); seq('.gate', 900, 160); on('#gov', 2350); }};
+
+const scenes=[s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21];
+const SLUGS=['stop-1','stop-2','stop-3','stop-4','stop-5','stop-6','stop-7','stop-8','stop-9','coordinate','objective','budget','state','factorial-3way','stop-10','next-math','objective-path','integrability-boundary','factorized-energy','stage-b-screen','near-bp-route'];
+scenes.forEach((s,i)=>{ s.slug=SLUGS[i]; const b=document.createElement('button'); b.setAttribute('aria-label','Scene '+(i+1)+': '+s.title); b.addEventListener('click',()=>go(i)); dots.appendChild(b); });
+let cur=0;
+function render(i){
+  clearAnim(); cur=i; const s=scenes[i];
+  document.querySelector('.wrap').classList.toggle('wide-scene', i===6);
+  stage.innerHTML=s.svg(); narr.innerHTML=s.text; title.textContent=s.title; count.textContent='Scene '+(i+1)+' of '+scenes.length;
+  [...dots.children].forEach((d,k)=>d.classList.toggle('cur',k===i));
+  document.getElementById('back').disabled = i===0; document.getElementById('next').disabled = i===scenes.length-1;
+  s.play();
+}
+function go(i){ i=Math.max(0,Math.min(scenes.length-1,i)); if(location.hash!=='#'+scenes[i].slug) location.hash=scenes[i].slug; else render(i); }
+function fromHash(){ const k=scenes.findIndex(s=>'#'+s.slug===location.hash); render(k<0?0:k); if(k>=0) requestAnimationFrame(()=>document.querySelector('.scene-head')?.scrollIntoView({block:'start'})); }
+document.getElementById('back').addEventListener('click',()=>go(cur-1));
+document.getElementById('next').addEventListener('click',()=>go(cur+1));
+document.getElementById('replay').addEventListener('click',()=>render(cur));
+addEventListener('hashchange', fromHash);
+addEventListener('keydown', e=>{ if(e.key==='ArrowRight') go(cur+1); else if(e.key==='ArrowLeft') go(cur-1); });
+fromHash();
+})();
+</script>
+</html>

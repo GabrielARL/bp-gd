@@ -1,0 +1,25 @@
+schema_version = "compound-box-gd/v1"
+classification = "portable extraction of the retained compound__box arm"
+
+[objective]
+parity_weight = 2.0
+binary_weight = 0.2
+
+[solver]
+maximum_update_attempts = 90
+checkpoint_updates = [1, 30, 90]
+initial_step = 0.2
+maximum_backtracks = 16
+box_lower = -1.0
+box_upper = 1.0
+stopping_rule = "90 update attempts or first line-search stall; no syndrome early stop"
+hard_decision = "bit_i = 1 iff x_i < 0"
+
+[validation]
+finite_difference_updates = [1, 2, 30, 90]
+finite_difference_step = 1.0e-6
+finite_difference_tolerance = 3.0e-8
+mean_offset_tolerance = 2.0e-12
+box_tolerance = 2.0e-14
+require_strict_decrease = true
+offset_replacement = "once, after accepted update 1; frozen thereafter"
