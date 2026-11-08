@@ -53,6 +53,13 @@ seam that would gate a future direction screen.
   is the inert, unapproved design for distinguishing a 13-trial line-search
   stop from a certified continuous barrier and a finite-step no-jump closure
   in the mean coordinates on which `J_C` depends. It authorizes no input or run.
+- [`research/jc_projected_gradient_boundary.md`](research/jc_projected_gradient_boundary.md)
+  derives the exact hard-vertex force law, initial tree calculation,
+  box-stationarity bounds, scalar projected-flow closure, positive-rim
+  requirement, and pointwise existence result for a symmetric positive-
+  definite matrix. It explains why scalar `-grad J_C` variations should be
+  stopped, without claiming that every matrix-applied or expanded-variable
+  method is impossible.
 - [`.agents/skills/`](.agents/skills/) contains the repository-specific
   experiment, terminology, and writing rules.
 
