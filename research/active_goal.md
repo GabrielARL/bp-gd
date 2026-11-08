@@ -43,11 +43,104 @@ isolation, replay, identity, and work-budget safeguard remain pass gates. This
 approval authorizes no current source mutation, stage, scientific execution,
 or input access.
 
-The current performance baseline is the assigned/frozen compound-box
+The retained fresh-transfer baseline is the assigned/frozen compound-box
 projected-gradient construction. It recovered 177/200 transmitted words after
 30 updates and 200/200 after 90 updates on the registered fresh 6-dB cases.
 That result is not evidence of comparable performance at 1.5 dB or across
 signal-to-noise ratios.
+
+## Exposed 1.5-dB convex parity-distance diagnostic
+
+`RQ2-CONVEX-PARITY-DISTANCE-001` changed both the coordinate system and the
+objective relative to `J_C`. It retained one scalar `b_i in [0,1]` per bit,
+used the frozen finite penalty `lambda = 96`, calculated each parity
+contribution through exact Euclidean projection onto the degree-six parity
+polytope, applied the fixed step `1/288`, and projected componentwise onto the
+box. Its frozen source defines no sigmoid, restart, momentum, multiplier, or
+state-dependent matrix, and its candidate packet contains no BP quantity.
+
+On all 200 already exposed 1.5-dB frames `61969:62168`, the method recovered
+0/200 transmitted words at updates 30, 90, 300, 1000, 3000, and 6000. No
+parity-valid hard-decision estimate occurred at any update. No stored candidate
+state, including every checkpoint and terminal, had a readout tie. Every case
+reached the 6000-update cap with projected-gradient
+mapping norm above `1e-8`, so all 200 terminals are
+`optimization_unresolved`. At the cap, the mapping-norm median was
+`2.2772885202382298e-4` (range `2.4881e-5` to `0.0115097`); the hard-decision
+estimate had a median 382 coded-bit errors (range 148 to 595) and median
+syndrome weight 387 (range 224 to 508). The soft state had a median 3274
+fractional coordinates and median maximum local check distance `0.102299`.
+
+Primary and replay scientific traces agree at SHA-256
+`2020306bb9d09d20e025528c2b9eba8a398f67e8c896b7329c8b3411c1c1dd20`.
+The nearly flat objective values do not change the stopping classification:
+because no case reached the frozen mapping tolerance, this result identifies
+neither a numerical global minimizer nor the finite penalty's eventual
+recovery ceiling. The source-only follow-up below tested faster same-objective
+convergence without clearing its population-launch gate. This diagnostic
+leaves the two-hop Stage-B chain and reserved untouched ranges `72161:72560`
+unchanged.
+
+### Source-only convergence follow-up
+
+Production-size synthetic gates for solver successors on the same frozen
+objective did not reach `norm(G_288, Inf) <= 1e-8`, so no second 1.5-dB
+population run was launched. The feasible accelerated arm ended after 6000
+updates at `norm(G_288, Inf) = 1.8247366e-3`; its synthetic suite passed
+44,031/44,031 assertions. A hybrid of those 6000 accelerated updates and
+30,000 monotone local-curvature updates ended at
+`norm(G_288, Inf) = 2.3504324e-4` after 73,511 evaluations and 43,510
+backtracks. Optim.jl 2.3.2 `LBFGSB`, capped at 5000 iterations, ended at
+`norm(G_288, Inf) = 5.4017116e-5` for `m = 10` and `6.3955257e-5` for `m =
+50`. The local-curvature suite passed 15,233/15,233 assertions.
+
+These are synthetic source-feasibility diagnostics, not 1.5-dB population
+evidence and not evidence that the objective fails. A decisive global-minimum
+audit now requires a materially stronger certified optimizer, or a relaxed
+tolerance paired with an explicit error bound. The active two-hop branch is
+untouched.
+
+## Exposed SNR threshold for the differentiable convex-parity path
+
+`RQ2-CONVEX-PARITY-DISTANCE-SNR-THRESHOLD-001` answered the distinct fixed-work
+question left open by the unresolved 1.5-dB convergence diagnostic: at what
+SNR does the frozen convex parity-distance objective with the feasible
+accelerated projected-gradient schedule produce a parity-valid transmitted-
+word readout within exactly 30 updates?
+
+The coarse development sweep used all 24 frames `20001:20024` at each 0.5-dB
+level from 1.5 through 12.0 dB. The candidate recovered 0/24 at every level
+from 1.5 through 3.5 dB, 11/24 at 4.0 dB, and 24/24 at every level from 4.5
+through 12.0 dB. Native exact sum-product BP recovered 24/24 at every coarse
+level. The first provisional coarse crossing was 4.5 dB.
+
+The prospectively activated fine sweep then used all 200 frames
+`30001:30200` at each 0.1-dB level from 4.0 through 5.0 dB. Native exact
+sum-product BP recovered 200/200 throughout. Candidate recoveries were:
+
+| Es/N0 (dB) | 4.0 | 4.1 | 4.2 | 4.3 | 4.4 | 4.5 | 4.6 | 4.7 | 4.8 | 4.9 | 5.0 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Candidate / 200 | 87 | 122 | 150 | 161 | **177** | **190** | 195 | 199 | **200** | 200 | 200 |
+
+The stable exposed-development threshold under the active
+`C_s >= B_s - 30` rule is therefore **4.4 dB**. The first level meeting the
+stricter 190/200 reference is **4.5 dB**, and the first level matching BP's
+200/200 recovery count is **4.8 dB**. Every fine-grid level had zero wrong
+parity-valid words and zero readout ties across the complete 30-update traces.
+The candidate scientific replay was bit-for-bit deterministic, and the scorer
+opened truth and BP only after candidate commit.
+
+The terminal projected-gradient mapping norms remained above the earlier
+continuous-stationarity tolerance, including at recovered levels. These are
+hard-decision recovery events during a fixed differentiable optimization path,
+not evidence that the continuous optimizer reached a global minimum. The hard
+decision, syndrome, and first-valid latch remain evaluation operations outside
+the differentiable path.
+
+This result uses exposed development cases. It does not alter the two-hop
+Stage-B chain, consume the reserved confirmation frames `72161:72560`, or
+establish an untouched threshold. Its durable result is
+[`RESULT.md`](../results/rq2_convex_parity_distance_snr_threshold_001/2026-11-08_v2/RESULT.md).
 
 ## Closed assumptions that must not be reopened without a new operation
 

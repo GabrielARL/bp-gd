@@ -1,0 +1,770 @@
+% !TeX program = xelatex
+% Build from this folder with:
+%   latexmk -xelatex -interaction=nonstopmode -halt-on-error \
+%     jc_landscape_and_parity_polytope.tex
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Termes Math}
+\usepackage{microtype}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage[capitalise,noabbrev]{cleveref}
+\usepackage[
+  backend=biber,
+  style=ieee,
+  sorting=none,
+  maxbibnames=8
+]{biblatex}
+\addbibresource{references.bib}
+
+\definecolor{linkblue}{HTML}{003D7C}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={Projected Gradient Descent for LDPC Decoding: From a Smooth Parity Penalty to Explicit Constraints},
+  pdfauthor={BP--GD Mechanism Study}
+}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Cbox}{\mathcal{C}}
+\newcommand{\Pc}{\mathcal{P}_c}
+\newcommand{\Vc}{\mathcal{V}_c}
+\newcommand{\proj}[2]{\Pi_{#1}\!\left(#2\right)}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\trans}{\mathsf{T}}
+
+\title{Projected Gradient Descent for LDPC Decoding:\\
+From a Smooth Parity Penalty to Explicit Constraints}
+\author{BP--GD Mechanism Study}
+\date{Technical research note --- 8 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper explains a persistent performance gap between native exact
+sum-product belief propagation (BP) and a family of projected-gradient
+decoders for a length-$10{,}200$ $(3,6)$-regular low-density parity-check code
+with $5{,}100$ parity checks.  On registered paired
+cases, native projected gradient descent recovered $112/200$ transmitted
+words at $6$~dB and $0/200$ at $1.5$~dB after 30 updates, whereas exact BP
+recovered $200/200$ and $199/200$, respectively.  A later compound-box
+projected-gradient construction reached $200/200$ after 90 updates on a
+separate registered $6$-dB population, but it has no completed $1.5$-dB
+transfer.  A related registered scalar control remained at $0/200$ at
+$1.5$~dB after both 30 and 90 updates.
+
+We show analytically how the smooth product parity term can assign zero cost
+to both a correct local sign pattern and a pattern with two wrong signs, while a
+continuous correction between them incurs positive cost.  A constructed
+two-variable example then proves that an objective with the implemented term
+shapes can possess a strict wrong local minimum on the box even when the
+desired word has much lower objective value.  Exact projected stationarity
+precludes escape by additional ordinary local descent, but it does not exclude
+momentum, nonmonotone jumps, state-dependent matrices, different
+initializations, different objectives, or expanded-variable methods.  We
+therefore derive a differentiable convex parity cost based on distance to one
+parity polytope per check and explain why finite quadratic penalties do not
+generally impose exact feasibility.  On an exposed 200-case population at
+$1.5$~dB, ordinary box-projected descent of one frozen instance of this cost
+recovered $0/200$ words at every checkpoint through update 6000 and produced
+no parity-valid readout; all 200 terminals remained above the registered
+projected-gradient-mapping tolerance and are therefore optimization-unresolved,
+not identified minimizers.  A replica variable for each check, together with
+multipliers, can
+enforce consistency without recreating the same product hill, although the
+loopy intersection remains the fundamental-polytope relaxation and can have
+fractional vertices.  The new count is an exposed-population mechanism
+diagnostic, not a two-SNR confirmation or comparison with BP.
+\end{abstract}
+
+\section{Introduction}
+
+Projected-gradient decoding is attractive because its operations are
+differentiable, parallelizable, and compatible with parameter training.  Prior
+work has formulated low-density parity-check (LDPC) decoding as nonconvex
+projected-gradient optimization with smooth parity penalties and has used
+restarts or learned parameters to address local minima
+\cite{wadayama2019trainable}.  Linear-programming (LP) decoding takes another
+route: it minimizes a linear channel cost over a relaxation derived from the
+parity checks \cite{feldman2005lp}.  Efficient decomposition methods introduce
+replica variables and Euclidean projection onto each parity polytope
+\cite{barman2013decomposition}.
+
+The present study began with a narrower engineering question: why does a
+specific projected-gradient construction work well at $6$~dB yet remain far
+behind exact sum-product BP at $1.5$~dB?  The campaign progressively separated
+state, direction, step rule, check assignment, and update budget.  It found
+that direct application of an exact recurrence can recover words where tested
+true-gradient arms do not, but direct recurrence application is a fixed-point
+update rather than descent of the declared objective.
+
+The resulting claim is deliberately bounded.  We establish that the
+implemented objective \emph{can} contain wrong local minima on the box and
+that an exact projected zero cannot be escaped by further
+ordinary projected descent.  We do not establish that every $1.5$-dB failure
+has been registered as an exact local minimum, and we do not claim that every
+method involving the partial derivatives of the objective function must fail.
+
+The contributions are fourfold:
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item We organize the controlled evidence without combining distinct case
+        populations or treating a direction fit as a decoder result.
+  \item We derive the partial derivatives at a hard vertex and isolate what
+        happens when one check contains two wrong signs.
+  \item We give a strict constructed local minimum on the box and state precisely
+        what exact projected stationarity closes.
+  \item We derive a differentiable convex parity cost, prove its exactness
+        limitation, report an exposed-population diagnostic, and
+        motivate one parity-polytope constraint per check with multipliers as
+        a scientifically distinct successor formulation.
+\end{enumerate}
+
+\section{Controlled Evidence and Method Boundary}
+
+All comparisons in the initial paired experiment held fixed the parity-check
+matrix, transmitted word, noise realization, and vector of channel
+log-likelihood ratios (LLRs).  A positive LLR favors bit zero.  Recovery means
+that the hard-decision estimate equals the transmitted word; parity validity
+alone is not counted as recovery.
+
+Here \emph{native exact sum-product BP} means that the implementation evaluates
+the declared sum-product recurrence without approximation.  It does not mean
+exact maximum a posteriori or maximum-likelihood inference on the loopy Tanner
+graph.
+
+Exact sum-product BP retains directed variable-to-check and check-to-variable
+messages and performs recipient exclusion.  The scalar projected-gradient
+control retains one scalar $x_i\in[-1,1]$ for bit $i$, calculates the partial
+derivatives of its objective function, applies its declared direction and step
+rule, and projects componentwise onto the box.  These methods traverse the
+same Tanner graph but do not retain or update the same quantities.
+
+\begin{table}[H]
+\centering
+\caption{Registered recovery evidence.  Every entry is the number of
+transmitted words recovered out of 200 cases.  Rows with different case
+populations are not a single cross-SNR decoder evaluation.}
+\label{tab:registered}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.3cm}
+  >{\raggedright\arraybackslash}p{2.6cm}
+  >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}p{3.2cm}@{}}
+\toprule
+Experiment and population & SNR and budget & Projected-gradient or recurrence result & Exact BP or scope boundary \\
+\midrule
+Native composition, frames 60025--60224 & $6$~dB, 30 updates & Native projected GD: 112 & Exact BP: 200 \\
+Native composition, frames 60225--60424 & $1.5$~dB, 30 updates & Native projected GD: 0 & Exact BP: 199 \\
+Selected compound-box, frames 50025--50224 & $6$~dB, 30 / 90 updates & 177 / 200 & No completed exact $1.5$-dB transfer \\
+Native compound budget diagnostic, frames 61745--61944 & $6$~dB, 30 / 90 updates & 113 / 193 & Separate population and construction \\
+Native compound budget diagnostic, frames 61969--62168 & $1.5$~dB, 30 / 90 updates & 0 / 0 & Closes this frozen budget extension only \\
+Convex parity-distance diagnostic, frames 61969--62168 & $1.5$~dB, 30 / 90 / 300 / 1000 / 3000 / 6000 updates & 0 / 0 / 0 / 0 / 0 / 0 & Exposed population; all 200 cap terminals unresolved; BP absent from candidate packet/source \\
+State--direction--step factorial, frames 70921--71120 & $1.5$~dB, 30 updates & Free state + recurrence displacement + unit application: 196; every tested true-gradient cell: 0 & Successful cell is a fixed-point update, not a gradient step \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The strongest retained gradient-based recovery result is the selected
+compound-box construction at $6$~dB: $200/200$ transmitted words after 90
+updates.  It is not a cross-SNR result approaching BP.  Conversely, the
+$0/200$ registered result at $1.5$~dB through 90 updates closes the claim that
+the frozen scalar control merely needed that larger cap; it is not a theorem
+about every step sequence or every gradient-based decoder.
+
+In the state--direction--step factorial, direct unit application of the
+recurrence minus the current state recovered $196/200$ words at $1.5$~dB,
+whereas all tested true-gradient cells recovered $0/200$.  This establishes an
+update-operator boundary.  It does not establish that BP succeeds only by
+increasing the objective, nor does endpoint nonincrease certify monotonicity
+inside a finite update.
+
+\section{The Implemented Smooth Objective}
+
+Let $x\in[-1,1]^n$ denote the mean coordinate on which the compound objective
+depends.  The implemented objective is
+
+\begin{equation}
+J_C(x)=
+-\frac{L^{\trans}x}{2n}
++\frac{w_p}{n}\sum_c
+  \left(1-\prod_{i\in c}x_i\right)^2
++\frac{w_b}{n}\sum_i(1-x_i^2)^2,
+\label{eq:jc}
+\end{equation}
+
+where $w_p=2$ and $w_b=0.2$.  The production evaluator clips each LLR to
+$[-20,20]$.  Define
+
+\begin{equation}
+p_c=\prod_{j\in c}x_j,
+\qquad
+q_{ci}=\prod_{\substack{j\in c\\j\ne i}}x_j.
+\end{equation}
+
+The exact partial derivative is
+
+\begin{equation}
+\partial_iJ_C(x)
+=-\frac{L_i}{2n}
+-\frac{2w_p}{n}\sum_{c\ni i}(1-p_c)q_{ci}
++\frac{4w_b}{n}x_i(x_i^2-1).
+\label{eq:partial}
+\end{equation}
+
+The implementation may store directed-edge coordinates $z$, but the objective
+depends only on their incident-edge means $x=Cz$.  Thus $J_C(z)=J_C(Cz)$, and
+directions in $\ker C$ are exactly flat.  Claims about a well or barrier must
+therefore be made in the mean coordinate, not by treating the full edge state
+as an isolated minimum.
+
+\subsection{Partial derivatives at a hard vertex}
+
+\begin{lemma}[Partial derivatives at a hard vertex]
+Let $s\in\{-1,+1\}^n$, and let $k_i$ be the number of violated checks incident
+on bit $i$.  Then
+\begin{equation}
+\partial_iJ_C(s)
+=-\frac{L_i}{2n}+\frac{4w_p}{n}k_i s_i.
+\label{eq:vertex-force}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+At a satisfied check, $p_c=1$, so its contribution to
+\cref{eq:partial} is zero.  At a violated check, $p_c=-1$ and
+$q_{ci}=-s_i$, so its contribution is $4w_ps_i/n$.  The final term of
+\cref{eq:partial} is zero at a hard vertex.  Summing the $k_i$ violated-check
+contributions gives \cref{eq:vertex-force}.
+\end{proof}
+
+One violated check therefore applies the same parity magnitude to all six of
+its incident coordinates at a hard vertex.  The complete partial derivative
+can still distinguish those coordinates through the channel LLRs, their total
+numbers $k_i$ of violated incident checks, overlapping checks, and, away from
+the vertex, the partner products and the final term of \cref{eq:partial}.
+Exact sum-product BP instead forms a check-to-variable message from the other
+five incoming variable-to-check messages.  Recipient exclusion is the
+structural contrast; \cref{eq:vertex-force} alone is not a decoder-performance
+theorem.
+
+The registered initialization is $x_i^{(0)}=\tanh(L_i/2)$ rather than a hard
+vertex.  The lemma consequently explains a local mechanism, not the exact
+initial trajectory.
+
+\section{How Two Wrong Signs Create an Uphill Route}
+
+At a hard-sign vector, a check containing zero wrong signs has product $+1$,
+a check containing one wrong sign has product $-1$, and a check containing two
+wrong signs again has product $+1$.  Hence one satisfied check assigns zero
+parity penalty to both the all-correct pattern and a pattern with two wrong
+signs.
+This is not a defect in the parity test: both local patterns have even parity.
+The channel evidence and overlapping checks must determine which local pattern
+is globally preferable.
+
+\begin{proposition}[Two-sign path through one check]
+Hold all but two members of one check at $+1$ and set the remaining two to
+$x_i=x_j=t$.  The contribution of that check is
+\begin{equation}
+J_{\mathrm{check}}(t)=\frac{w_p}{n}(1-t^2)^2.
+\label{eq:pair-path}
+\end{equation}
+It is zero at $t=-1$ and $t=+1$, and it is positive for $|t|<1$.
+\end{proposition}
+
+\begin{proof}
+Along the declared path, the check product is $t^2$.  Substitution into the
+second term of \cref{eq:jc} gives \cref{eq:pair-path}.  In particular,
+$J_{\mathrm{check}}(0)=w_p/n>0$.
+\end{proof}
+
+The contribution $(1-t^2)^2$ that favors hard magnitudes raises the same
+intervening hill.  A gradient update can move every coordinate simultaneously;
+the issue is not that it literally flips one bit at a time.  The issue is that
+even a collective small correction can initially increase the objective.
+
+This proposition exhibits one uphill path for one check term.  It does not
+prove that every continuous path between two codewords crosses a positive rim
+of the complete objective.  Such a claim requires minimizing the maximum
+objective height over all connecting paths, together with a separately
+declared analysis of finite jumps.
+
+\subsection{A strict constructed local minimum on the box}
+
+The following example proves possibility without claiming frequency on the
+registered graph.  On $[-1,1]^2$, define
+
+\begin{equation}
+\begin{aligned}
+F(x_1,x_2)
+={}&-\frac{x_1+4.6x_2}{2}+2(1-x_1x_2)^2\\
+&+0.2\left[(1-x_1^2)^2+(1-x_2^2)^2\right].
+\end{aligned}
+\label{eq:toy}
+\end{equation}
+
+The desired valid point has $F(+1,+1)=-2.8$.  Nevertheless, the following
+holds.
+
+\begin{proposition}[Constructed wrong local minimum on the box]
+For the function in \cref{eq:toy},
+\begin{equation}
+x^*=(-1,-0.5),\qquad
+F(x^*)=2.2625,\qquad
+\nabla F(x^*)=(0.5,0).
+\end{equation}
+The point $x^*$ is a strict local minimum on $[-1,1]^2$.
+\end{proposition}
+
+\begin{proof}
+At the active lower bound $x_1=-1$, any sufficiently small permitted change
+has $d_1\ge0$.  Thus $\nabla F(x^*)^{\trans}d=0.5d_1>0$ whenever $d_1>0$.
+When $d_1=0$, the remaining change is along $x_2$, where the second derivative
+is
+\begin{equation}
+\frac{\partial^2 F}{\partial x_2^2}(x^*)=3.8>0.
+\end{equation}
+More strongly, the complete Hessian is
+\begin{equation}
+\nabla^2F(x^*)=
+\begin{bmatrix}
+2.6&0\\
+0&3.8
+\end{bmatrix}
+\succ0.
+\end{equation}
+By continuity, the Hessian remains positive definite in a sufficiently small
+neighborhood of $x^*$.  Taylor expansion then gives a nonnegative linear term
+$0.5d_1$ for every permitted displacement and a strictly positive quadratic
+term for every nonzero displacement.  Hence $x^*$ is a strict local minimum
+on the box.
+\end{proof}
+
+For any $\eta>0$,
+
+\begin{equation}
+\proj{[-1,1]^2}{x^*-\eta\nabla F(x^*)}=x^*.
+\end{equation}
+
+The lower desired point exists, but an ordinary local projected-gradient step
+cannot reach it from $x^*$.
+
+\section{What Exact Projected Stationarity Proves}
+
+Let $\Cbox=[-1,1]^n$.  For a differentiable function $J$, define
+
+\begin{equation}
+G_\eta(x)=
+\frac{x-\proj{\Cbox}{x-\eta\nabla J(x)}}{\eta},
+\qquad \eta>0.
+\label{eq:gradient-residual}
+\end{equation}
+
+\begin{theorem}[Exact projected zero]
+For $x^*\in\Cbox$ and $\eta>0$,
+\begin{equation}
+G_\eta(x^*)=0
+\quad\Longleftrightarrow\quad
+0\in\nabla J(x^*)+N_{\Cbox}(x^*),
+\label{eq:kkt}
+\end{equation}
+where $N_{\Cbox}$ is the convex normal cone.  Consequently,
+$\nabla J(x^*)^{\trans}d\ge0$ for every $d$ such that
+$x^*+\epsilon d\in\Cbox$ for all sufficiently small $\epsilon>0$, and
+\begin{equation}
+\proj{\Cbox}{x^*-\alpha\nabla J(x^*)}=x^*
+\qquad\text{for every }\alpha>0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The Euclidean projection characterization gives
+$x^*=\proj{\Cbox}{x^*-\eta\nabla J(x^*)}$ if and only if
+$-\eta\nabla J(x^*)\in N_{\Cbox}(x^*)$.  Because the normal cone is a cone,
+this is equivalent to \cref{eq:kkt} and is unchanged by any positive scalar
+$\alpha$.  The final inequality follows directly from the definition of the
+normal cone.
+\end{proof}
+
+The frozen registered scalar protocol uses
+
+\begin{equation}
+D=\frac{13.6}{n}I,
+\qquad
+G_\eta^D(x)=
+\frac{x-\proj{\Cbox}{x-\eta D^{-1}\nabla J_C(x)}}{\eta}.
+\end{equation}
+
+Since $D$ is a positive scalar multiple of the identity, this is the same
+Euclidean direction with a rescaled step.  The exact zero sets coincide after
+the corresponding scalar conversion.  Finite numerical tolerances do not:
+for $n=10200$, $D^{-1}$ scales an interior partial derivative by $750$.
+
+An exact projected zero therefore closes additional ordinary local
+$-\nabla J_C$ descent from that state.  It does not close a route that avoids
+the basin, carries nonzero auxiliary velocity, takes a finite nonmonotone
+jump, changes the initialization, applies a nonscalar or state-dependent
+matrix before stationarity, changes the objective, or introduces new
+variables.
+
+\subsection{Registered and indicative evidence}
+
+The registered result is $0/200$ recovery at $1.5$~dB through 90 updates for
+the frozen native compound control.  It does not certify exact stationarity.
+
+An external NumPy continuation on the same 200 exposed $1.5$-dB frames
+reported $0/200$ recoveries, 197 terminal states meeting its own unscaled
+threshold $\|G_\eta(x)\|_\infty\le 10^{-8}$, three 6000-update caps, a median
+of $744.5$ wrong bits, and
+$J_C(x_{\mathrm{word}})<J_C(x_{\mathrm{terminal}})$ on all 200 frames.  This
+is useful indicative mechanism evidence, not a registered result.  Its finite
+tolerance differs in scale from the registered $D^{-1}$ diagnostic, and it did
+not perform the registered independent $10^{-10}$ confirmation pass.
+
+The defensible interpretation is therefore that the external continuation is
+consistent with trajectories ending in wrong stationary regions.  It does not
+certify local minimality.  The registered result alone establishes only that
+the frozen method did not recover any of those 200 transmitted words within
+90 updates.
+
+\section{A Convexity Boundary for Exact Parity Penalties}
+
+Parity can be placed in a differentiable cost.  The obstruction is to asking
+one ordinary penalty with a finite coefficient to be simultaneously smooth,
+convex, exact,
+zero only at binary parity-valid points, and easy to minimize by ordinary
+gradient descent.
+
+Let $\Vc$ be the set of binary even-parity patterns for check $c$, and let
+$\Pc=\operatorname{conv}(\Vc)$ be its parity polytope
+\cite{barman2013decomposition}.
+
+\begin{theorem}[Convex zero-set obstruction]
+Suppose $p$ is nonnegative and convex and satisfies $p(v)=0$ for every
+$v\in\Vc$.  Then $p(u)=0$ for every $u\in\Pc$.
+\end{theorem}
+
+\begin{proof}
+Every $u\in\Pc$ has a representation
+$u=\sum_{v\in\Vc}\alpha_vv$, where $\alpha_v\ge0$ and
+$\sum_v\alpha_v=1$.  Convexity and nonnegativity give
+\begin{equation}
+0\le p(u)
+\le\sum_{v\in\Vc}\alpha_vp(v)=0.
+\end{equation}
+Hence $p(u)=0$ throughout $\Pc$.
+\end{proof}
+
+A convex penalty cannot therefore have precisely the multiple isolated binary
+even-parity patterns as its zero-valued global minima.  The product
+construction obtains isolated hard zeros by giving up convexity, thereby
+permitting multiple local minima and intervening hills.
+
+\section{A Differentiable Convex Parity Cost}
+
+Let $b\in[0,1]^n$ be a shared vector, let $S_cb$ extract the entries incident
+on check $c$, and let $f_{\mathrm{sig}}$ be a differentiable signal cost.
+Consider
+
+\begin{equation}
+J_\rho(b)=
+f_{\mathrm{sig}}(b)
++\frac{\rho}{2}\sum_c
+\norm{S_cb-\proj{\Pc}{S_cb}}^2.
+\label{eq:distance-cost}
+\end{equation}
+
+\begin{proposition}[Squared distance to the parity polytope]
+If every $\Pc$ is nonempty, closed, and convex, then the parity part of
+\cref{eq:distance-cost} is convex and continuously differentiable.  Moreover,
+\begin{equation}
+\nabla J_\rho(b)=
+\nabla f_{\mathrm{sig}}(b)
++\rho\sum_c S_c^{\trans}
+\left[S_cb-\proj{\Pc}{S_cb}\right].
+\label{eq:distance-gradient}
+\end{equation}
+If $f_{\mathrm{sig}}$ is convex, then $J_\rho$ is convex.
+\end{proposition}
+
+\begin{proof}
+For a nonempty closed convex set $P$, the function
+$\tfrac12\operatorname{dist}(u,P)^2$ is convex and continuously
+differentiable, with gradient $u-\Pi_P(u)$.  Applying the chain rule to each
+linear extraction $S_c$ yields \cref{eq:distance-gradient}.  Convexity is
+preserved by linear composition, nonnegative summation, and addition of
+$f_{\mathrm{sig}}$.
+\end{proof}
+
+This parity contribution pulls each local configuration toward its parity
+polytope instead of creating a product hill between valid hard
+configurations.  It does not guarantee a binary output: it is zero throughout
+each $\Pc$, including at fractional mixtures.  Nor is the finite quadratic
+penalty generally exact.
+
+The scalar example
+
+\begin{equation}
+\min_x x\quad\text{subject to}\quad x=0
+\end{equation}
+
+has constrained solution $x=0$.  Replacing the constraint by
+
+\begin{equation}
+F_\rho(x)=x+\frac{\rho}{2}x^2
+\end{equation}
+
+gives $x_\rho=-1/\rho$, which violates the constraint for every finite
+$\rho$.  Increasing $\rho$ reduces the violation without making it exactly
+zero.  In \cref{eq:distance-cost}, the restoring term in
+\cref{eq:distance-gradient} vanishes at feasibility, so a nonzero signal
+gradient can balance it at a slightly infeasible point.
+
+\paragraph{Exposed-population diagnostic.}
+Experiment \path{RQ2-CONVEX-PARITY-DISTANCE-001} evaluated one frozen
+instance of \cref{eq:distance-cost} on the already exposed $1.5$-dB frames
+61969--62168.  It retained one scalar $b_i\in[0,1]$ per bit, used the linear
+signal term with $\rho=96$, calculated the partial derivatives through exact
+Euclidean projection onto every degree-six parity polytope, applied the fixed
+step $1/288$, and projected componentwise onto the box.  Its frozen source
+defines no sigmoid, restart, momentum, multiplier, or state-dependent matrix,
+and its candidate packet contains no BP quantity.
+
+The latched transmitted-word recovery count was $0/200$ at updates 30, 90,
+300, 1000, 3000, and 6000.  No parity-valid hard-decision estimate occurred at
+any update.  No stored candidate state, including every checkpoint and
+terminal, had a readout tie.  Every case reached the update-6000 cap with
+$\norm{G(b)}_\infty>10^{-8}$, so all 200 terminals are
+\texttt{optimization\_unresolved}.  The terminal mapping-norm median was
+$2.2772885202382298\mathbin{\times}10^{-4}$, with range
+$2.4881\mathbin{\times}10^{-5}$ to $0.0115097$.  After the post-commit scorer
+opened the transmitted word, the terminal hard-decision estimates had median
+382 coded-bit errors (range 148--595) and median syndrome weight 387 (range
+224--508).  The soft states had median 3274 fractional coordinates and median
+maximum local check distance $0.102299$.  Primary and replay scientific
+traces were identical.
+
+Although the objective values were essentially flat late in the run, none of
+the cases met the frozen numerical-stationarity tolerance.  Convexity
+therefore does not license a claim that these terminals are global minimizers,
+and the result does not close this objective.  The source-only follow-up below
+tested faster same-objective convergence without clearing its population-run
+gate.  The exact constrained replica-and-multiplier formulation and the
+untouched two-hop branch were not tested.
+
+\paragraph{Source-only solver-successor gates.}
+Production-size synthetic gates on the same frozen objective did not reach
+$\norm{G_{288}}_\infty\leq 10^{-8}$, so no second $1.5$-dB population run was
+launched.  The feasible accelerated arm ended after 6000 updates at
+$\norm{G_{288}}_\infty=1.8247366\mathbin{\times}10^{-3}$; its synthetic suite
+passed 44,031/44,031 assertions.  A hybrid of those 6000 updates and 30,000
+monotone local-curvature updates ended at
+$\norm{G_{288}}_\infty=2.3504324\mathbin{\times}10^{-4}$ after 73,511
+evaluations and 43,510 backtracks.  Optim.jl 2.3.2 \texttt{LBFGSB}, capped at
+5000 iterations, ended at
+$\norm{G_{288}}_\infty=5.4017116\mathbin{\times}10^{-5}$ for $m=10$ and
+$6.3955257\mathbin{\times}10^{-5}$ for $m=50$.  The local-curvature suite
+passed 15,233/15,233 assertions.
+
+These are synthetic source-feasibility diagnostics, not $1.5$-dB population
+evidence and not evidence that the objective fails.  A decisive
+global-minimum audit now requires a materially stronger certified optimizer,
+or a relaxed tolerance paired with an explicit error bound.  The active
+two-hop branch is untouched.
+
+\section{Replica Variables and Multipliers}
+
+Exact consistency can instead remain a constraint.  Introduce one replica
+variable $z_c$ for each check and impose
+
+\begin{equation}
+z_c=S_cb,
+\qquad
+z_c\in\Pc.
+\label{eq:replicas}
+\end{equation}
+
+With residual $r_c=S_cb-z_c$ and multiplier $y_c$, the augmented Lagrangian is
+
+\begin{equation}
+\mathcal{L}_\rho(b,z,y)
+=f_{\mathrm{sig}}(b)
++\sum_c\left[
+y_c^{\trans}r_c+\frac{\rho}{2}\norm{r_c}^2
+\right],
+\qquad z_c\in\Pc.
+\label{eq:augmented}
+\end{equation}
+
+Its partial derivative with respect to the shared vector is
+
+\begin{equation}
+\nabla_b\mathcal{L}_\rho
+=\nabla f_{\mathrm{sig}}(b)
++\sum_cS_c^{\trans}(y_c+\rho r_c).
+\label{eq:augmented-gradient}
+\end{equation}
+
+At exact consistency, $r_c=0$, the quadratic contribution disappears but the
+multiplier need not.  The first-order balance can remain
+
+\begin{equation}
+\nabla f_{\mathrm{sig}}(b)
++\sum_cS_c^{\trans}y_c=0.
+\end{equation}
+
+Thus the multipliers can retain a nonzero normal force while the shared and
+replica variables agree.  A typical alternating direction method updates
+the shared variables, projects each replica variable onto its parity
+polytope, and updates the multipliers from the residuals
+\cite{boyd2011admm,barman2013decomposition}.  This uses partial derivatives,
+but it is not ordinary descent of the unconstrained scalar objective $J_C$.
+It changes the variables, feasible sets, and update operation.
+
+\section{Exactness Boundary on a Loopy Tanner Graph}
+
+Each $\Pc$ exactly describes the convex hull of the valid binary patterns for
+one parity check.  On a loopy Tanner graph, however, intersecting these local
+polytopes through the shared variables gives the fundamental-polytope
+relaxation used in LP decoding \cite{feldman2005lp}.  That relaxation can have
+fractional vertices, commonly called pseudocodewords in the LP-decoding
+literature.
+
+Consequently,
+
+\begin{equation}
+\begin{gathered}
+\text{exact feasibility in every check's parity polytope}\\
+\text{does not guarantee a binary codeword}.
+\end{gathered}
+\end{equation}
+
+A linear cost over the exact global codeword polytope has an optimal codeword
+vertex.  A unique optimum selects that vertex.  If several codewords tie,
+fractional mixtures on the optimal face are also optimal and require a
+deterministic vertex or tie rule.  Describing or projecting onto the exact
+global polytope can be substantially more expensive than using the relaxation
+formed from the individual checks.  The difficulty therefore moves from a
+nonconvex product landscape
+into the representation and enforcement of the feasible set; it does not
+disappear.
+
+\Needspace{8\baselineskip}
+\section{Prospective Research Direction}
+
+The mathematically distinct successor formulation is
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+&\text{linear or differentiable lifted signal cost}\\
+&\quad+\text{ parity-polytope feasibility}\\
+&\quad+\text{ shared-to-local consistency and multipliers}
+\end{aligned}}
+\end{equation}
+
+The finite differentiable penalty in \cref{eq:distance-cost} now has the
+exposed-population diagnostic reported above, but that run stopped above its
+mapping tolerance and does not identify its global minimizers.  The expanded
+constrained formulation in this section still has no recovery evidence in the
+present repository and is not introduced as a validated decoder.  A
+prospective evaluation would need to declare its state dimension, projection
+algorithm, multiplier update, initialization, stopping and readout rules,
+deterministic replay checks, operation and memory budgets, and recovery and
+coded-bit-error metrics before opening held-out cases.
+
+It also does not supersede the separate state-dependent two-hop matrix branch.
+That branch applies a bounded matrix to the partial derivatives of $J_C$ and
+has a retained teacher-labelled fit, but no fresh direction-screen or decoder
+result.  It must be completed or amended under its own registered gates.
+
+\section{Conclusion}
+
+The observed decoding failure need not mean that the calculated partial
+derivatives are wrong.  The mathematics establishes a more specific
+possibility: a descent method can faithfully optimize an objective term
+structure that permits a wrong local minimum on the box.  A satisfied check
+cannot distinguish the
+all-correct hard pattern from a hard pattern with two wrong signs, and the smooth product term can
+rise along a collective correction between them.  The constructed example
+proves that this term structure can yield a strict wrong local minimum on the
+box even when the desired word has lower cost.
+
+The experimental conclusion remains narrower.  The frozen scalar protocol
+recovered $0/200$ words at $1.5$~dB through 90 registered updates.  The
+external continuation is consistent with trajectories ending in wrong
+stationary regions, but it is not a registered exact-stationarity certificate.
+The evidence closes the frozen scalar step grid and normalization against the
+specific budget extension from 30 to 90 updates.  As a research-priority
+decision, further repetitions that preserve the same state, objective,
+direction, and projection while changing only scalar implementation details
+should be deprioritized.  Arbitrary discrete scalar-step schedules remain
+mathematically unclosed, and the evidence does not justify abandoning every
+use of partial derivatives.
+
+The exposed convex parity-distance diagnostic removed nonglobal local wells
+from the tested objective but recovered $0/200$ words through update 6000 and
+produced no parity-valid hard-decision estimate.  This is not yet evidence
+that the convex objective has the wrong global minimizer: every case stopped
+at the cap above the frozen mapping tolerance.  The source-only successor
+gates also remained above tolerance, so no second population run was launched.
+The immediate question is therefore convergence, not another interpretation
+of the unresolved terminals.  A decisive global-minimum audit requires a
+materially stronger certified optimizer, or a relaxed tolerance paired with
+an explicit error bound; only then can the signal cost, finite penalty, and
+fundamental-polytope relaxation be classified.
+
+The constrained formulation changes what differentiation is asked to do.  A
+differentiable signal cost ranks candidate explanations; parity polytopes,
+projections, and multipliers enforce the coding structure.  Whether that
+expanded constrained formulation can approach BP at both $6$~dB and
+$1.5$~dB remains a prospective experimental question.
+
+\section*{Reproducibility and Evidence Boundary}
+
+This paper is derived from the repository's explanatory and analytical
+records.  The implemented objective is in
+\path{../implementation/two_hop_metric_action/compound_objective_jc.jl}.
+The full projected-descent derivation and result classification are in
+\path{../research/jc_projected_gradient_boundary.md}.  The registered but
+unfinished continuation card is
+\path{../research/rq2_jc_projected_stationarity_001_card.md}.  The active
+two-hop branch is scoped in \path{../research/active_goal.md}.  The convex
+parity-distance diagnostic is specified in
+\path{../research/rq2_convex_parity_distance_001_card.md}, implemented in
+\path{../implementation/convex_parity_distance/}, and committed under
+\path{../results/rq2_convex_parity_distance_001/2026-11-08_v1/}.  Its
+candidate and replay scientific-trace SHA-256 values both equal
+\path{2020306bb9d09d20e025528c2b9eba8a398f67e8c896b7329c8b3411c1c1dd20}.
+It used only the already exposed frames 61969--62168; the candidate packet
+contained no BP quantity, the frozen candidate source contained no BP call,
+and the run did not open the untouched confirmation ranges.
+
+\clearpage
+\printbibliography
+
+\end{document}

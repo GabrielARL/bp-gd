@@ -60,6 +60,25 @@ seam that would gate a future direction screen.
   definite matrix. It explains why scalar `-grad J_C` variations should be
   stopped, without claiming that every matrix-applied or expanded-variable
   method is impossible.
+- [`research/why_move_from_jc_to_parity_polytope_constraints.md`](research/why_move_from_jc_to_parity_polytope_constraints.md)
+  synthesizes why scalar projected descent on unchanged `J_C` was stopped as a
+  repeated low-SNR route and why a prospective formulation would keep a
+  differentiable signal cost while moving parity into parity-polytope
+  constraints, check-local replicas, and multipliers. It is an explanatory
+  note, not a new decoder or performance result.
+- [`paper/jc_landscape_and_parity_polytope.tex`](paper/jc_landscape_and_parity_polytope.tex)
+  is the standalone LaTeX paper derived from that synthesis. Its registered
+  measurements, indicative continuation, mathematical examples, and
+  prospective constrained formulation remain explicitly separated. The
+  retained build is
+  [`paper/jc_landscape_and_parity_polytope.pdf`](paper/jc_landscape_and_parity_polytope.pdf).
+- [`implementation/convex_parity_distance_snr_threshold/`](implementation/convex_parity_distance_snr_threshold/)
+  contains the activated coarse-to-fine SNR audit for the convex squared-
+  distance-to-parity-polytope objective and its frozen 30-update accelerated
+  projected-gradient schedule. Its prospective rules are in
+  [`RQ2-CONVEX-PARITY-DISTANCE-SNR-THRESHOLD-001`](research/rq2_convex_parity_distance_snr_threshold_001_card.md),
+  and the durable exposed-development result is
+  [`RESULT.md`](results/rq2_convex_parity_distance_snr_threshold_001/2026-11-08_v2/RESULT.md).
 - [`.agents/skills/`](.agents/skills/) contains the repository-specific
   experiment, terminology, and writing rules.
 
@@ -76,6 +95,26 @@ message-passing iterations. The one-sided recovery-count requirement is
 candidate may not call BP at inference. A wrong valid codeword, exact-zero
 readout tie, nondeterministic replay, or work outside the registered
 bounded-degree `O(E)` envelope fails independently of the recovery count.
+
+## Differentiable convex-parity SNR result
+
+The strongest currently implemented differentiable optimization path uses
+one scalar in `[0,1]` per bit, a linear channel term, squared Euclidean
+distance to each exact degree-six parity polytope, and the frozen feasible
+accelerated projected-gradient recurrence for exactly 30 updates. In the
+registered exposed-development fine sweep on frames `30001:30200`, exact
+sum-product BP recovered 200/200 at every tested level from 4.0 through
+5.0 dB. Candidate recoveries were 87, 122, 150, 161, 177, 190, 195, 199,
+200, 200, and 200 as SNR increased in 0.1-dB steps.
+
+The stable threshold under the active `candidate >= BP - 30` rule is therefore
+**4.4 dB**. The candidate first reached the stricter 190/200 reference at
+**4.5 dB** and first matched BP's 200/200 count at **4.8 dB**. No tested fine-
+grid level produced a wrong parity-valid word or a readout tie. These are
+exposed-development results for this exact objective, solver, and work budget,
+not an untouched confirmation or a general code threshold. The discrete hard
+decision and syndrome check are evaluation operations outside the
+differentiable optimization path.
 
 ## Claim boundary
 
@@ -104,8 +143,9 @@ that parity-calculation use and correct check assignment carry the observed
 benefit, not that the offsets are BP messages or that the construction
 approaches BP across signal-to-noise ratios.
 
-This is the best verified GD recovery result in the retained campaign. It is
-not evidence that its performance approaches BP across signal-to-noise ratios. A related
+This remains the retained fresh-transfer baseline for the historical compound-
+box branch. It is not evidence that its performance approaches BP across
+signal-to-noise ratios. A related
 native compound projected-GD budget diagnostic recovered 0/200 at 1.5 dB, and
 the later state-dependent two-hop positive-matrix branch has not yet run as a
 decoder.
@@ -328,9 +368,9 @@ approaching BP.
 
 ## Scope of this export
 
-This export has no runtime dependency on the original worktrees. Closed-branch
-implementations, queue machinery, large traces, and nonportable verification
-scripts were not copied. The active package contains pure objective and
+The original two-hop export has no runtime dependency on its source
+worktrees. Closed-branch implementations, queue machinery, large traces, and
+nonportable verification scripts were not copied. The active package contains pure objective and
 direction calculations, the source-identical metric action and per-origin
 diagnostic kernel, a frozen arithmetic fixture, pure population adapters and
 reducers, the dormant synthetic-only Stage-C decoder source and its pure trace
@@ -340,3 +380,13 @@ not depend on the original worktrees. It contains no scientific-case runner.
 The full-chain synthetic test performs no state
 update, projection, line search, word readout, or recovery, BER, or FER
 scoring. Paths shown at pruned leaves are provenance, not local dependencies.
+
+The later convex parity-distance packages have a narrower portability
+boundary. Their pure objective and solver modules are local, but the registered
+population-preparation and scorer wrappers deliberately preserve the exact
+absolute source paths used by the completed experiments. The SNR audit's
+project and manifest also preserve its registered `JadeJcade` path dependency.
+Consequently a fresh clone can inspect the full source and compact evidence,
+but cannot independently regenerate the scientific populations without those
+hash-pinned external checkouts. This archival dependency is retained rather
+than rewritten after the outcomes opened.

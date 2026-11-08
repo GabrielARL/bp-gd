@@ -1,0 +1,30 @@
+name = "ConvexParityDistanceSNRThreshold"
+uuid = "ad9f8872-2348-4766-a4e9-c11316ac6347"
+authors = ["bp-gd mechanism study"]
+version = "0.1.0"
+
+[deps]
+ConvexParityDistance = "9dd7314c-c1a6-4af0-af31-cce4395888f1"
+ConvexParityDistanceAccelerated = "970f441a-736f-4ab6-818f-7083ea091cef"
+JadeJcade = "6ed64793-b1ba-4c81-97d7-f0542278d634"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[sources]
+ConvexParityDistance = {path = "../convex_parity_distance"}
+ConvexParityDistanceAccelerated = {path = "../convex_parity_distance_accelerated"}
+JadeJcade = {path = "/home/gabiel/Documents/GitHub/JadeJcade-worktrees/awgn-jade-coral-20261012"}
+
+[compat]
+ConvexParityDistance = "0.1"
+ConvexParityDistanceAccelerated = "0.1"
+JadeJcade = "0.1"
+julia = "1.12"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

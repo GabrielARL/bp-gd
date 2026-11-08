@@ -1,0 +1,20 @@
+schema = "rq2-convex-parity-distance-snr-threshold-001/stage-activation-v1"
+experiment_id = "RQ2-CONVEX-PARITY-DISTANCE-SNR-THRESHOLD-001"
+stage = "coarse"
+snr_grid_db = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0]
+frame_first = 20001
+frame_last = 20024
+update_cap = 30
+
+[hashes]
+objective_source_sha256 = "5df9ae2489356a8d9e0f38efe5453713fec3130dfb68f8a14119638357b251f3"
+accelerated_source_sha256 = "3eb0f8b85ba12a418fda9484cd658c43748a5bfc1db1dc92f9cc58b6f1edb5fc"
+activation_gate_source_sha256 = "93ca9b111fa2bd31b9b97b7f772242be83cb8d1245ffdb4964cc032ccf5879ad"
+preparer_source_sha256 = "6ccfa8aa3f04ab4229ace9ce8d29c606d40326605a1c839b0a04efd94c378fc1"
+candidate_runner_source_sha256 = "0aaa280de90abe2adef1e285d8a937daa1dafeff8312fe4ba764f6d0e14e03f2"
+scorer_source_sha256 = "bd36ed9e53974c5eb6d1b5f3bb3ad337ccafcc67c19293217a9e9f54db887f50"
+artifact_helper_source_sha256 = "79279550fd58a751737ae2b0431b29283dd1ee1835986e2f8e1898f1618ca1cb"
+local_artifact_shim_source_sha256 = "a3fd446570552f3c1c9d0a7303b3c4b121671f5af112b765cf3a9038c6996ae8"
+project_toml_sha256 = "cf5c2c7755bf27e5565c779ea815a325d9b69122929dd56224c298d61f12f3a8"
+manifest_toml_sha256 = "82b77e50e0040c573cfa3817f645ac46bfd7a840e603de751d6ff875939ec8b2"
+card_sha256 = "8fe74ce31244cdbeaae65e087d98e96d466af417994a510be67abbbf0f74c00d"

@@ -1,0 +1,8 @@
+schema=rq2-convex-parity-distance-snr-threshold-001/post-commit-score-v1
+experiment_id=RQ2-CONVEX-PARITY-DISTANCE-SNR-THRESHOLD-001
+stage=fine
+activation_sha256=0038c40991ae4485800cbacc640fa9c12d3d6f18ace1beb0946d95065f3936be
+manifest_file=SCORE_MANIFEST.sha256
+manifest_sha256=fd9d1b7d27649083151cd2d7746003bbb4ccdc39cedfe1f8916436228d869d2d
+candidate_rerun=false
+complete=true

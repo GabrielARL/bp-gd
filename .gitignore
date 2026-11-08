@@ -3,6 +3,9 @@ __pycache__/
 
 # TeX build intermediates; retain source files and generated PDFs.
 *.aux
+*.bbl
+*.bcf
+*.blg
 *.fdb_latexmk
 *.fls
 *.log
@@ -11,5 +14,21 @@ __pycache__/
 *.snm
 *.synctex.gz
 *.toc
+*.run.xml
 *.vrb
 *.xdv
+
+# Scientific packet/candidate artifacts are reproducible local run products.
+# Some state and LLR buffers exceed GitHub's per-object limit; publish the
+# compact score directories, committed result reports, source, and cards.
+results/**/packet/
+results/**/candidate/
+results/**/coarse_packet/
+results/**/coarse_candidate/
+results/**/fine_packet/
+results/**/fine_candidate/
+
+# Local proposal previews and the copied NUS-branded deck are retained outside
+# the public repository. The canonical standalone paper remains versioned.
+paper/proposals/
+paper/closing_gradient_route/

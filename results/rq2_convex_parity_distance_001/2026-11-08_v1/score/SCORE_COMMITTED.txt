@@ -1,0 +1,9 @@
+schema=rq2-convex-parity-distance-001/score-commit-v1
+experiment_id=RQ2-CONVEX-PARITY-DISTANCE-001
+case_count=200
+candidate_commit_sha256=a22f2174336332b8512a43236d9d124228ff334c6871df57e9551e0c16382310
+candidate_manifest_sha256=f4b68ddccc06ef7cb36304bd92f6081867901cc5a60c0ed567d031e52b06bb5c
+score_manifest_file=SCORE_MANIFEST.sha256
+score_manifest_sha256=ed6ca7581857a65012ddbf21ea3949b7396fd8494765a2f8adbf0de2058e6329
+truth_opened_after_candidate_commit=true
+bp_used=false

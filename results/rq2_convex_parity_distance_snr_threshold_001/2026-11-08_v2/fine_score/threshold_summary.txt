@@ -1,0 +1,15 @@
+schema=rq2-convex-parity-distance-snr-threshold-001/post-commit-score-v1
+experiment_id=RQ2-CONVEX-PARITY-DISTANCE-SNR-THRESHOLD-001
+stage=fine
+activation_sha256=0038c40991ae4485800cbacc640fa9c12d3d6f18ace1beb0946d95065f3936be
+case_count=2200
+tested_snr_count=11
+lowest_target_pass_snr_db=4.4
+provisional_coarse_crossing_snr_db=
+stable_working_threshold_snr_db=4.4
+threshold_scope=exposed_development_only
+candidate_rerun_by_scorer=false
+candidate_manifest_sha256=5c1c888152db8415d4de963eeb196900e118106c05a53d75502ed56a804eaaa4
+packet_manifest_sha256=57a0a1b43d0df5e8efcbd4623308ee9e20431e64be8e4c7ba39fbe324f73ab6b
+truth_opened_after_candidate_commit=true
+bp_opened_after_candidate_commit=true
